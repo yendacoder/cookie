@@ -24,6 +24,9 @@ class Themes {
       useMaterial3: true,
       applyElevationOverlayColor: false,
       inputDecorationTheme: InputDecorationTheme(
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: base.disabledColor),
+            borderRadius: BorderRadius.circular(kDefaultCornerRadius)),
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(kDefaultCornerRadius)),
       ),
@@ -36,6 +39,7 @@ class Themes {
       textButtonTheme: TextButtonThemeData(
         style: ElevatedButton.styleFrom(
           minimumSize: const Size(60, 44),
+          foregroundColor: base.colorScheme.onBackground,
         ),
       ),
       textTheme: GoogleFonts.openSansTextTheme(base.textTheme),

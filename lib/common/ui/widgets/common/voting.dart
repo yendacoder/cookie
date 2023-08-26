@@ -1,20 +1,22 @@
+import 'package:cookie/common/ui/widgets/common/progress_icon_button.dart';
 import 'package:cookie/common/util/string_util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class Voting extends StatelessWidget {
   const Voting(
       {super.key,
       required this.upvotes,
       required this.downvotes,
-      required this.isLoading,
+      required this.isLoadingUp,
+      required this.isLoadingDown,
       required this.isVotedUp,
       required this.isVotedDown,
       this.onVote});
 
   final int upvotes;
   final int downvotes;
-  final bool isLoading;
+  final bool isLoadingUp;
+  final bool isLoadingDown;
   final bool isVotedUp;
   final bool isVotedDown;
 
@@ -27,27 +29,25 @@ class Voting extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        PlatformIconButton(
-          icon: Icon(
-            Icons.arrow_upward,
-            color: isVotedUp ? Colors.green : null,
-          ),
-          onPressed: isLoading || onVote == null ? null : () => onVote!(true),
+        ProgressIconButton(
+          icon: Icons.arrow_upward,
+          color: isVotedUp ? Colors.green : null,
+          isRunning: isLoadingUp,
+          onPressed: isLoadingUp || isLoadingDown || onVote == null
+              ? null
+              : () => onVote!(true),
         ),
-        if (isLoading)
-          SizedBox(width: 20, height: 20, child: PlatformCircularProgressIndicator())
-        else
-          Text(
-            formatRating(upvotes, downvotes),
-            style:
-                theme.textTheme.labelMedium!.copyWith(color: theme.hintColor),
-          ),
-        PlatformIconButton(
-          icon: Icon(
-            Icons.arrow_downward,
-            color: isVotedDown ? Colors.red : null,
-          ),
-          onPressed: isLoading || onVote == null ? null : () => onVote!(false),
+        Text(
+          formatRating(upvotes, downvotes),
+          style: theme.textTheme.labelMedium!.copyWith(color: theme.hintColor),
+        ),
+        ProgressIconButton(
+          icon: Icons.arrow_downward,
+          color: isVotedDown ? Colors.red : null,
+          isRunning: isLoadingDown,
+          onPressed: isLoadingUp || isLoadingDown || onVote == null
+              ? null
+              : () => onVote!(false),
         ),
       ],
     );

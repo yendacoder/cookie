@@ -27,6 +27,13 @@
       }
     }
   },
+  "commentHint": "Write a comment...",
+  "commentReplyHint": "Write a reply...",
+  "commentEdit": "Edit",
+  "commentDelete": "Delete",
+  "commentDeleteConfirm": "Delete comment?",
+  "commentDeleteConfirmOk": "Delete",
+  "commentDeleteConfirmCancel": "Cancel",
   "profile": "Profile",
   "authUsernameHint": "Username",
   "authPasswordHint": "Password",

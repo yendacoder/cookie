@@ -159,4 +159,16 @@ class FeedController with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  /// Update commenting stats from another post object
+  void updateCommented(Post? post) {
+    if (post == null) {
+      return;
+    }
+    final updatingPost = _posts.firstWhereOrNull((element) => element.id == post.id);
+    if (updatingPost != null) {
+      updatingPost.noComments = post.noComments;
+      notifyListeners();
+    }
+  }
 }

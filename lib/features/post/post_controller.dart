@@ -19,7 +19,15 @@ class PostController with ChangeNotifier {
   final List<Comment> _comments = [];
 
   List<Comment> get comments => _comments;
+  String? _selectedCommentId;
   String? _next;
+
+  String? get selectedCommentId => _selectedCommentId;
+
+  set selectedCommentId(String? commentId) {
+    _selectedCommentId = commentId;
+    notifyListeners();
+  }
 
   int get displayItemsCount {
     int count = _comments.length;
@@ -56,7 +64,8 @@ class PostController with ChangeNotifier {
     /// the comment with the id of the last ancestor or after the last comment
     /// with the same last ancestor id
 
-    final depth = comments.fold<int>(0, (prev, comment) => prev > comment.depth ? prev : comment.depth);
+    final depth = comments.fold<int>(
+        0, (prev, comment) => prev > comment.depth ? prev : comment.depth);
     for (int i = 0; i <= depth; i++) {
       final levelComments = comments.where((c) => c.depth == i).toList();
       if (i == 0) {
@@ -64,8 +73,8 @@ class PostController with ChangeNotifier {
       } else {
         for (final comment in levelComments) {
           final ancestor = comment.ancestors!.last;
-          final prev = _comments.lastIndexWhere((c) =>
-          c.id == ancestor || c.ancestors?.last == ancestor);
+          final prev = _comments.lastIndexWhere(
+              (c) => c.id == ancestor || c.ancestors?.last == ancestor);
           _comments.insert(prev + 1, comment);
         }
       }
@@ -103,15 +112,46 @@ class PostController with ChangeNotifier {
     if (_post == null) {
       return;
     }
-    try {
-      final updatedPost = await _postRepository.vote(_post!.id, up);
-      _post?.userVoted = true;
-      _post?.userVotedUp = up;
-      _post?.upvotes = updatedPost.upvotes;
-      _post?.downvotes = updatedPost.downvotes;
-      notifyListeners();
-    } catch (e) {
-      rethrow;
-    }
+    final updatedPost = await _postRepository.vote(_post!.id, up);
+    _post?.userVoted = true;
+    _post?.userVotedUp = up;
+    _post?.upvotes = updatedPost.upvotes;
+    _post?.downvotes = updatedPost.downvotes;
+    notifyListeners();
+  }
+
+  Future<void> voteComment(String commentId, bool up) async {
+    final updatedComment = await _postRepository.voteComment(commentId, up);
+    final comment = _comments.firstWhere((c) => c.id == commentId);
+    comment.userVoted = true;
+    comment.userVotedUp = up;
+    comment.upvotes = updatedComment.upvotes;
+    comment.downvotes = updatedComment.downvotes;
+    selectedCommentId = null;
+  }
+
+  Future<void> addComment(String text, String? parentId) async {
+    final comment = await _postRepository.addComment(_postId, text, parentId);
+    _addLoaded([comment]);
+    post?.noComments++;
+    selectedCommentId = null;
+  }
+
+  Future<void> editComment(String commentId, String text) async {
+    final newComment = await _postRepository.editComment(_postId, commentId, text);
+    final comment = _comments.firstWhere((c) => c.id == commentId);
+    comment.body = newComment.body;
+    comment.editedAt = newComment.editedAt;
+    selectedCommentId = null;
+  }
+
+  Future<void> deleteComment(String commentId) async {
+    final newComment = await _postRepository.deleteComment(_postId, commentId);
+    final comment = _comments.firstWhere((c) => c.id == commentId);
+    comment.body = newComment.body;
+    comment.deletedAs = newComment.deletedAs;
+    comment.deletedBy = newComment.deletedBy;
+    comment.deletedAt = newComment.deletedAt;
+    selectedCommentId = null;
   }
 }

@@ -41,17 +41,17 @@ class PostItem extends StatefulWidget {
 }
 
 class _PostItemState extends State<PostItem> {
-  final ValueNotifier<bool> _isVoting = ValueNotifier(false);
+  final ValueNotifier<bool?> _isVotingUp = ValueNotifier(null);
 
   @override
   void dispose() {
-    _isVoting.dispose();
+    _isVotingUp.dispose();
     super.dispose();
   }
 
   Future<void> _vote(BuildContext context, bool up) async {
     try {
-      _isVoting.value = true;
+      _isVotingUp.value = up;
       if (widget.isDetailScreen) {
         final postController = Provider.of<PostController>(context, listen: false);
         final feedController = Provider.of<FeedController>(context, listen: false);
@@ -64,7 +64,7 @@ class _PostItemState extends State<PostItem> {
     } catch (e) {
       showApiErrorMessage(context, e);
     } finally {
-      _isVoting.value = false;
+      _isVotingUp.value = null;
     }
   }
 
@@ -177,8 +177,8 @@ class _PostItemState extends State<PostItem> {
       child: Row(
         children: [
           ValueListenableBuilder(
-              valueListenable: _isVoting,
-              builder: (context, isVoting, _) {
+              valueListenable: _isVotingUp,
+              builder: (context, isVotingUp, _) {
                 return Voting(
                     upvotes: widget.post.upvotes,
                     downvotes: widget.post.downvotes,
@@ -186,7 +186,8 @@ class _PostItemState extends State<PostItem> {
                         widget.post.userVotedUp == true,
                     isVotedDown: widget.post.userVoted == true &&
                         widget.post.userVotedUp != true,
-                    isLoading: isVoting,
+                    isLoadingUp: isVotingUp == true,
+                    isLoadingDown: isVotingUp == false,
                     onVote:
                         !Provider.of<InitialController>(context, listen: false)
                                 .isLoggedIn

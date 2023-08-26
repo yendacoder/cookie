@@ -7,6 +7,7 @@ import 'package:cookie/common/ui/widgets/nested_indicator.dart';
 import 'package:cookie/common/ui/widgets/username.dart';
 import 'package:cookie/common/util/context_util.dart';
 import 'package:cookie/common/util/string_util.dart';
+import 'package:cookie/features/post/compose_comment.dart';
 import 'package:cookie/settings/consts.dart';
 import 'package:flutter/material.dart';
 
@@ -18,12 +19,16 @@ class CommentItem extends StatelessWidget {
       {super.key,
       required this.comment,
       required this.isOp,
+      required this.isExpanded,
       this.nestingIndicatorColor,
+      this.onCommentClicked,
       this.onNestingClicked});
 
   final Comment comment;
   final bool isOp;
+  final bool isExpanded;
   final Color? nestingIndicatorColor;
+  final VoidCallback? onCommentClicked;
   final VoidCallback? onNestingClicked;
 
   Widget _buildNestedDisplay(BuildContext context, int level) {
@@ -71,50 +76,60 @@ class CommentItem extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: nestedWidth + 4),
             child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    children: [
-                      Username(
-                        username: comment.username,
-                        isDeleted: comment.deletedAt != null,
-                      ),
-                      if (isOp)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 6.0),
-                          child: Text(
-                            context.l.commentOp,
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: theme.colorScheme.primary),
-                          ),
+                  TappableItem(
+                    onTap: onCommentClicked,
+                    child: Row(
+                      children: [
+                        Username(
+                          username: comment.username,
+                          isDeleted: comment.deletedAt != null,
                         ),
-                      const SizedBox(
-                        width: 6.0,
-                      ),
-                      MarkdownText(
-                        context.displayElapsedTime(comment.createdAtDate(),
-                            short: true),
-                        style: theme.textTheme.bodyMedium!
-                            .copyWith(color: theme.hintColor),
-                      ),
-                      const Spacer(),
-                      Text(formatRating(comment.upvotes, comment.downvotes),
+                        if (isOp)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 6.0),
+                            child: Text(
+                              context.l.commentOp,
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: theme.colorScheme.primary),
+                            ),
+                          ),
+                        const SizedBox(
+                          width: 6.0,
+                        ),
+                        MarkdownText(
+                          context.displayElapsedTime(comment.createdAtDate(),
+                              short: true),
                           style: theme.textTheme.bodyMedium!
-                              .copyWith(color: theme.hintColor)),
-                    ],
+                              .copyWith(color: theme.hintColor),
+                        ),
+                        const Spacer(),
+                        Text(formatRating(comment.upvotes, comment.downvotes),
+                            style: theme.textTheme.bodyMedium!
+                                .copyWith(color: theme.hintColor)),
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     height: 6.0,
                   ),
-                  MarkdownText(
-                    comment.body,
-                    style: comment.deletedAt != null
-                        ? theme.textTheme.bodyMedium!.copyWith(
-                            color: theme.hintColor, fontStyle: FontStyle.italic)
-                        : null,
+                  TappableItem(
+                    onTap: onCommentClicked,
+                    child: MarkdownText(
+                      comment.body,
+                      style: comment.deletedAt != null
+                          ? theme.textTheme.bodyMedium!.copyWith(
+                              color: theme.hintColor,
+                              fontStyle: FontStyle.italic)
+                          : null,
+                    ),
                   ),
+                  if (isExpanded) ...[
+                    ComposeComment(parentComment: comment),
+                  ]
                 ]),
           ),
         ],

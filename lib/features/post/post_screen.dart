@@ -11,6 +11,7 @@ import 'package:cookie/common/ui/widgets/post_item.dart';
 import 'package:cookie/common/util/context_util.dart';
 import 'package:cookie/common/util/iterable_util.dart';
 import 'package:cookie/features/post/comment_item.dart';
+import 'package:cookie/features/post/compose_comment.dart';
 import 'package:cookie/features/post/post_controller.dart';
 import 'package:cookie/settings/consts.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +68,7 @@ class _PostScreenState extends State<PostScreen> {
   }
 
   Widget _buildBody(BuildContext context, PostController controller) {
+    final initialController = Provider.of<InitialController>(context);
     if (controller.lastError != null) {
       return ErrorContent(
         error: controller.lastError!,
@@ -83,17 +85,31 @@ class _PostScreenState extends State<PostScreen> {
       );
     }
     final theme = Theme.of(context);
+    final itemsCount = controller.displayItemsCount == 0
+        ? 3
+        : controller.displayItemsCount + 2;
     return RefreshableList(
       refreshRequest: () => _loadPage(controller, true),
       nextPageRequest: () => _loadPage(controller, false),
       padding: const EdgeInsets.only(bottom: kPrimaryPadding),
       isLoading: controller.isLoading,
-      itemCount: controller.displayItemsCount == 0
-          ? 2
-          : controller.displayItemsCount + 1,
+      itemCount: itemsCount,
       itemBuilder: (context, index) {
         if (index == 0) {
           return _buildPost(context, controller);
+        }
+        if (index == itemsCount - 1) {
+          if (!initialController.isLoggedIn) {
+            return const SizedBox.shrink();
+          } else {
+            return const Padding(
+              padding: EdgeInsets.only(
+                  top: 40.0,
+                  left: kPrimaryPadding,
+                  right: kPrimaryPadding),
+              child: ComposeComment(parentComment: null),
+            );
+          }
         }
         if (controller.displayItemsCount == 0) {
           return Container(
@@ -121,6 +137,16 @@ class _PostScreenState extends State<PostScreen> {
             comment: comment,
             isOp: comment.userId == widget.post?.userId,
             nestingIndicatorColor: nestingIndicatorColor,
+            isExpanded: controller.selectedCommentId == comment.id,
+            onCommentClicked: initialController.isLoggedIn
+                ? () {
+                    if (controller.selectedCommentId == comment.id) {
+                      controller.selectedCommentId = null;
+                    } else {
+                      controller.selectedCommentId = comment.id;
+                    }
+                  }
+                : null,
             onNestingClicked: () {
               if (_highlightedCommentsTree?.last == comment.id) {
                 _highlightedCommentsTree = null;
