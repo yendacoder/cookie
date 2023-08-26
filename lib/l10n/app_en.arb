@@ -10,6 +10,23 @@
   "commentOp": "OP",
   "commentsEmpty": "No comments",
   "communityJoin": "Join",
+  "communityLeave": "Leave",
+  "communityJoinMessage": "You joined {community}!",
+  "@communityJoinMessage": {
+    "placeholders": {
+      "community": {
+        "type": "String"
+      }
+    }
+  },
+  "communityLeaveMessage": "You left {community}!",
+  "@communityLeaveMessage": {
+    "placeholders": {
+      "community": {
+        "type": "String"
+      }
+    }
+  },
   "profile": "Profile",
   "authUsernameHint": "Username",
   "authPasswordHint": "Password",

@@ -30,6 +30,7 @@ class Themes {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           minimumSize: const Size(60, 44),
+          foregroundColor: base.colorScheme.onBackground,
         ),
       ),
       textButtonTheme: TextButtonThemeData(

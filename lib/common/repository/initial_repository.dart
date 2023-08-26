@@ -45,4 +45,14 @@ class InitialRepository extends Repository {
           'password': password,
         });
   }
+
+  Future<void> joinCommunity(
+      AuthRecord authRecord, String communityId, bool join) {
+    final uri = client.initRequest('_joinCommunity');
+    return performRequestEmptyResult(authRecord, () => client.http.postUrl(uri),
+        body: {
+          'communityId': communityId,
+          'leave': !join,
+        });
+  }
 }

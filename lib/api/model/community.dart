@@ -40,6 +40,18 @@ class Community {
   // List<CommunityRule> rules;
   // ReportDetails reportDetails
 
+  @override
+  operator == (other) {
+    if (other is Community) {
+      return id == other.id;
+    }
+    return false;
+  }
+
   factory Community.fromJson(Map<String, dynamic> json) =>
       _$CommunityFromJson(json);
+
+  @override
+  int get hashCode => id.hashCode;
+
 }

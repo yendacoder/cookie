@@ -4,7 +4,6 @@ import 'package:cookie/common/controller/initial_controller.dart';
 import 'package:cookie/common/ui/notifications.dart';
 import 'package:cookie/common/ui/widgets/common/flat_appbar.dart';
 import 'package:cookie/common/ui/widgets/common/platform_custom_popup_menu.dart';
-import 'package:cookie/common/ui/widgets/common/platform_outlined_button.dart';
 import 'package:cookie/common/ui/widgets/common/refreshable_list.dart';
 import 'package:cookie/common/ui/widgets/common/shimmer.dart';
 import 'package:cookie/common/ui/widgets/common/shimmer_placeholders.dart';
@@ -24,8 +23,7 @@ import 'package:provider/provider.dart';
 
 @RoutePage()
 class FeedContentScreen extends StatefulWidget {
-  const FeedContentScreen(
-      {super.key});
+  const FeedContentScreen({super.key});
 
   @override
   State<FeedContentScreen> createState() => _FeedContentScreenScreenState();
@@ -51,26 +49,36 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
 
   Widget _buildLoadingItem() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: kPrimaryPadding, vertical: kSecondaryPadding),
+      padding: const EdgeInsets.symmetric(
+          horizontal: kPrimaryPadding, vertical: kSecondaryPadding),
       child: Column(
         children: [
-          const Row(children: [
-            ShimmerAvatar(),
-            SizedBox(width: 6.0,),
-            SizedBox(width: 80, child: ShimmerText(lines: 1)),
-            Spacer(),
-            SizedBox(width: 80, child: ShimmerText(lines: 1)),
-            SizedBox(width: 6.0,),
-            ShimmerAvatar()
-          ],),
-          const SizedBox(height: 12.0,),
+          const Row(
+            children: [
+              ShimmerAvatar(),
+              SizedBox(
+                width: 6.0,
+              ),
+              SizedBox(width: 80, child: ShimmerText(lines: 1)),
+              Spacer(),
+              SizedBox(width: 80, child: ShimmerText(lines: 1)),
+              SizedBox(
+                width: 6.0,
+              ),
+              ShimmerAvatar()
+            ],
+          ),
+          const SizedBox(
+            height: 12.0,
+          ),
           ClipRRect(
             borderRadius: BorderRadius.circular(kDefaultCornerRadius),
             child: const AspectRatio(
-                aspectRatio: 16/9,
-                child: ColoredBox(color: Colors.white)),
+                aspectRatio: 16 / 9, child: ColoredBox(color: Colors.white)),
           ),
-          const SizedBox(height: 12.0,),
+          const SizedBox(
+            height: 12.0,
+          ),
           const ShimmerText(lines: 1, textSize: 32.0),
         ],
       ),
@@ -92,9 +100,13 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             _buildLoadingItem(),
-            const SizedBox(height: 24.0,),
+            const SizedBox(
+              height: 24.0,
+            ),
             _buildLoadingItem(),
-            const SizedBox(height: 24.0,),
+            const SizedBox(
+              height: 24.0,
+            ),
             _buildLoadingItem(),
           ],
         ),
@@ -228,8 +240,8 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
           !isLoggedIn
               ? null
               : () {
-            context.router.push(const ComposeRoute());
-          })
+                  context.router.push(const ComposeRoute());
+                })
     ];
   }
 
@@ -276,6 +288,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
       BuildContext context, FeedController controller) {
     final theme = Theme.of(context);
     final community = controller.community!;
+    final initialController = Provider.of<InitialController>(context);
     return Container(
       height: kNavigationBarHeight,
       color: theme.colorScheme.background,
@@ -286,11 +299,44 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
           ),
           TappableItem(
               onTap: () => _loadPage(controller, true),
-              child: CommunityIcon(image: community.proPic)),
+              child: CommunityIcon(image: community.proPic, size: 40.0)),
           const SizedBox(
-            width: 6.0,
+            width: 12.0,
           ),
-          PlatformOutlinedButton(child: Text(context.l.communityJoin)),
+          if (community.userMod != true)
+            PlatformElevatedButton(
+                color:
+                    initialController.isLoggedIn && community.userJoined != true
+                        ? theme.colorScheme.secondary
+                        : null,
+                onPressed: initialController.isLoggedIn
+                    ? () async {
+                        try {
+                          await initialController
+                              .toggleJoinCommunity(community);
+                          if (mounted) {
+                            if (community.userJoined == true) {
+                              showNotification(
+                                  context,
+                                  context.l
+                                      .communityJoinMessage(community.name));
+                            } else {
+                              showNotification(
+                                  context,
+                                  context.l
+                                      .communityLeaveMessage(community.name));
+                            }
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            showApiErrorMessage(context, e);
+                          }
+                        }
+                      }
+                    : null,
+                child: Text(community.userJoined == true
+                    ? context.l.communityLeave
+                    : context.l.communityJoin)),
           const Spacer(),
           Container(
               height: kNavigationBarHeight,
@@ -307,30 +353,29 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<FeedController>(
-          builder: (context, controller, _) {
-            if (controller.lastError == null &&
-                !controller.isLoading &&
-                controller.posts.isEmpty) {
-              controller.loadPage().ignore();
-            }
-            return PlatformScaffold(
-              appBar: controller.feedType == FeedType.community
-                  ? FlatAppBar()
-                  : null,
-              body: SafeArea(
-                child: Column(
-                  children: [
-                    Expanded(child: _buildBody(context, controller)),
-                    if (controller.feedType == FeedType.community &&
-                        controller.community != null)
-                      _buildCommunityToolbar(context, controller),
-                    if (controller.feedType != FeedType.community)
-                      _buildToolbar(context, controller),
-                  ],
-                ),
-              ),
-            );
-          },
+      builder: (context, controller, _) {
+        if (controller.lastError == null &&
+            !controller.isLoading &&
+            controller.posts.isEmpty) {
+          controller.loadPage().ignore();
+        }
+        return PlatformScaffold(
+          appBar:
+              controller.feedType == FeedType.community ? FlatAppBar() : null,
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(child: _buildBody(context, controller)),
+                if (controller.feedType == FeedType.community &&
+                    controller.community != null)
+                  _buildCommunityToolbar(context, controller),
+                if (controller.feedType != FeedType.community)
+                  _buildToolbar(context, controller),
+              ],
+            ),
+          ),
         );
+      },
+    );
   }
 }

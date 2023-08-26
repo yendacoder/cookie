@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:cookie/api/auth_record.dart';
+import 'package:cookie/api/model/community.dart';
 import 'package:cookie/api/model/initial.dart';
 import 'package:cookie/common/repository/initial_repository.dart';
 import 'package:flutter/cupertino.dart';
@@ -66,6 +67,23 @@ class InitialController with ChangeNotifier implements AuthRecordProvider {
     await initialRepository.login(authRecord, username, password);
     final responseWithCookies = await initialRepository.getInitial(_authRecord);
     initial = responseWithCookies.response;
+    notifyListeners();
+  }
+
+  Future<void> toggleJoinCommunity(Community community) async {
+    if (!isLoggedIn || initial == null) {
+      return;
+    }
+    final authRecord = await getAuthRecord();
+    if (community.userJoined == true) {
+      await initialRepository.joinCommunity(authRecord, community.id, false);
+      community.userJoined = false;
+      initial!.communities.remove(community);
+    } else {
+      await initialRepository.joinCommunity(authRecord, community.id, true);
+      community.userJoined = true;
+      initial!.communities.insert(0, community);
+    }
     notifyListeners();
   }
 
