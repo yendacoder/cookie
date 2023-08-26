@@ -79,28 +79,28 @@ jobs:
         with:
           name: 'apk'
           
-#      - name: Get commits history
-#        id: get_commits
-#        uses: nrwl/nx-set-shas@v3
-#        with:
-#          last-successful-event: release
-#
-#      - name: Prepare changelog
-#        id: generate_changelog
-#        uses: mikepenz/release-changelog-builder-action@v3
-#        with:
-#          fromTag: ${{ steps.get_commits.outputs.base }}
-#          toTag: ${{ steps.get_commits.outputs.head }}
-#          commitMode: 'true'
-#          configuration: 'changelog_config.json'
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get commits history
+        id: get_commits
+        uses: nrwl/nx-set-shas@v3
+        with:
+          last-successful-event: release
+
+      - name: Prepare changelog
+        id: generate_changelog
+        uses: mikepenz/release-changelog-builder-action@v3
+        with:
+          fromTag: ${{ steps.get_commits.outputs.base }}
+          toTag: ${{ steps.get_commits.outputs.head }}
+          commitMode: 'true'
+          configuration: 'changelog_config.json'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                     
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ inputs.VERSION_TAG }}
-#          body: ${{ steps.generate_changelog.outputs.changelog }}
+          body: ${{ steps.generate_changelog.outputs.changelog }}
           files: cookie.apk
           prerelease: true
 

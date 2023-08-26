@@ -40,6 +40,7 @@
       }
     }
   },
+  "profileCommunities": "Communities",
   "profileAbout": "About Cookie",
   "profileOpenSourceLicenses": "Open source licenses",
   "profileVersion": "Version {version}",
