@@ -1,0 +1,88 @@
+{
+  "sortingHot": "hot",
+  "sortingAll": "all",
+  "sortingActivity": "activity",
+  "sortingLatest": "new",
+  "sortingDay": "day",
+  "sortingWeek": "week",
+  "sortingMonth": "month",
+  "sortingYear": "year",
+  "commentOp": "OP",
+  "commentsEmpty": "No comments",
+  "communityJoin": "Join",
+  "profile": "Profile",
+  "authUsernameHint": "Username",
+  "authPasswordHint": "Password",
+  "authLogin": "Login",
+  "authRegister": "Register on the website",
+  "authLogout": "Logout",
+  "profilePoints": "Points: {points}",
+  "@profilePoints": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "profilePosts": "Posts: {posts}",
+  "@profilePosts": {
+    "placeholders": {
+      "posts": {
+        "type": "int"
+      }
+    }
+  },
+  "profileComments": "Comments: {comments}",
+  "@profileComments": {
+    "placeholders": {
+      "comments": {
+        "type": "int"
+      }
+    }
+  },
+  "profileAbout": "About Cookie",
+  "profileOpenSourceLicenses": "Open source licenses",
+  "profileVersion": "Version {version}",
+  "@profileVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "elapsedDays": "{days,plural,=1{1 day ago} other{{days} days ago}}",
+  "@elapsedDays": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "elapsedHours": "{hours,plural,=1{1 hour ago} other{{hours} hours ago}}",
+  "@elapsedHours": {
+    "placeholders": {
+      "hours": {}
+    }
+  },
+  "elapsedMinutes": "{minutes,plural,=1{1 minute ago} other{{minutes} minutes ago}}",
+  "@elapsedMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "elapsedDaysShort": "d",
+  "elapsedHoursShort": "h",
+  "elapsedMinutesShort": "m",
+  "errorContentTitle": "Error happened :(",
+  "errorRetry": "Retry",
+  "apiError": "Server responded: {code}",
+  "@apiError": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "parseError": "Cannot recognize server response",
+  "serverError": "Error on the server",
+  "networkError": "Network error",
+  "unknownError": "Unknown error"
+}

@@ -1,0 +1,33 @@
+{
+  "categories": [
+    {
+      "title": "## 🚀 Features",
+      "labels": ["feature"]
+    },
+    {
+      "title": "## 🐛 Fixes",
+      "labels": ["fix"]
+    },
+    {
+      "title": "## 📱 UI",
+      "labels": ["ui"]
+    },
+    {
+      "title": "## 🔨 Misc changes",
+      "labels": ["misc"]
+    }    
+  ],
+  "label_extractor": [
+    {
+      "pattern": "\\[(.*)\\].*",
+      "target": "$1"
+    }
+  ],
+  "transformers": [
+    {
+      "pattern": "\\[.*\\] (.*)",
+      "target": "$1"
+    }
+  ],
+  "pr_template": "• ${{TITLE}}"
+}       

@@ -1,0 +1,19 @@
+name: Build and release
+on:
+  push: 
+    tags:
+      - v*
+
+jobs:
+  release-android:
+    permissions:
+      contents: write
+
+    uses: ./.github/workflows/release-android.yaml
+    with:
+      FLUTTER_VERSION: 3.10.6
+      VERSION_TAG: ${{ github.ref_name }}
+    secrets:
+      ANDROID_KEY_PROPERTIES: ${{ secrets.ANDROID_KEY_PROPERTIES }}
+      ANDROID_KEY: ${{ secrets.ANDROID_KEY }}
+
