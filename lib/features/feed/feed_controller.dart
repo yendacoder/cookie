@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _kContentSortingPrefs = 'content_sorting_';
+const _kDefaultFeedTypePrefs = 'default_feed_type';
 
 class FeedController with ChangeNotifier {
   FeedController(this._postRepository, this._feedType, this._communityId);
@@ -41,7 +42,9 @@ class FeedController with ChangeNotifier {
   /// outside of the actual data size, progress cell should be displayed
   int get displayItemsCount {
     int count = _posts.length;
-    if (_posts.isNotEmpty && !_allPagesLoaded && (isLoading || lastError == null)) {
+    if (_posts.isNotEmpty &&
+        !_allPagesLoaded &&
+        (isLoading || lastError == null)) {
       count += 1;
     }
     return count;
@@ -66,9 +69,23 @@ class FeedController with ChangeNotifier {
 
   Future<void> _loadContentSorting() async {
     final prefs = await SharedPreferences.getInstance();
-    _contentSorting =
-        prefs.getString(_kContentSortingPrefs + feedType.name)?.toEnumOrNull(
-            ContentSorting.values) ?? ContentSorting.hot;
+    _contentSorting = prefs
+            .getString(_kContentSortingPrefs + feedType.name)
+            ?.toEnumOrNull(ContentSorting.values) ??
+        ContentSorting.hot;
+  }
+
+  void _saveFeedType() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kDefaultFeedTypePrefs, feedType.name);
+  }
+
+  Future<void> _loadFeedType() async {
+    final prefs = await SharedPreferences.getInstance();
+    _feedType = prefs
+            .getString(_kDefaultFeedTypePrefs)
+            ?.toEnumOrNull(FeedType.values) ??
+        FeedType.all;
   }
 
   set contentSorting(ContentSorting sorting) {
@@ -82,6 +99,7 @@ class FeedController with ChangeNotifier {
 
   set feedType(FeedType feedType) {
     _feedType = feedType;
+    _saveFeedType();
     _contentSorting = null;
     reset();
     _isLoading = true;
@@ -99,12 +117,17 @@ class FeedController with ChangeNotifier {
     }
     _isLoading = true;
     _lastError = null;
-    if (_contentSorting == null) {
-      await _loadContentSorting();
+    if (_posts.isEmpty) {
+      if (_contentSorting == null) {
+        await _loadContentSorting();
+      }
+      if (_feedType == null) {
+        await _loadFeedType();
+      }
+      notifyListeners();
     }
     try {
-      if (feedType == FeedType.community &&
-          _community == null) {
+      if (feedType == FeedType.community && _community == null) {
         _community = await _postRepository.getCommunity(_communityId!);
       }
       bool added = false;
@@ -150,7 +173,8 @@ class FeedController with ChangeNotifier {
     if (post == null) {
       return;
     }
-    final updatingPost = _posts.firstWhereOrNull((element) => element.id == post.id);
+    final updatingPost =
+        _posts.firstWhereOrNull((element) => element.id == post.id);
     if (updatingPost != null) {
       updatingPost.userVoted = post.userVoted;
       updatingPost.userVotedUp = post.userVotedUp;
@@ -165,7 +189,8 @@ class FeedController with ChangeNotifier {
     if (post == null) {
       return;
     }
-    final updatingPost = _posts.firstWhereOrNull((element) => element.id == post.id);
+    final updatingPost =
+        _posts.firstWhereOrNull((element) => element.id == post.id);
     if (updatingPost != null) {
       updatingPost.noComments = post.noComments;
       notifyListeners();
