@@ -34,6 +34,18 @@
   "commentDeleteConfirm": "Delete comment?",
   "commentDeleteConfirmOk": "Delete",
   "commentDeleteConfirmCancel": "Cancel",
+  "composeCommunity": "In {community}",
+  "@composeCommunity": {
+    "placeholders": {
+      "community": {
+        "type": "String"
+      }
+    }
+  },
+  "composeTitleHint": "Title",
+  "composeBodyHint": "Text or link (optional)",
+  "composePostButton": "Post",
+  "composeMarkdownCheatsheet": "Markdown cheatsheet:\\nHeading: # heading\\nBold: **bold**\\nItalic: *italic*\\nLink: [link](https://example.com)\\nQuote: > quote\\nCode: `code`",
   "profile": "Profile",
   "authUsernameHint": "Username",
   "authPasswordHint": "Password",

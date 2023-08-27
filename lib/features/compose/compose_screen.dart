@@ -4,6 +4,7 @@ import 'package:cookie/common/controller/initial_controller.dart';
 import 'package:cookie/common/ui/notifications.dart';
 import 'package:cookie/common/ui/widgets/common/flat_appbar.dart';
 import 'package:cookie/common/ui/widgets/community_icon.dart';
+import 'package:cookie/common/util/context_util.dart';
 import 'package:cookie/router/router.gr.dart';
 import 'package:cookie/settings/consts.dart';
 import 'package:flutter/material.dart';
@@ -76,21 +77,21 @@ class _ComposeScreenState extends State<ComposeScreen> {
                         width: 6.0,
                       ),
                     ],
-                    Text('In ${widget.community?.name ?? kDefaultCommunityName}'),
+                    Text(context.l.composeCommunity(widget.community?.name ?? kDefaultCommunityName)),
                   ],
                 ),
                 const SizedBox(
                   height: kSecondaryPadding,
                 ),
                 PlatformTextField(
-                  hintText: 'Title',
+                  hintText: context.l.composeTitleHint,
                   controller: _titleController,
                 ),
                 const SizedBox(
                   height: kSecondaryPadding,
                 ),
                 PlatformTextField(
-                  hintText: 'Text or link (optional)',
+                  hintText: context.l.composeBodyHint,
                   controller: _bodyController,
                   minLines: 10,
                   maxLines: 10000,
@@ -105,13 +106,13 @@ class _ComposeScreenState extends State<ComposeScreen> {
                 else
                   PlatformElevatedButton(
                     onPressed: () => _post(context),
-                    child: Text('Post'),
+                    child: Text(context.l.composePostButton),
                   ),
                 const SizedBox(
                   height: kSecondaryPadding,
                 ),
                 Text(
-                  'Markdown cheatsheet:\nHeading: # heading\nBold: **bold**\nItalic: *italic*\nLink: [link](https://example.com)\nQuote: > quote\nCode: `code`',
+                  context.l.composeMarkdownCheatsheet,
                   style: theme.textTheme.bodyMedium!.copyWith(height: 2.0),
                 )
               ],
