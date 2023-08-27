@@ -240,7 +240,8 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
           !isLoggedIn
               ? null
               : () {
-                  context.router.push(ComposeRoute(community: controller.community));
+                  context.router
+                      .push(ComposeRoute(community: controller.community));
                 })
     ];
   }
@@ -352,30 +353,32 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FeedController>(
-      builder: (context, controller, _) {
-        if (controller.lastError == null &&
-            !controller.isLoading &&
-            controller.posts.isEmpty) {
-          controller.loadPage().ignore();
-        }
-        return PlatformScaffold(
-          appBar:
-              controller.feedType == FeedType.community ? FlatAppBar() : null,
-          body: SafeArea(
-            child: Column(
-              children: [
-                Expanded(child: _buildBody(context, controller)),
-                if (controller.feedType == FeedType.community &&
-                    controller.community != null)
-                  _buildCommunityToolbar(context, controller),
-                if (controller.feedType != FeedType.community)
-                  _buildToolbar(context, controller),
-              ],
+    return Consumer<InitialController>(builder: (context, _, __) {
+      return Consumer<FeedController>(
+        builder: (context, controller, _) {
+          if (controller.lastError == null &&
+              !controller.isLoading &&
+              controller.posts.isEmpty) {
+            controller.loadPage().ignore();
+          }
+          return PlatformScaffold(
+            appBar:
+                controller.feedType == FeedType.community ? FlatAppBar() : null,
+            body: SafeArea(
+              child: Column(
+                children: [
+                  Expanded(child: _buildBody(context, controller)),
+                  if (controller.feedType == FeedType.community &&
+                      controller.community != null)
+                    _buildCommunityToolbar(context, controller),
+                  if (controller.feedType != FeedType.community)
+                    _buildToolbar(context, controller),
+                ],
+              ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    });
   }
 }

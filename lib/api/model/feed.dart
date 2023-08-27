@@ -7,7 +7,7 @@ part 'feed.g.dart';
 class Feed {
   const Feed(this.posts, this.next);
 
-  final List<Post> posts;
+  final List<Post>? posts;
   final String? next;
 
   factory Feed.fromJson(Map<String, dynamic> json) => _$FeedFromJson(json);

@@ -7,8 +7,8 @@ part of 'feed.dart';
 // **************************************************************************
 
 Feed _$FeedFromJson(Map<String, dynamic> json) => Feed(
-      (json['posts'] as List<dynamic>)
-          .map((e) => Post.fromJson(e as Map<String, dynamic>))
+      (json['posts'] as List<dynamic>?)
+          ?.map((e) => Post.fromJson(e as Map<String, dynamic>))
           .toList(),
       json['next'] as String?,
     );

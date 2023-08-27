@@ -136,10 +136,12 @@ class FeedController with ChangeNotifier {
             communityId: _communityId, next: _next);
         _next = feed.next;
         _allPagesLoaded = _next == null;
-        for (final post in feed.posts) {
-          if (!_posts.any((p) => p.id == post.id)) {
-            _posts.add(post);
-            added = true;
+        if (feed.posts != null) {
+          for (final post in feed.posts!) {
+            if (!_posts.any((p) => p.id == post.id)) {
+              _posts.add(post);
+              added = true;
+            }
           }
         }
       }

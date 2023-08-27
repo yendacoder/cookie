@@ -45,7 +45,7 @@
   "composeTitleHint": "Title",
   "composeBodyHint": "Text or link (optional)",
   "composePostButton": "Post",
-  "composeMarkdownCheatsheet": "Markdown cheatsheet:\\nHeading: # heading\\nBold: **bold**\\nItalic: *italic*\\nLink: [link](https://example.com)\\nQuote: > quote\\nCode: `code`",
+  "composeMarkdownCheatsheet": "Markdown cheatsheet:\nHeading: # heading\nBold: **bold**\nItalic: *italic*\nLink: [link](https://example.com)\nQuote: > quote\nCode: `code`",
   "profile": "Profile",
   "authUsernameHint": "Username",
   "authPasswordHint": "Password",
