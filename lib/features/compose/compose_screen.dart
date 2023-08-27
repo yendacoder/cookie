@@ -79,14 +79,14 @@ class _ComposeScreenState extends State<ComposeScreen> {
                     Text('In ${widget.community?.name ?? kDefaultCommunityName}'),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: kSecondaryPadding,
                 ),
                 PlatformTextField(
                   hintText: 'Title',
                   controller: _titleController,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: kSecondaryPadding,
                 ),
                 PlatformTextField(
