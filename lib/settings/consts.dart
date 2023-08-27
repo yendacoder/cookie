@@ -20,3 +20,5 @@ const double kUserIconSize = 24.0;
 const double kCommunityIconSize = 24.0;
 
 const double kNavigationBarHeight = 56.0;
+
+const String kDefaultCommunityName = 'selfposting';

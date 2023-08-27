@@ -24,6 +24,7 @@ class Themes {
       useMaterial3: true,
       applyElevationOverlayColor: false,
       inputDecorationTheme: InputDecorationTheme(
+        contentPadding: const EdgeInsets.fromLTRB(12.0, 8.0, 40.0, 8.0),
         enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: base.disabledColor),
             borderRadius: BorderRadius.circular(kDefaultCornerRadius)),

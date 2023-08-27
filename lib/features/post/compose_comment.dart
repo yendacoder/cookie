@@ -150,11 +150,6 @@ class _ComposeCommentState extends State<ComposeComment> {
         ),
         Stack(alignment: Alignment.bottomRight, children: [
           PlatformTextField(
-            material: (_, __) => MaterialTextFieldData(
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.fromLTRB(12.0, 8.0, 40.0, 8.0),
-              ),
-            ),
             style: Theme.of(context).textTheme.bodyMedium,
             controller: _textEditingController,
             minLines: 3,

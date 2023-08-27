@@ -9,7 +9,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i8;
-import 'package:cookie/api/model/post.dart' as _i10;
+import 'package:cookie/api/model/community.dart' as _i10;
+import 'package:cookie/api/model/post.dart' as _i11;
 import 'package:cookie/features/compose/compose_screen.dart' as _i1;
 import 'package:cookie/features/feed/feed_content_screen.dart' as _i2;
 import 'package:cookie/features/feed/feed_screen.dart' as _i3;
@@ -25,9 +26,14 @@ abstract class $AppRouter extends _i8.RootStackRouter {
   @override
   final Map<String, _i8.PageFactory> pagesMap = {
     ComposeRoute.name: (routeData) {
+      final args = routeData.argsAs<ComposeRouteArgs>(
+          orElse: () => const ComposeRouteArgs());
       return _i8.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i1.ComposeScreen(),
+        child: _i1.ComposeScreen(
+          key: args.key,
+          community: args.community,
+        ),
       );
     },
     FeedContentRoute.name: (routeData) {
@@ -92,16 +98,40 @@ abstract class $AppRouter extends _i8.RootStackRouter {
 
 /// generated route for
 /// [_i1.ComposeScreen]
-class ComposeRoute extends _i8.PageRouteInfo<void> {
-  const ComposeRoute({List<_i8.PageRouteInfo>? children})
-      : super(
+class ComposeRoute extends _i8.PageRouteInfo<ComposeRouteArgs> {
+  ComposeRoute({
+    _i9.Key? key,
+    _i10.Community? community,
+    List<_i8.PageRouteInfo>? children,
+  }) : super(
           ComposeRoute.name,
+          args: ComposeRouteArgs(
+            key: key,
+            community: community,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'ComposeRoute';
 
-  static const _i8.PageInfo<void> page = _i8.PageInfo<void>(name);
+  static const _i8.PageInfo<ComposeRouteArgs> page =
+      _i8.PageInfo<ComposeRouteArgs>(name);
+}
+
+class ComposeRouteArgs {
+  const ComposeRouteArgs({
+    this.key,
+    this.community,
+  });
+
+  final _i9.Key? key;
+
+  final _i10.Community? community;
+
+  @override
+  String toString() {
+    return 'ComposeRouteArgs{key: $key, community: $community}';
+  }
 }
 
 /// generated route for
@@ -181,7 +211,7 @@ class PostRoute extends _i8.PageRouteInfo<PostRouteArgs> {
   PostRoute({
     _i9.Key? key,
     required String postId,
-    _i10.Post? post,
+    _i11.Post? post,
     List<_i8.PageRouteInfo>? children,
   }) : super(
           PostRoute.name,
@@ -211,7 +241,7 @@ class PostRouteArgs {
 
   final String postId;
 
-  final _i10.Post? post;
+  final _i11.Post? post;
 
   @override
   String toString() {

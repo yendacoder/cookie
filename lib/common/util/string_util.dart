@@ -7,3 +7,11 @@ String formatRating(int upvotes, int downvotes) {
   }
   return rating.toString();
 }
+
+bool isImageUrl(String url) {
+  url = url.toLowerCase();
+  return url.endsWith('.jpg') ||
+      url.endsWith('.jpeg') ||
+      url.endsWith('.png') ||
+      url.endsWith('.webp');
+}

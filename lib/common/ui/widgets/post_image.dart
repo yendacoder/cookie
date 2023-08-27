@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cookie/api/model/link.dart';
 import 'package:cookie/common/ui/widgets/common/icon_text.dart';
 import 'package:cookie/common/ui/widgets/common/tappable_item.dart';
+import 'package:cookie/common/util/string_util.dart';
 import 'package:cookie/router/router.gr.dart';
 import 'package:cookie/settings/app_config.dart';
 import 'package:cookie/settings/consts.dart';
@@ -25,11 +26,7 @@ class PostImage extends StatelessWidget {
   bool get _canTryInline {
     if (link == null) return false;
     try {
-      final path = Uri.parse(link!.url).path.toLowerCase();
-      return path.endsWith('.png') ||
-          path.endsWith('.jpg') ||
-          path.endsWith('.jpeg') ||
-          path.endsWith('.webp');
+      return isImageUrl(Uri.parse(link!.url).path);
     } catch (e) {
       return false;
     }

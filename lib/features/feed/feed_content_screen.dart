@@ -240,7 +240,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
           !isLoggedIn
               ? null
               : () {
-                  context.router.push(const ComposeRoute());
+                  context.router.push(ComposeRoute(community: controller.community));
                 })
     ];
   }
