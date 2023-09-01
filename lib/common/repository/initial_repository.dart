@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:cookie/api/auth_record.dart';
 import 'package:cookie/api/model/initial.dart';
-import 'package:cookie/api/model/post.dart';
 import 'package:cookie/api/model/response_with_cookies.dart';
 import 'package:cookie/common/repository/repository.dart';
-import 'package:cookie/common/util/string_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _kAuthRecordKey = 'auth_record';
@@ -56,33 +54,5 @@ class InitialRepository extends Repository {
           'communityId': communityId,
           'leave': !join,
         });
-  }
-
-  Future<Post> addPost(
-      AuthRecord authRecord, String communityName, String title, String body) {
-    final uri = client.initRequest('posts');
-    late String type;
-    //TODO: type detection can be a little more sophisticated
-    if (body.trim().startsWith('http')) {
-      if (isImageUrl(body)) {
-        type = 'image';
-      } else {
-        type = 'link';
-      }
-    } else {
-      type = 'text';
-    }
-    return performRequestObjectResult(
-      authRecord,
-      () => client.http.postUrl(uri),
-      (json, _) => Post.fromJson(json),
-      body: {
-        'type': type,
-        'title': title,
-        'community': communityName,
-        if (type == 'text') 'body': body,
-        if (type != 'text') 'url': body,
-      },
-    );
   }
 }

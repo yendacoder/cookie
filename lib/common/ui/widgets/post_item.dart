@@ -190,14 +190,14 @@ class _PostItemState extends State<PostItem> {
               widget.post.link?.image != null)
             PostImage(
               link: widget.post.link,
-              aspectRatio: 16.0 / 9.0,
+              aspectRatio: kDefaultImageAspectRatio,
               previewOnTap: true,
             ),
           if (widget.post.postType == PostType.image &&
               widget.post.image != null)
             PostImage(
               image: widget.post.image,
-              aspectRatio: 16.0 / 9.0,
+              aspectRatio: kDefaultImageAspectRatio,
               previewOnTap: true,
             ),
           if (widget.post.postType == PostType.link &&

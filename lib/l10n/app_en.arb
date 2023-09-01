@@ -44,6 +44,8 @@
   },
   "composeTitleHint": "Title",
   "composeBodyHint": "Text or link (optional)",
+  "composeSelectImageButton": "Select image",
+  "composeRemoveImageButton": "Remove image",
   "composePostButton": "Post",
   "composeMarkdownCheatsheet": "Markdown cheatsheet:\nHeading: # heading\nBold: **bold**\nItalic: *italic*\nLink: [link](https://example.com)\nQuote: > quote\nCode: `code`",
   "profile": "Profile",

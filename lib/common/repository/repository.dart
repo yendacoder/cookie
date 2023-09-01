@@ -61,7 +61,11 @@ class Repository {
       client.setHeaders(request, sessionToken: authRecord?.sessionToken,
         csrfToken: authRecord?.csrfToken);
       if (body != null) {
-        request.write(json.encode(body));
+        if (body is List<int>) {
+          request.add(body);
+        } else {
+          request.write(json.encode(body));
+        }
       }
       response = await request.close();
     } catch (error, stackTrace) {

@@ -134,7 +134,8 @@ class PostImage extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(kDefaultCornerRadius),
       child: Container(
-          color: Theme.of(context).colorScheme.surface,
+          color:
+              img?.getAverageColor() ?? Theme.of(context).colorScheme.surface,
           width: double.infinity,
           child: _canTryInline
               ? previewOnTap

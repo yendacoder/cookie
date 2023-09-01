@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:cookie/api/model/community.dart';
 import 'package:cookie/common/controller/initial_controller.dart';
@@ -5,11 +7,17 @@ import 'package:cookie/common/ui/notifications.dart';
 import 'package:cookie/common/ui/widgets/common/flat_appbar.dart';
 import 'package:cookie/common/ui/widgets/community_icon.dart';
 import 'package:cookie/common/util/context_util.dart';
+import 'package:cookie/features/compose/compose_controller.dart';
+import 'package:cookie/features/compose/compose_repository.dart';
 import 'package:cookie/router/router.gr.dart';
+import 'package:cookie/settings/app_config.dart';
 import 'package:cookie/settings/consts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @RoutePage()
 class ComposeScreen extends StatefulWidget {
@@ -21,10 +29,14 @@ class ComposeScreen extends StatefulWidget {
   State<ComposeScreen> createState() => _ComposeScreenState();
 }
 
+const _kCroppingImageName = 'cropping_image';
+
 class _ComposeScreenState extends State<ComposeScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
   bool _isSaving = false;
+  bool _isUploadingImage = false;
 
   @override
   void dispose() {
@@ -33,7 +45,83 @@ class _ComposeScreenState extends State<ComposeScreen> {
     super.dispose();
   }
 
-  Future<void> _post(BuildContext context) async {
+  void _saveImage(ComposeController controller, CroppedFile croppedFile) async {
+    if (!mounted) {
+      return;
+    }
+    try {
+      setState(() {
+        _isUploadingImage = true;
+      });
+      final prefs = await SharedPreferences.getInstance();
+      await controller.uploadImage(
+          croppedFile, prefs.getString(_kCroppingImageName) ?? '');
+    } catch (e) {
+      showApiErrorMessage(context, e);
+    } finally {
+      setState(() {
+        _isUploadingImage = false;
+      });
+    }
+  }
+
+  void _cropImage(ComposeController controller, XFile image) async {
+    // we are saving the image file name in shared prefs because
+    // on Android the activity can be killed and the name saved in
+    // state won't be preserved
+    final theme = Theme.of(context);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(_kCroppingImageName, image.name);
+    final cropper = ImageCropper();
+    final croppedFile =
+        await cropper.cropImage(sourcePath: image.path, uiSettings: [
+      AndroidUiSettings(
+          toolbarColor: theme.colorScheme.surface,
+          toolbarWidgetColor: theme.colorScheme.onSurface,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false),
+      IOSUiSettings(
+        resetAspectRatioEnabled: true,
+      ),
+    ]);
+    await cropper.recoverImage();
+    if (mounted && croppedFile != null) {
+      _saveImage(controller, croppedFile);
+    }
+  }
+
+  void _pickImage(ComposeController controller, ImageSource source) async {
+    final image = await _picker.pickImage(source: source);
+    if (Platform.isAndroid) {
+      // reset lost data, won't need it at this point
+      await _picker.retrieveLostData();
+    }
+    if (image != null && mounted) {
+      _cropImage(controller, image);
+    }
+  }
+
+  void _getLostData(ComposeController controller) async {
+    try {
+      if (Platform.isAndroid) {
+        final LostDataResponse response = await _picker.retrieveLostData();
+        if (!response.isEmpty && response.files?.isNotEmpty == true) {
+          if (mounted) {
+            _cropImage(controller, response.files![0]);
+          }
+        } else {
+          final recoveredCroppedImage = await ImageCropper().recoverImage();
+          if (recoveredCroppedImage != null) {
+            _saveImage(controller, recoveredCroppedImage);
+          }
+        }
+      }
+    } catch (e) {
+      // this happens sometimes, library issue
+    }
+  }
+
+  Future<void> _post(BuildContext context, ComposeController controller) async {
     if (_titleController.text.isEmpty) {
       return;
     }
@@ -41,11 +129,8 @@ class _ComposeScreenState extends State<ComposeScreen> {
       setState(() {
         _isSaving = true;
       });
-      final controller = Provider.of<InitialController>(context, listen: false);
-      final post = await controller.addPost(
-          widget.community?.name ?? kDefaultCommunityName,
-          _titleController.text,
-          _bodyController.text);
+      final post =
+          await controller.addPost(_titleController.text, _bodyController.text);
       if (mounted && post != null) {
         context.router.replace(PostRoute(postId: post.publicId, post: post));
       }
@@ -58,66 +143,112 @@ class _ComposeScreenState extends State<ComposeScreen> {
     }
   }
 
+  Widget _buildImage(BuildContext context, ComposeController controller) {
+    if (controller.uploadedImage != null) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: kSecondaryPadding),
+        child: AspectRatio(
+          aspectRatio: controller.uploadedImage!.width.toDouble() /
+              controller.uploadedImage!.height,
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(kDefaultCornerRadius),
+              child: Image.network(AppConfigProvider.of(context)
+                  .getFullImageUrl(controller.uploadedImage!.url))),
+        ),
+      );
+    }
+    return AspectRatio(
+      aspectRatio: kDefaultImageAspectRatio,
+      child: Center(
+        child: PlatformCircularProgressIndicator(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return PlatformScaffold(
-        appBar: FlatAppBar(),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(kPrimaryPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    if (widget.community != null) ...[
-                      CommunityIcon(image: widget.community?.proPic),
-                      const SizedBox(
-                        width: 6.0,
-                      ),
+    return ChangeNotifierProvider(create: (_) {
+      final controller = ComposeController(
+          ComposeRepository(Provider.of<InitialController>(context)),
+          widget.community);
+      _getLostData(controller);
+      return controller;
+    }, child: Consumer<ComposeController>(builder: (context, controller, _) {
+      return PlatformScaffold(
+          appBar: FlatAppBar(),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(kPrimaryPadding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      if (controller.community != null) ...[
+                        CommunityIcon(image: controller.community?.proPic),
+                        const SizedBox(
+                          width: 6.0,
+                        ),
+                      ],
+                      Text(context.l.composeCommunity(
+                          controller.community?.name ?? kDefaultCommunityName)),
                     ],
-                    Text(context.l.composeCommunity(widget.community?.name ?? kDefaultCommunityName)),
-                  ],
-                ),
-                const SizedBox(
-                  height: kSecondaryPadding,
-                ),
-                PlatformTextField(
-                  hintText: context.l.composeTitleHint,
-                  controller: _titleController,
-                ),
-                const SizedBox(
-                  height: kSecondaryPadding,
-                ),
-                PlatformTextField(
-                  hintText: context.l.composeBodyHint,
-                  controller: _bodyController,
-                  minLines: 10,
-                  maxLines: 10000,
-                ),
-                const SizedBox(
-                  height: kSecondaryPadding,
-                ),
-                if (_isSaving)
-                  Center(
-                    child: PlatformCircularProgressIndicator(),
-                  )
-                else
-                  PlatformElevatedButton(
-                    onPressed: () => _post(context),
-                    child: Text(context.l.composePostButton),
                   ),
-                const SizedBox(
-                  height: kSecondaryPadding,
-                ),
-                Text(
-                  context.l.composeMarkdownCheatsheet,
-                  style: theme.textTheme.bodyMedium!.copyWith(height: 2.0),
-                )
-              ],
+                  const SizedBox(
+                    height: kSecondaryPadding,
+                  ),
+                  PlatformTextField(
+                    hintText: context.l.composeTitleHint,
+                    controller: _titleController,
+                  ),
+                  const SizedBox(
+                    height: kSecondaryPadding,
+                  ),
+                  if (_isUploadingImage ||
+                      controller.uploadedImage != null) ...[
+                    _buildImage(context, controller),
+                    PlatformElevatedButton(
+                      onPressed: () =>
+                          _pickImage(controller, ImageSource.gallery),
+                      child: Text(context.l.composeRemoveImageButton),
+                    ),
+                  ] else ...[
+                    PlatformTextField(
+                      hintText: context.l.composeBodyHint,
+                      controller: _bodyController,
+                      minLines: 10,
+                      maxLines: 10000,
+                    ),
+                    const SizedBox(
+                      height: kSecondaryPadding,
+                    ),
+                    PlatformElevatedButton(
+                      onPressed: () =>
+                          _pickImage(controller, ImageSource.gallery),
+                      child: Text(context.l.composeSelectImageButton),
+                    ),
+                  ],
+                  if (_isSaving)
+                    Center(
+                      child: PlatformCircularProgressIndicator(),
+                    )
+                  else
+                    PlatformElevatedButton(
+                      onPressed: () => _post(context, controller),
+                      child: Text(context.l.composePostButton),
+                    ),
+                  const SizedBox(
+                    height: kSecondaryPadding,
+                  ),
+                  Text(
+                    context.l.composeMarkdownCheatsheet,
+                    style: theme.textTheme.bodyMedium!.copyWith(height: 2.0),
+                  )
+                ],
+              ),
             ),
-          ),
-        ));
+          ));
+    }));
   }
 }
