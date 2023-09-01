@@ -12,12 +12,10 @@ Link _$LinkFromJson(Map<String, dynamic> json) => Link(
       json['image'] == null
           ? null
           : Image.fromJson(json['image'] as Map<String, dynamic>),
-    )..calculatedLinkImageRatio =
-        (json['calculatedLinkImageRatio'] as num?)?.toDouble();
+    );
 
 Map<String, dynamic> _$LinkToJson(Link instance) => <String, dynamic>{
       'url': instance.url,
       'hostname': instance.hostname,
       'image': instance.image,
-      'calculatedLinkImageRatio': instance.calculatedLinkImageRatio,
     };

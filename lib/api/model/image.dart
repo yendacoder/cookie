@@ -23,5 +23,8 @@ class Image {
   final String url;
   final List<ImageCopy> copies;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  double? calculatedLinkImageRatio;
+
   factory Image.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);
 }

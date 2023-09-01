@@ -15,7 +15,5 @@ class Link {
   final String? hostname;
   final Image? image;
 
-  double? calculatedLinkImageRatio;
-
   factory Link.fromJson(Map<String, dynamic> json) => _$LinkFromJson(json);
 }

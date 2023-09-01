@@ -53,8 +53,10 @@ class _PostItemState extends State<PostItem> {
     try {
       _isVotingUp.value = up;
       if (widget.isDetailScreen) {
-        final postController = Provider.of<PostController>(context, listen: false);
-        final feedController = Provider.of<FeedController>(context, listen: false);
+        final postController =
+            Provider.of<PostController>(context, listen: false);
+        final feedController =
+            Provider.of<FeedController>(context, listen: false);
         await postController.vote(up);
         feedController.updateVoted(postController.post);
       } else {
@@ -159,8 +161,10 @@ class _PostItemState extends State<PostItem> {
             ),
             if (widget.post.body != null) MarkdownText(widget.post.body!),
             if (widget.post.postType == PostType.link &&
-                widget.post.link?.image != null)
+                    widget.post.link?.image != null)
               PostImage(link: widget.post.link),
+            if (widget.post.postType == PostType.image && widget.post.image != null)
+              PostImage(image: widget.post.image),
             if (widget.post.postType == PostType.link &&
                 widget.post.link != null &&
                 widget.post.link?.image == null)

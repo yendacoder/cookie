@@ -15,3 +15,7 @@ bool isImageUrl(String url) {
       url.endsWith('.png') ||
       url.endsWith('.webp');
 }
+
+bool isAbsoluteUrl(String url) {
+  return url.startsWith('http://') || url.startsWith('https://');
+}

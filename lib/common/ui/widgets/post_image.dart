@@ -24,6 +24,7 @@ class PostImage extends StatelessWidget {
   final Link? link;
 
   bool get _canTryInline {
+    if (image != null) return true;
     if (link == null) return false;
     try {
       return isImageUrl(Uri.parse(link!.url).path);
@@ -32,10 +33,10 @@ class PostImage extends StatelessWidget {
     }
   }
 
-  Widget _buildHostedImage(BuildContext context, api_img.Image img) {
+  /// External images, like fetched from og tags
+  Widget _buildLinkImage(BuildContext context) {
     final videoId = YoutubePlayer.convertUrlToId(link!.url);
-    final image = _initSizedImage(
-        context, AppConfigProvider.of(context).getFullImageUrl(img.url), false);
+    final image = _initSizedImage(context, link!.image!, false);
 
     return TappableItem(
       onTap: () {
@@ -68,30 +69,36 @@ class PostImage extends StatelessWidget {
     );
   }
 
-  void _cacheImageRatio(Completer<double> completer) async {
+  void _cacheImageRatio(
+      api_img.Image image, Completer<double> completer) async {
     final ratio = await completer.future;
-    link?.calculatedLinkImageRatio = ratio;
+    image.calculatedLinkImageRatio = ratio;
   }
 
+  /// Method for displaying full hosted images.
   /// Image dimensions provided by API are incorrect
   /// We will cache the proportions of the actual image received
   /// so that when scrolling up, the list doesn't flicker
-  Widget _initSizedImage(BuildContext context, String url, bool withFallback) {
+  Widget _initSizedImage(
+      BuildContext context, api_img.Image image, bool tryFallback) {
+    final url = isAbsoluteUrl(image.url)
+        ? image.url
+        : AppConfigProvider.of(context).getFullImageUrl(image.url);
     Image imageWidget = Image(
       fit: BoxFit.contain,
       image: CachedNetworkImageProvider(url),
       errorBuilder: (_, url, ___) {
         log('Failed to load image from $url');
-        if (withFallback) {
-          return _buildHostedImage(context, link!.image!);
+        if (tryFallback && link != null) {
+          return _buildLinkImage(context);
         } else {
           return const SizedBox.shrink();
         }
       },
     );
-    if (link!.calculatedLinkImageRatio != null) {
+    if (image.calculatedLinkImageRatio != null) {
       return AspectRatio(
-        aspectRatio: link!.calculatedLinkImageRatio!,
+        aspectRatio: image.calculatedLinkImageRatio!,
         child: imageWidget,
       );
     }
@@ -99,12 +106,12 @@ class PostImage extends StatelessWidget {
     imageWidget.image.resolve(const ImageConfiguration()).addListener(
       ImageStreamListener(
         (ImageInfo image, bool synchronousCall) {
-          var myImage = image.image;
-          completer.complete(myImage.width.toDouble() / myImage.height);
+          var actualImage = image.image;
+          completer.complete(actualImage.width.toDouble() / actualImage.height);
         },
       ),
     );
-    _cacheImageRatio(completer);
+    _cacheImageRatio(image, completer);
     return imageWidget;
   }
 
@@ -116,8 +123,8 @@ class PostImage extends StatelessWidget {
       child: SizedBox(
           width: double.infinity,
           child: _canTryInline
-              ? _initSizedImage(context, link!.url, true)
-              : _buildHostedImage(context, img!)),
+              ? _initSizedImage(context, img!, true)
+              : _buildLinkImage(context)),
     );
   }
 }
