@@ -87,6 +87,12 @@
       }
     }
   },
+  "settingsTitle": "Settings",
+  "settingsFeedViewType": "Feed view",
+  "settingsFeedViewTypeFull": "Full",
+  "settingsFeedViewTypeRegular": "Regular",
+  "settingsFeedViewTypeCompact": "Compact",
+  "settingsFeedViewTypeMicro": "Title only",
   "elapsedDays": "{days,plural,=1{1 day ago} other{{days} days ago}}",
   "@elapsedDays": {
     "placeholders": {

@@ -196,6 +196,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           context.l.profile,
         ),
         trailingActions: [
+          PlatformIconButton(
+              icon: const Icon(Icons.tune),
+              onPressed: () => context.router.push(const SettingsRoute())),
           if (initialController.isLoggedIn)
             PlatformIconButton(
                 icon: const Icon(Icons.logout),

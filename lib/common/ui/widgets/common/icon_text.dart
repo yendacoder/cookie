@@ -9,6 +9,7 @@ class IconText extends StatelessWidget {
     this.iconColor,
     this.iconSize = 16.0,
     this.iconPadding = 8.0,
+    this.isInverted = false,
   });
 
   final String? text;
@@ -17,6 +18,7 @@ class IconText extends StatelessWidget {
   final double iconPadding;
   final Color? iconColor;
   final TextStyle? style;
+  final bool isInverted;
 
   Widget _buildText(BuildContext context) {
     return Text(
@@ -51,9 +53,9 @@ class IconText extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildIcon(context),
+        if (isInverted) _buildText(context) else _buildIcon(context),
         SizedBox(width: iconPadding),
-        _buildText(context),
+        if (isInverted) _buildIcon(context) else _buildText(context),
       ],
     );
   }

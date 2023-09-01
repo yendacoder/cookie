@@ -8,27 +8,29 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i8;
-import 'package:cookie/api/model/community.dart' as _i10;
-import 'package:cookie/api/model/post.dart' as _i11;
+import 'package:auto_route/auto_route.dart' as _i10;
+import 'package:cookie/api/model/community.dart' as _i12;
+import 'package:cookie/api/model/post.dart' as _i13;
 import 'package:cookie/features/compose/compose_screen.dart' as _i1;
 import 'package:cookie/features/feed/feed_content_screen.dart' as _i2;
 import 'package:cookie/features/feed/feed_screen.dart' as _i3;
-import 'package:cookie/features/post/post_screen.dart' as _i5;
-import 'package:cookie/features/profile/profile_screen.dart' as _i6;
-import 'package:cookie/features/youtube/youtube_screen.dart' as _i7;
+import 'package:cookie/features/image_preview/image_preview_screen.dart' as _i5;
+import 'package:cookie/features/post/post_screen.dart' as _i6;
+import 'package:cookie/features/profile/profile_screen.dart' as _i7;
+import 'package:cookie/features/settings/settings_screen.dart' as _i8;
+import 'package:cookie/features/youtube/youtube_screen.dart' as _i9;
 import 'package:cookie/router/router.dart' as _i4;
-import 'package:flutter/material.dart' as _i9;
+import 'package:flutter/material.dart' as _i11;
 
-abstract class $AppRouter extends _i8.RootStackRouter {
+abstract class $AppRouter extends _i10.RootStackRouter {
   $AppRouter({super.navigatorKey});
 
   @override
-  final Map<String, _i8.PageFactory> pagesMap = {
+  final Map<String, _i10.PageFactory> pagesMap = {
     ComposeRoute.name: (routeData) {
       final args = routeData.argsAs<ComposeRouteArgs>(
           orElse: () => const ComposeRouteArgs());
-      return _i8.AutoRoutePage<dynamic>(
+      return _i10.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i1.ComposeScreen(
           key: args.key,
@@ -37,7 +39,7 @@ abstract class $AppRouter extends _i8.RootStackRouter {
       );
     },
     FeedContentRoute.name: (routeData) {
-      return _i8.AutoRoutePage<dynamic>(
+      return _i10.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i2.FeedContentScreen(),
       );
@@ -45,7 +47,7 @@ abstract class $AppRouter extends _i8.RootStackRouter {
     FeedRoute.name: (routeData) {
       final args =
           routeData.argsAs<FeedRouteArgs>(orElse: () => const FeedRouteArgs());
-      return _i8.AutoRoutePage<dynamic>(
+      return _i10.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: _i3.FeedScreen(
           key: args.key,
@@ -55,18 +57,28 @@ abstract class $AppRouter extends _i8.RootStackRouter {
       );
     },
     HomeRoute.name: (routeData) {
-      return _i8.AutoRoutePage<dynamic>(
+      return _i10.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i4.HomeScreen(),
+      );
+    },
+    ImagePreviewRoute.name: (routeData) {
+      final args = routeData.argsAs<ImagePreviewRouteArgs>();
+      return _i10.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: _i5.ImagePreviewScreen(
+          key: args.key,
+          url: args.url,
+        ),
       );
     },
     PostRoute.name: (routeData) {
       final pathParams = routeData.inheritedPathParams;
       final args = routeData.argsAs<PostRouteArgs>(
           orElse: () => PostRouteArgs(postId: pathParams.getString('postId')));
-      return _i8.AutoRoutePage<dynamic>(
+      return _i10.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i5.PostScreen(
+        child: _i6.PostScreen(
           key: args.key,
           postId: args.postId,
           post: args.post,
@@ -74,9 +86,15 @@ abstract class $AppRouter extends _i8.RootStackRouter {
       );
     },
     ProfileRoute.name: (routeData) {
-      return _i8.AutoRoutePage<dynamic>(
+      return _i10.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i6.ProfileScreen(),
+        child: const _i7.ProfileScreen(),
+      );
+    },
+    SettingsRoute.name: (routeData) {
+      return _i10.AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const _i8.SettingsScreen(),
       );
     },
     YoutubeRoute.name: (routeData) {
@@ -84,9 +102,9 @@ abstract class $AppRouter extends _i8.RootStackRouter {
       final args = routeData.argsAs<YoutubeRouteArgs>(
           orElse: () =>
               YoutubeRouteArgs(videoId: pathParams.getString('videoId')));
-      return _i8.AutoRoutePage<dynamic>(
+      return _i10.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i7.YoutubeScreen(
+        child: _i9.YoutubeScreen(
           key: args.key,
           videoId: args.videoId,
           url: args.url,
@@ -98,11 +116,11 @@ abstract class $AppRouter extends _i8.RootStackRouter {
 
 /// generated route for
 /// [_i1.ComposeScreen]
-class ComposeRoute extends _i8.PageRouteInfo<ComposeRouteArgs> {
+class ComposeRoute extends _i10.PageRouteInfo<ComposeRouteArgs> {
   ComposeRoute({
-    _i9.Key? key,
-    _i10.Community? community,
-    List<_i8.PageRouteInfo>? children,
+    _i11.Key? key,
+    _i12.Community? community,
+    List<_i10.PageRouteInfo>? children,
   }) : super(
           ComposeRoute.name,
           args: ComposeRouteArgs(
@@ -114,8 +132,8 @@ class ComposeRoute extends _i8.PageRouteInfo<ComposeRouteArgs> {
 
   static const String name = 'ComposeRoute';
 
-  static const _i8.PageInfo<ComposeRouteArgs> page =
-      _i8.PageInfo<ComposeRouteArgs>(name);
+  static const _i10.PageInfo<ComposeRouteArgs> page =
+      _i10.PageInfo<ComposeRouteArgs>(name);
 }
 
 class ComposeRouteArgs {
@@ -124,9 +142,9 @@ class ComposeRouteArgs {
     this.community,
   });
 
-  final _i9.Key? key;
+  final _i11.Key? key;
 
-  final _i10.Community? community;
+  final _i12.Community? community;
 
   @override
   String toString() {
@@ -136,8 +154,8 @@ class ComposeRouteArgs {
 
 /// generated route for
 /// [_i2.FeedContentScreen]
-class FeedContentRoute extends _i8.PageRouteInfo<void> {
-  const FeedContentRoute({List<_i8.PageRouteInfo>? children})
+class FeedContentRoute extends _i10.PageRouteInfo<void> {
+  const FeedContentRoute({List<_i10.PageRouteInfo>? children})
       : super(
           FeedContentRoute.name,
           initialChildren: children,
@@ -145,17 +163,17 @@ class FeedContentRoute extends _i8.PageRouteInfo<void> {
 
   static const String name = 'FeedContentRoute';
 
-  static const _i8.PageInfo<void> page = _i8.PageInfo<void>(name);
+  static const _i10.PageInfo<void> page = _i10.PageInfo<void>(name);
 }
 
 /// generated route for
 /// [_i3.FeedScreen]
-class FeedRoute extends _i8.PageRouteInfo<FeedRouteArgs> {
+class FeedRoute extends _i10.PageRouteInfo<FeedRouteArgs> {
   FeedRoute({
-    _i9.Key? key,
+    _i11.Key? key,
     String? feedType,
     String? communityId,
-    List<_i8.PageRouteInfo>? children,
+    List<_i10.PageRouteInfo>? children,
   }) : super(
           FeedRoute.name,
           args: FeedRouteArgs(
@@ -168,8 +186,8 @@ class FeedRoute extends _i8.PageRouteInfo<FeedRouteArgs> {
 
   static const String name = 'FeedRoute';
 
-  static const _i8.PageInfo<FeedRouteArgs> page =
-      _i8.PageInfo<FeedRouteArgs>(name);
+  static const _i10.PageInfo<FeedRouteArgs> page =
+      _i10.PageInfo<FeedRouteArgs>(name);
 }
 
 class FeedRouteArgs {
@@ -179,7 +197,7 @@ class FeedRouteArgs {
     this.communityId,
   });
 
-  final _i9.Key? key;
+  final _i11.Key? key;
 
   final String? feedType;
 
@@ -193,8 +211,8 @@ class FeedRouteArgs {
 
 /// generated route for
 /// [_i4.HomeScreen]
-class HomeRoute extends _i8.PageRouteInfo<void> {
-  const HomeRoute({List<_i8.PageRouteInfo>? children})
+class HomeRoute extends _i10.PageRouteInfo<void> {
+  const HomeRoute({List<_i10.PageRouteInfo>? children})
       : super(
           HomeRoute.name,
           initialChildren: children,
@@ -202,17 +220,55 @@ class HomeRoute extends _i8.PageRouteInfo<void> {
 
   static const String name = 'HomeRoute';
 
-  static const _i8.PageInfo<void> page = _i8.PageInfo<void>(name);
+  static const _i10.PageInfo<void> page = _i10.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i5.PostScreen]
-class PostRoute extends _i8.PageRouteInfo<PostRouteArgs> {
+/// [_i5.ImagePreviewScreen]
+class ImagePreviewRoute extends _i10.PageRouteInfo<ImagePreviewRouteArgs> {
+  ImagePreviewRoute({
+    _i11.Key? key,
+    required String url,
+    List<_i10.PageRouteInfo>? children,
+  }) : super(
+          ImagePreviewRoute.name,
+          args: ImagePreviewRouteArgs(
+            key: key,
+            url: url,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ImagePreviewRoute';
+
+  static const _i10.PageInfo<ImagePreviewRouteArgs> page =
+      _i10.PageInfo<ImagePreviewRouteArgs>(name);
+}
+
+class ImagePreviewRouteArgs {
+  const ImagePreviewRouteArgs({
+    this.key,
+    required this.url,
+  });
+
+  final _i11.Key? key;
+
+  final String url;
+
+  @override
+  String toString() {
+    return 'ImagePreviewRouteArgs{key: $key, url: $url}';
+  }
+}
+
+/// generated route for
+/// [_i6.PostScreen]
+class PostRoute extends _i10.PageRouteInfo<PostRouteArgs> {
   PostRoute({
-    _i9.Key? key,
+    _i11.Key? key,
     required String postId,
-    _i11.Post? post,
-    List<_i8.PageRouteInfo>? children,
+    _i13.Post? post,
+    List<_i10.PageRouteInfo>? children,
   }) : super(
           PostRoute.name,
           args: PostRouteArgs(
@@ -226,8 +282,8 @@ class PostRoute extends _i8.PageRouteInfo<PostRouteArgs> {
 
   static const String name = 'PostRoute';
 
-  static const _i8.PageInfo<PostRouteArgs> page =
-      _i8.PageInfo<PostRouteArgs>(name);
+  static const _i10.PageInfo<PostRouteArgs> page =
+      _i10.PageInfo<PostRouteArgs>(name);
 }
 
 class PostRouteArgs {
@@ -237,11 +293,11 @@ class PostRouteArgs {
     this.post,
   });
 
-  final _i9.Key? key;
+  final _i11.Key? key;
 
   final String postId;
 
-  final _i11.Post? post;
+  final _i13.Post? post;
 
   @override
   String toString() {
@@ -250,9 +306,9 @@ class PostRouteArgs {
 }
 
 /// generated route for
-/// [_i6.ProfileScreen]
-class ProfileRoute extends _i8.PageRouteInfo<void> {
-  const ProfileRoute({List<_i8.PageRouteInfo>? children})
+/// [_i7.ProfileScreen]
+class ProfileRoute extends _i10.PageRouteInfo<void> {
+  const ProfileRoute({List<_i10.PageRouteInfo>? children})
       : super(
           ProfileRoute.name,
           initialChildren: children,
@@ -260,17 +316,31 @@ class ProfileRoute extends _i8.PageRouteInfo<void> {
 
   static const String name = 'ProfileRoute';
 
-  static const _i8.PageInfo<void> page = _i8.PageInfo<void>(name);
+  static const _i10.PageInfo<void> page = _i10.PageInfo<void>(name);
 }
 
 /// generated route for
-/// [_i7.YoutubeScreen]
-class YoutubeRoute extends _i8.PageRouteInfo<YoutubeRouteArgs> {
+/// [_i8.SettingsScreen]
+class SettingsRoute extends _i10.PageRouteInfo<void> {
+  const SettingsRoute({List<_i10.PageRouteInfo>? children})
+      : super(
+          SettingsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SettingsRoute';
+
+  static const _i10.PageInfo<void> page = _i10.PageInfo<void>(name);
+}
+
+/// generated route for
+/// [_i9.YoutubeScreen]
+class YoutubeRoute extends _i10.PageRouteInfo<YoutubeRouteArgs> {
   YoutubeRoute({
-    _i9.Key? key,
+    _i11.Key? key,
     required String videoId,
     String? url,
-    List<_i8.PageRouteInfo>? children,
+    List<_i10.PageRouteInfo>? children,
   }) : super(
           YoutubeRoute.name,
           args: YoutubeRouteArgs(
@@ -284,8 +354,8 @@ class YoutubeRoute extends _i8.PageRouteInfo<YoutubeRouteArgs> {
 
   static const String name = 'YoutubeRoute';
 
-  static const _i8.PageInfo<YoutubeRouteArgs> page =
-      _i8.PageInfo<YoutubeRouteArgs>(name);
+  static const _i10.PageInfo<YoutubeRouteArgs> page =
+      _i10.PageInfo<YoutubeRouteArgs>(name);
 }
 
 class YoutubeRouteArgs {
@@ -295,7 +365,7 @@ class YoutubeRouteArgs {
     this.url,
   });
 
-  final _i9.Key? key;
+  final _i11.Key? key;
 
   final String videoId;
 

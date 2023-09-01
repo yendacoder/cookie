@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cookie/api/model/enums.dart';
 import 'package:cookie/common/controller/initial_controller.dart';
+import 'package:cookie/common/repository/settings_repository.dart';
 import 'package:cookie/common/ui/notifications.dart';
 import 'package:cookie/common/ui/widgets/common/flat_appbar.dart';
 import 'package:cookie/common/ui/widgets/common/platform_custom_popup_menu.dart';
@@ -47,7 +48,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
     controller.loadPage().onError((e, _) => showApiErrorMessage(context, e));
   }
 
-  Widget _buildLoadingItem() {
+  Widget _buildLoadingItem(FeedViewType viewType) {
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: kPrimaryPadding, vertical: kSecondaryPadding),
@@ -68,14 +69,17 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
               ShimmerAvatar()
             ],
           ),
-          const SizedBox(
-            height: 12.0,
-          ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(kDefaultCornerRadius),
-            child: const AspectRatio(
-                aspectRatio: 16 / 9, child: ColoredBox(color: Colors.white)),
-          ),
+          if (viewType == FeedViewType.full ||
+              viewType == FeedViewType.regular) ...[
+            const SizedBox(
+              height: 12.0,
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(kDefaultCornerRadius),
+              child: const AspectRatio(
+                  aspectRatio: 16 / 9, child: ColoredBox(color: Colors.white)),
+            ),
+          ],
           const SizedBox(
             height: 12.0,
           ),
@@ -86,6 +90,8 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
   }
 
   Widget _buildBody(BuildContext context, FeedController controller) {
+    final feedViewType =
+        Provider.of<InitialController>(context, listen: false).feedViewType;
     if (controller.lastError != null) {
       return ErrorContent(
         error: controller.lastError!,
@@ -99,15 +105,18 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
         child: ListView(
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            _buildLoadingItem(),
-            const SizedBox(
-              height: 24.0,
-            ),
-            _buildLoadingItem(),
-            const SizedBox(
-              height: 24.0,
-            ),
-            _buildLoadingItem(),
+            for (int i = 0;
+                i <
+                    ((feedViewType == FeedViewType.full ||
+                            feedViewType == FeedViewType.regular)
+                        ? 3
+                        : 5);
+                i++) ...[
+              _buildLoadingItem(feedViewType),
+              const SizedBox(
+                height: 24.0,
+              ),
+            ]
           ],
         ),
       );
@@ -125,6 +134,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
             post: post,
             showCommunity: controller.feedType != FeedType.community,
             isDetailScreen: false,
+            viewType: feedViewType,
           );
         }
         return const ListLoadingItem();

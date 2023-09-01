@@ -3,6 +3,7 @@ import 'package:cookie/api/model/enums.dart';
 import 'package:cookie/api/model/link.dart';
 import 'package:cookie/api/model/post.dart';
 import 'package:cookie/common/controller/initial_controller.dart';
+import 'package:cookie/common/repository/settings_repository.dart';
 import 'package:cookie/common/ui/notifications.dart';
 import 'package:cookie/common/ui/widgets/common/icon_text.dart';
 import 'package:cookie/common/ui/widgets/common/markdown_text.dart';
@@ -27,11 +28,13 @@ class PostItem extends StatefulWidget {
       required this.post,
       required this.showCommunity,
       required this.isDetailScreen,
-      this.isContentClickable = true});
+      this.isContentClickable = true,
+      this.viewType = FeedViewType.full});
 
   final Post post;
   final bool showCommunity;
   final bool isDetailScreen;
+  final FeedViewType viewType;
 
   /// If showed on the detail page, the main content should not lead anywhere
   final bool isContentClickable;
@@ -137,8 +140,126 @@ class _PostItemState extends State<PostItem> {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildFullBody(BuildContext context) {
     final theme = Theme.of(context);
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            widget.post.title,
+            style: theme.textTheme.titleLarge,
+          ),
+          const SizedBox(
+            height: 12.0,
+          ),
+          if (widget.post.body != null) MarkdownText(widget.post.body!),
+          if (widget.post.postType == PostType.link &&
+              widget.post.link?.image != null)
+            PostImage(link: widget.post.link),
+          if (widget.post.postType == PostType.image &&
+              widget.post.image != null)
+            PostImage(image: widget.post.image),
+          if (widget.post.postType == PostType.link &&
+              widget.post.link != null &&
+              widget.post.link?.image == null)
+            _buildTextLink(context, widget.post.link!)
+        ]);
+  }
+
+  Widget _buildRegularBody(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            widget.post.title,
+            style: theme.textTheme.titleLarge,
+          ),
+          const SizedBox(
+            height: 12.0,
+          ),
+          if (widget.post.body != null)
+            MarkdownText(
+              widget.post.body!,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+          if (widget.post.postType == PostType.link &&
+              widget.post.link?.image != null)
+            PostImage(
+              link: widget.post.link,
+              aspectRatio: 16.0 / 9.0,
+              previewOnTap: true,
+            ),
+          if (widget.post.postType == PostType.image &&
+              widget.post.image != null)
+            PostImage(
+              image: widget.post.image,
+              aspectRatio: 16.0 / 9.0,
+              previewOnTap: true,
+            ),
+          if (widget.post.postType == PostType.link &&
+              widget.post.link != null &&
+              widget.post.link?.image == null)
+            _buildTextLink(context, widget.post.link!)
+        ]);
+  }
+
+  Widget _buildCompactBody(BuildContext context) {
+    final theme = Theme.of(context);
+    return IntrinsicHeight(
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Expanded(
+          child: Text(
+            widget.post.title,
+            style: theme.textTheme.titleLarge,
+          ),
+        ),
+        const SizedBox(
+          height: 8.0,
+        ),
+        if (widget.post.postType == PostType.link &&
+            widget.post.link?.image != null)
+          SizedBox(
+              width: 100,
+              height: 60,
+              child: PostImage(
+                link: widget.post.link,
+                previewOnTap: true,
+              )),
+        if (widget.post.postType == PostType.image && widget.post.image != null)
+          SizedBox(
+              width: 100,
+              height: 60,
+              child: PostImage(
+                image: widget.post.image,
+                previewOnTap: true,
+              ))
+      ]),
+    );
+  }
+
+  Widget _buildMicroBody(BuildContext context) {
+    return Text(
+      widget.post.title,
+      style: Theme.of(context).textTheme.titleMedium,
+    );
+  }
+
+  Widget _buildCommonBody(BuildContext context) {
+    late final Widget body;
+    switch (widget.viewType) {
+      case FeedViewType.full:
+        body = _buildFullBody(context);
+      case FeedViewType.regular:
+        body = _buildRegularBody(context);
+      case FeedViewType.compact:
+        body = _buildCompactBody(context);
+      case FeedViewType.micro:
+        body = _buildMicroBody(context);
+    }
     return TappableItem(
         onTap: !widget.isContentClickable
             ? null
@@ -148,29 +269,7 @@ class _PostItemState extends State<PostItem> {
               },
         padding: const EdgeInsets.symmetric(
             horizontal: kPrimaryPadding, vertical: 4.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              widget.post.title,
-              style: theme.textTheme.titleLarge,
-            ),
-            const SizedBox(
-              height: 12.0,
-            ),
-            if (widget.post.body != null) MarkdownText(widget.post.body!),
-            if (widget.post.postType == PostType.link &&
-                    widget.post.link?.image != null)
-              PostImage(link: widget.post.link),
-            if (widget.post.postType == PostType.image && widget.post.image != null)
-              PostImage(image: widget.post.image),
-            if (widget.post.postType == PostType.link &&
-                widget.post.link != null &&
-                widget.post.link?.image == null)
-              _buildTextLink(context, widget.post.link!)
-          ],
-        ));
+        child: body);
   }
 
   Widget _buildFooter(BuildContext context) {
@@ -238,11 +337,12 @@ class _PostItemState extends State<PostItem> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(context),
-          const SizedBox(
-            height: 8.0,
-          ),
-          _buildBody(context),
-          _buildFooter(context),
+          if (widget.viewType != FeedViewType.micro)
+            const SizedBox(
+              height: 8.0,
+            ),
+          _buildCommonBody(context),
+          if (widget.viewType != FeedViewType.micro) _buildFooter(context),
         ],
       ),
     );

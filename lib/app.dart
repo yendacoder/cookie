@@ -1,5 +1,6 @@
 import 'package:cookie/common/controller/initial_controller.dart';
 import 'package:cookie/common/repository/initial_repository.dart';
+import 'package:cookie/common/repository/settings_repository.dart';
 import 'package:cookie/router/router.dart';
 import 'package:cookie/settings/app_config.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,8 @@ class _AppState extends State<App> {
     return AppConfigProvider(
         config: _config,
         child: ChangeNotifierProvider<InitialController>(
-            create: (_) => InitialController(InitialRepository()),
+            create: (_) =>
+                InitialController(InitialRepository(), SettingsRepository()),
             child: PlatformProvider(
                 initialPlatform: Themes.targetPlatform,
                 builder: (BuildContext context) {

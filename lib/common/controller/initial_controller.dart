@@ -5,6 +5,7 @@ import 'package:cookie/api/model/community.dart';
 import 'package:cookie/api/model/initial.dart';
 import 'package:cookie/api/model/post.dart';
 import 'package:cookie/common/repository/initial_repository.dart';
+import 'package:cookie/common/repository/settings_repository.dart';
 import 'package:flutter/cupertino.dart';
 
 abstract class AuthRecordProvider {
@@ -12,16 +13,29 @@ abstract class AuthRecordProvider {
 }
 
 class InitialController with ChangeNotifier implements AuthRecordProvider {
-  InitialController(this.initialRepository);
+  InitialController(this.initialRepository, this.settingsRepository);
 
   final InitialRepository initialRepository;
+  final SettingsRepository settingsRepository;
   bool _isInitialized = false;
   AuthRecord _authRecord = AuthRecord.empty();
   Initial? initial;
 
+  // we will make a settings objects later, right now we have a single setting
+  FeedViewType _feedViewType = FeedViewType.regular;
+
+  FeedViewType get feedViewType => _feedViewType;
+  set feedViewType(FeedViewType value) {
+    _feedViewType = value;
+    settingsRepository.persistFeedViewType(value);
+    notifyListeners();
+  }
+
   bool get isLoggedIn => initial?.user != null;
 
   Future<void> _initialize() async {
+    _feedViewType = await settingsRepository.getSavedFeedViewType();
+
     final persistedAuthRecord =
         await initialRepository.getPersistedAuthRecord();
     if (persistedAuthRecord != null) {

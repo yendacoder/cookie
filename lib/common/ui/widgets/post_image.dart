@@ -16,12 +16,19 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class PostImage extends StatelessWidget {
-  const PostImage({super.key, this.image, this.link})
+  const PostImage(
+      {super.key,
+      this.image,
+      this.link,
+      this.aspectRatio,
+      this.previewOnTap = false})
       : assert(image != null || link != null,
             'Either image or link must be provided');
 
   final api_img.Image? image;
   final Link? link;
+  final double? aspectRatio;
+  final bool previewOnTap;
 
   bool get _canTryInline {
     if (image != null) return true;
@@ -34,18 +41,22 @@ class PostImage extends StatelessWidget {
   }
 
   /// External images, like fetched from og tags
-  Widget _buildLinkImage(BuildContext context) {
+  Widget _buildLinkImage(BuildContext context, {bool withTapHandler = true}) {
     final videoId = YoutubePlayer.convertUrlToId(link!.url);
-    final image = _initSizedImage(context, link!.image!, false);
+    final image = _buildHostedImage(context, link!.image!, false);
 
     return TappableItem(
-      onTap: () {
-        if (videoId != null) {
-          context.router.push(YoutubeRoute(videoId: videoId, url: link!.url));
-        } else if (link?.hostname != null) {
-          launchUrlString(link!.url, mode: LaunchMode.externalApplication);
-        }
-      },
+      onTap: withTapHandler
+          ? () {
+              if (videoId != null) {
+                context.router
+                    .push(YoutubeRoute(videoId: videoId, url: link!.url));
+              } else if (link?.hostname != null) {
+                launchUrlString(link!.url,
+                    mode: LaunchMode.externalApplication);
+              }
+            }
+          : null,
       child: Stack(
         alignment: AlignmentDirectional.topEnd,
         children: [
@@ -79,7 +90,7 @@ class PostImage extends StatelessWidget {
   /// Image dimensions provided by API are incorrect
   /// We will cache the proportions of the actual image received
   /// so that when scrolling up, the list doesn't flicker
-  Widget _initSizedImage(
+  Widget _buildHostedImage(
       BuildContext context, api_img.Image image, bool tryFallback) {
     final url = isAbsoluteUrl(image.url)
         ? image.url
@@ -90,15 +101,15 @@ class PostImage extends StatelessWidget {
       errorBuilder: (_, url, ___) {
         log('Failed to load image from $url');
         if (tryFallback && link != null) {
-          return _buildLinkImage(context);
+          return _buildLinkImage(context, withTapHandler: false);
         } else {
           return const SizedBox.shrink();
         }
       },
     );
-    if (image.calculatedLinkImageRatio != null) {
+    if (aspectRatio != null || image.calculatedLinkImageRatio != null) {
       return AspectRatio(
-        aspectRatio: image.calculatedLinkImageRatio!,
+        aspectRatio: aspectRatio ?? image.calculatedLinkImageRatio!,
         child: imageWidget,
       );
     }
@@ -106,8 +117,10 @@ class PostImage extends StatelessWidget {
     imageWidget.image.resolve(const ImageConfiguration()).addListener(
       ImageStreamListener(
         (ImageInfo image, bool synchronousCall) {
-          var actualImage = image.image;
-          completer.complete(actualImage.width.toDouble() / actualImage.height);
+          var imageData = image.image;
+          if (!completer.isCompleted) {
+            completer.complete(imageData.width.toDouble() / imageData.height);
+          }
         },
       ),
     );
@@ -120,10 +133,20 @@ class PostImage extends StatelessWidget {
     final img = image ?? link!.image;
     return ClipRRect(
       borderRadius: BorderRadius.circular(kDefaultCornerRadius),
-      child: SizedBox(
+      child: Container(
+          color: Theme.of(context).colorScheme.surface,
           width: double.infinity,
           child: _canTryInline
-              ? _initSizedImage(context, img!, true)
+              ? previewOnTap
+                  ? TappableItem(
+                      child: Hero(
+                          tag: img!.url,
+                          child: _buildHostedImage(context, img, true)),
+                      onTap: () {
+                        context.router.push(ImagePreviewRoute(url: img.url));
+                      },
+                    )
+                  : _buildHostedImage(context, img!, true)
               : _buildLinkImage(context)),
     );
   }

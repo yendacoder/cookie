@@ -19,6 +19,8 @@ class AppRouter extends $AppRouter {
             AutoRoute(path: ':postId', page: PostRoute.page),
           ]),
           AutoRoute(path: 'profile', page: ProfileRoute.page),
+          AutoRoute(path: 'settings', page: SettingsRoute.page),
+          AutoRoute(path: 'image_preview', page: ImagePreviewRoute.page),
           AutoRoute(path: 'compose', page: ComposeRoute.page),
           CustomRoute(
               path: 'youtube',
