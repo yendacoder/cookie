@@ -108,8 +108,13 @@ class CommentItem extends StatelessWidget {
                         ),
                         const Spacer(),
                         Text(formatRating(comment.upvotes, comment.downvotes),
-                            style: theme.textTheme.bodyMedium!
-                                .copyWith(color: theme.hintColor)),
+                            style: theme.textTheme.bodyMedium!.copyWith(
+                                color: (comment.userVoted == true &&
+                                        comment.userVotedUp == true)
+                                    ? Colors.green
+                                    : (comment.userVoted == true
+                                        ? Colors.red
+                                        : theme.hintColor))),
                       ],
                     ),
                   ),
