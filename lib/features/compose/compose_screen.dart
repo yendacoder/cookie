@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:cookie/api/model/community.dart';
+import 'package:cookie/api/model/post.dart';
 import 'package:cookie/common/controller/initial_controller.dart';
 import 'package:cookie/common/ui/notifications.dart';
 import 'package:cookie/common/ui/widgets/common/flat_appbar.dart';
@@ -21,9 +22,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @RoutePage()
 class ComposeScreen extends StatefulWidget {
-  const ComposeScreen({super.key, this.community});
+  const ComposeScreen({super.key, this.community, this.editPost});
 
   final Community? community;
+  final Post? editPost;
 
   @override
   State<ComposeScreen> createState() => _ComposeScreenState();
@@ -32,8 +34,10 @@ class ComposeScreen extends StatefulWidget {
 const _kCroppingImageName = 'cropping_image';
 
 class _ComposeScreenState extends State<ComposeScreen> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _bodyController = TextEditingController();
+  late final TextEditingController _titleController =
+      TextEditingController(text: widget.editPost?.title);
+  late final TextEditingController _bodyController =
+      TextEditingController(text: widget.editPost?.body);
   final ImagePicker _picker = ImagePicker();
   bool _isSaving = false;
   bool _isUploadingImage = false;
@@ -130,7 +134,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
         _isSaving = true;
       });
       final post =
-          await controller.addPost(_titleController.text, _bodyController.text);
+          await controller.save(_titleController.text, _bodyController.text);
       if (mounted && post != null) {
         context.router.replace(PostRoute(postId: post.publicId, post: post));
       }
@@ -144,16 +148,37 @@ class _ComposeScreenState extends State<ComposeScreen> {
   }
 
   Widget _buildImage(BuildContext context, ComposeController controller) {
-    if (controller.uploadedImage != null) {
+    if (controller.uploadedImageUrl != null) {
       return Padding(
         padding: const EdgeInsets.only(bottom: kSecondaryPadding),
         child: AspectRatio(
-          aspectRatio: controller.uploadedImage!.width.toDouble() /
-              controller.uploadedImage!.height,
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(kDefaultCornerRadius),
-              child: Image.network(AppConfigProvider.of(context)
-                  .getFullImageUrl(controller.uploadedImage!.url))),
+          aspectRatio: controller.uploadedImageRatio,
+          child: Stack(
+            alignment: AlignmentDirectional.topEnd,
+            children: [
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(kDefaultCornerRadius),
+                  child: Image.network(AppConfigProvider.of(context)
+                      .getFullImageUrl(controller.uploadedImageUrl!))),
+              if (!controller.isEditing)
+                Padding(
+                  padding: const EdgeInsets.all(kSecondaryPadding),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => controller.removeImage()),
+                      IconButton(
+                        icon: const Icon(Icons.replay),
+                        onPressed: () =>
+                            _pickImage(controller, ImageSource.gallery),
+                      ),
+                    ],
+                  ),
+                )
+            ],
+          ),
         ),
       );
     }
@@ -171,7 +196,8 @@ class _ComposeScreenState extends State<ComposeScreen> {
     return ChangeNotifierProvider(create: (_) {
       final controller = ComposeController(
           ComposeRepository(Provider.of<InitialController>(context)),
-          widget.community);
+          widget.community,
+          widget.editPost);
       _getLostData(controller);
       return controller;
     }, child: Consumer<ComposeController>(builder: (context, controller, _) {
@@ -185,14 +211,12 @@ class _ComposeScreenState extends State<ComposeScreen> {
                 children: [
                   Row(
                     children: [
-                      if (controller.community != null) ...[
-                        CommunityIcon(image: controller.community?.proPic),
-                        const SizedBox(
-                          width: 6.0,
-                        ),
-                      ],
-                      Text(context.l.composeCommunity(
-                          controller.community?.name ?? kDefaultCommunityName)),
+                      CommunityIcon(image: controller.communityIcon),
+                      const SizedBox(
+                        width: 6.0,
+                      ),
+                      Text(
+                          context.l.composeCommunity(controller.communityName)),
                     ],
                   ),
                   const SizedBox(
@@ -205,29 +229,27 @@ class _ComposeScreenState extends State<ComposeScreen> {
                   const SizedBox(
                     height: kSecondaryPadding,
                   ),
-                  if (_isUploadingImage ||
-                      controller.uploadedImage != null) ...[
-                    _buildImage(context, controller),
-                    PlatformElevatedButton(
-                      onPressed: () =>
-                          _pickImage(controller, ImageSource.gallery),
-                      child: Text(context.l.composeRemoveImageButton),
-                    ),
-                  ] else ...[
-                    PlatformTextField(
-                      hintText: context.l.composeBodyHint,
-                      controller: _bodyController,
-                      minLines: 10,
-                      maxLines: 10000,
-                    ),
+                  if (_isUploadingImage || controller.uploadedImageUrl != null)
+                    _buildImage(context, controller)
+                  else ...[
+                    if (controller.nonEditablePostBody != null)
+                      Text(controller.nonEditablePostBody!)
+                    else
+                      PlatformTextField(
+                        hintText: context.l.composeBodyHint,
+                        controller: _bodyController,
+                        minLines: 10,
+                        maxLines: 10000,
+                      ),
                     const SizedBox(
                       height: kSecondaryPadding,
                     ),
-                    PlatformElevatedButton(
-                      onPressed: () =>
-                          _pickImage(controller, ImageSource.gallery),
-                      child: Text(context.l.composeSelectImageButton),
-                    ),
+                    if (!controller.isEditing)
+                      PlatformElevatedButton(
+                        onPressed: () =>
+                            _pickImage(controller, ImageSource.gallery),
+                        child: Text(context.l.composeSelectImageButton),
+                      ),
                   ],
                   if (_isSaving)
                     Center(
@@ -236,7 +258,9 @@ class _ComposeScreenState extends State<ComposeScreen> {
                   else
                     PlatformElevatedButton(
                       onPressed: () => _post(context, controller),
-                      child: Text(context.l.composePostButton),
+                      child: Text(controller.isEditing
+                          ? context.l.composeEditButton
+                          : context.l.composePostButton),
                     ),
                   const SizedBox(
                     height: kSecondaryPadding,

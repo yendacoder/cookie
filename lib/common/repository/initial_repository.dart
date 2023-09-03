@@ -55,4 +55,11 @@ class InitialRepository extends Repository {
           'leave': !join,
         });
   }
+
+  Future<void> deletePost(AuthRecord authRecord, String postId) {
+    final uri = client.initRequest('posts/$postId', parameters: {
+      'deleteAs': 'normal',
+    });
+    return performRequestEmptyResult(authRecord, () => client.http.deleteUrl(uri));
+  }
 }

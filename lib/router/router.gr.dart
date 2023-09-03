@@ -35,6 +35,7 @@ abstract class $AppRouter extends _i10.RootStackRouter {
         child: _i1.ComposeScreen(
           key: args.key,
           community: args.community,
+          editPost: args.editPost,
         ),
       );
     },
@@ -120,12 +121,14 @@ class ComposeRoute extends _i10.PageRouteInfo<ComposeRouteArgs> {
   ComposeRoute({
     _i11.Key? key,
     _i12.Community? community,
+    _i13.Post? editPost,
     List<_i10.PageRouteInfo>? children,
   }) : super(
           ComposeRoute.name,
           args: ComposeRouteArgs(
             key: key,
             community: community,
+            editPost: editPost,
           ),
           initialChildren: children,
         );
@@ -140,15 +143,18 @@ class ComposeRouteArgs {
   const ComposeRouteArgs({
     this.key,
     this.community,
+    this.editPost,
   });
 
   final _i11.Key? key;
 
   final _i12.Community? community;
 
+  final _i13.Post? editPost;
+
   @override
   String toString() {
-    return 'ComposeRouteArgs{key: $key, community: $community}';
+    return 'ComposeRouteArgs{key: $key, community: $community, editPost: $editPost}';
   }
 }
 

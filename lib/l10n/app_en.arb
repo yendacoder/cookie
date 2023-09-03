@@ -34,6 +34,9 @@
   "commentDeleteConfirm": "Delete comment?",
   "commentDeleteConfirmOk": "Delete",
   "commentDeleteConfirmCancel": "Cancel",
+  "postDeleteConfirm": "Delete post?",
+  "postDeleteConfirmOk": "Delete",
+  "postDeleteConfirmCancel": "Cancel",
   "composeCommunity": "In {community}",
   "@composeCommunity": {
     "placeholders": {
@@ -45,8 +48,8 @@
   "composeTitleHint": "Title",
   "composeBodyHint": "Text or link (optional)",
   "composeSelectImageButton": "Select image",
-  "composeRemoveImageButton": "Remove image",
   "composePostButton": "Post",
+  "composeEditButton": "Update",
   "composeMarkdownCheatsheet": "Markdown cheatsheet:\nHeading: # heading\nBold: **bold**\nItalic: *italic*\nLink: [link](https://example.com)\nQuote: > quote\nCode: `code`",
   "profile": "Profile",
   "authUsernameHint": "Username",

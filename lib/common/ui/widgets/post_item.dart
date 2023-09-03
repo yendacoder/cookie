@@ -4,9 +4,11 @@ import 'package:cookie/api/model/link.dart';
 import 'package:cookie/api/model/post.dart';
 import 'package:cookie/common/controller/initial_controller.dart';
 import 'package:cookie/common/repository/settings_repository.dart';
+import 'package:cookie/common/ui/confirmation_dialog.dart';
 import 'package:cookie/common/ui/notifications.dart';
 import 'package:cookie/common/ui/widgets/common/icon_text.dart';
 import 'package:cookie/common/ui/widgets/common/markdown_text.dart';
+import 'package:cookie/common/ui/widgets/common/progress_icon_button.dart';
 import 'package:cookie/common/ui/widgets/common/tappable_item.dart';
 import 'package:cookie/common/ui/widgets/common/voting.dart';
 import 'package:cookie/common/ui/widgets/community_icon.dart';
@@ -50,6 +52,29 @@ class _PostItemState extends State<PostItem> {
   void dispose() {
     _isVotingUp.dispose();
     super.dispose();
+  }
+
+  void _delete(BuildContext context) async {
+    final controller = Provider.of<InitialController>(context, listen: false);
+    if (!await showConfirmationDialog(context, context.l.postDeleteConfirm,
+        okText: context.l.postDeleteConfirmOk,
+        cancelText: context.l.postDeleteConfirmCancel,
+        isDestructive: true)) {
+      return;
+    }
+    try {
+      await controller.deletePost(widget.post);
+      if (mounted) {
+        Provider.of<FeedController>(context, listen: false).reset();
+        if (widget.isDetailScreen) {
+          context.router.pop();
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showApiErrorMessage(context, e);
+      }
+    }
   }
 
   Future<void> _vote(BuildContext context, bool up) async {
@@ -275,8 +300,7 @@ class _PostItemState extends State<PostItem> {
   Widget _buildFooter(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(
-          left: kPrimaryPadding - 8.0, right: kPrimaryPadding),
+      padding: const EdgeInsets.only(left: kPrimaryPadding - 8.0),
       child: Row(
         children: [
           ValueListenableBuilder(
@@ -324,6 +348,28 @@ class _PostItemState extends State<PostItem> {
                   theme.textTheme.labelMedium!.copyWith(color: theme.hintColor),
             ),
           ),
+          const SizedBox(
+            width: 8.0,
+          ),
+          if (widget.post.userId ==
+              Provider.of<InitialController>(context).initial?.user?.id) ...[
+            ProgressIconButton(
+              onPressed: () =>
+                  context.router.push(ComposeRoute(editPost: widget.post)),
+              icon: Icons.edit,
+              color: theme.hintColor,
+            ),
+            ProgressIconButton(
+                onPressed: () => _delete(context),
+                icon: Icons.delete,
+                color: theme.hintColor),
+            const SizedBox(
+              width: 8.0,
+            )
+          ] else
+            const SizedBox(
+              width: kPrimaryPadding - 8.0,
+            )
         ],
       ),
     );

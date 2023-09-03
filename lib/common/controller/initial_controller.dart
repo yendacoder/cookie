@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cookie/api/auth_record.dart';
 import 'package:cookie/api/model/community.dart';
 import 'package:cookie/api/model/initial.dart';
+import 'package:cookie/api/model/post.dart';
 import 'package:cookie/common/repository/initial_repository.dart';
 import 'package:cookie/common/repository/settings_repository.dart';
 import 'package:flutter/cupertino.dart';
@@ -98,6 +99,12 @@ class InitialController with ChangeNotifier implements AuthRecordProvider {
       community.userJoined = true;
       initial!.communities.insert(0, community);
     }
+    notifyListeners();
+  }
+
+  Future<void> deletePost(Post post) async {
+    final authRecord = await getAuthRecord();
+    await initialRepository.deletePost(authRecord, post.publicId);
     notifyListeners();
   }
 

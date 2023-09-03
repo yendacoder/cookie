@@ -12,7 +12,8 @@ class ComposeRepository extends Repository {
 
   final AuthRecordProvider _authRecordProvider;
 
-  Future<UploadedImage?> uploadImage(Uint8List imageContent, String filename) async {
+  Future<UploadedImage?> uploadImage(
+      Uint8List imageContent, String filename) async {
     final authRecord = await _authRecordProvider.getAuthRecord();
     final uri = client.initRequest('_uploads');
     String twoHyphens = '--';
@@ -42,27 +43,53 @@ class ComposeRepository extends Repository {
     );
   }
 
-  Future<Post?> addPost(String communityName, String title, String body, String? imageId) async {
+  String _getPostType(String body, String? imageId) {
+    //TODO: type detection can be a little more sophisticated
+    if (imageId != null) {
+      return 'image';
+    } else {
+      if (body.trim().startsWith('http')) {
+        if (isImageUrl(body)) {
+          return 'image';
+        } else {
+          return 'link';
+        }
+      } else {
+        return 'text';
+      }
+    }
+  }
+
+  Future<Post?> editPost(
+      String? postId, String title, String body, String? imageId) async {
+    final authRecord = await _authRecordProvider.getAuthRecord();
+    if (authRecord == null) {
+      return null;
+    }
+    final uri = client.initRequest('posts/$postId');
+    final type = _getPostType(body, imageId);
+    return await performRequestObjectResult(
+      authRecord,
+      () => client.http.putUrl(uri),
+      (json, _) => Post.fromJson(json),
+      body: {
+        'type': type,
+        'title': title,
+        if (type == 'text') 'body': body,
+        if (type != 'text') 'url': body,
+        if (imageId != null) 'imageId': imageId,
+      },
+    );
+  }
+
+  Future<Post?> addPost(
+      String communityName, String title, String body, String? imageId) async {
     final authRecord = await _authRecordProvider.getAuthRecord();
     if (authRecord == null) {
       return null;
     }
     final uri = client.initRequest('posts');
-    late String type;
-    //TODO: type detection can be a little more sophisticated
-    if (imageId != null) {
-      type = 'image';
-    } else {
-      if (body.trim().startsWith('http')) {
-        if (isImageUrl(body)) {
-          type = 'image';
-        } else {
-          type = 'link';
-        }
-      } else {
-        type = 'text';
-      }
-    }
+    final type = _getPostType(body, imageId);
     return await performRequestObjectResult(
       authRecord,
       () => client.http.postUrl(uri),

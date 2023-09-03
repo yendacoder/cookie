@@ -65,10 +65,10 @@ class _ComposeCommentState extends State<ComposeComment> {
       if (_isEditing) {
         await postController.editComment(
             widget.parentComment!.id, _textEditingController.text);
-        feedController.updateCommented(postController.post);
       } else {
         await postController.addComment(
             _textEditingController.text, widget.parentComment?.id);
+        feedController.updateCommented(postController.post);
       }
       _textEditingController.text = '';
     } catch (e) {
@@ -82,6 +82,8 @@ class _ComposeCommentState extends State<ComposeComment> {
 
   Future<void> _deleteComment(BuildContext context) async {
     final postController = Provider.of<PostController>(context, listen: false);
+    final feedController =
+    Provider.of<FeedController>(context, listen: false);
     if (!await showConfirmationDialog(context, context.l.commentDeleteConfirm,
         okText: context.l.commentDeleteConfirmOk,
         cancelText: context.l.commentDeleteConfirmCancel,
@@ -90,6 +92,7 @@ class _ComposeCommentState extends State<ComposeComment> {
     }
     try {
       await postController.deleteComment(widget.parentComment!.id);
+      feedController.updateCommented(postController.post);
     } catch (e) {
       if (mounted) {
         showApiErrorMessage(context, e);

@@ -148,6 +148,7 @@ class PostController with ChangeNotifier {
   Future<void> deleteComment(String commentId) async {
     final newComment = await _postRepository.deleteComment(_postId, commentId);
     final comment = _comments.firstWhere((c) => c.id == commentId);
+    post?.noComments--;
     comment.body = newComment.body;
     comment.deletedAs = newComment.deletedAs;
     comment.deletedBy = newComment.deletedBy;
