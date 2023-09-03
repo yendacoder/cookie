@@ -45,7 +45,11 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
       controller.reset();
       setState(() {});
     }
-    controller.loadPage().onError((e, _) => showApiErrorMessage(context, e));
+    controller.loadPage().onError((e, _) {
+      if (mounted) {
+        showApiErrorMessage(context, e);
+      }
+    });
   }
 
   Widget _buildLoadingItem(FeedViewType viewType) {
@@ -145,7 +149,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
 
   Widget _buildToolbarItem(BuildContext context, IconData icon,
       Color? backgroundColor, VoidCallback? onTap,
-      {String? label}) {
+      {String? label, bool withBadge = false}) {
     final theme = Theme.of(context);
     // padding has to be applied on the item level, so that
     // spacing is equal on all items
@@ -154,10 +158,13 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
       padding: label == null
           ? const EdgeInsets.symmetric(vertical: 4.0, horizontal: 20.0)
           : const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 4.0),
-      child: Icon(icon,
-          color: onTap == null
-              ? theme.disabledColor
-              : theme.colorScheme.onBackground),
+      child: Badge(
+          backgroundColor: theme.colorScheme.secondary,
+          isLabelVisible: withBadge,
+          child: Icon(icon,
+              color: onTap == null
+                  ? theme.disabledColor
+                  : theme.colorScheme.onBackground)),
     );
     if (backgroundColor != null) {
       return DecoratedBox(
@@ -289,7 +296,13 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
           ..._buildCommonToolbarActions(context, controller),
           _buildToolbarItem(context, Icons.person, null, () {
             context.router.push(const ProfileRoute());
-          }),
+          },
+              withBadge: (Provider.of<InitialController>(context)
+                          .initial
+                          ?.user
+                          ?.notificationsNewCount ??
+                      0) >
+                  0),
         ],
       ),
     );

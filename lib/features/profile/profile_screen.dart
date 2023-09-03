@@ -190,6 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final initialController = Provider.of<InitialController>(context);
     final communitiesCount =
         (initialController.initial?.communities.length ?? 0);
+    final theme = Theme.of(context);
     return PlatformScaffold(
       appBar: PlatformAppBar(
         title: Text(
@@ -199,10 +200,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
           PlatformIconButton(
               icon: const Icon(Icons.settings),
               onPressed: () => context.router.push(const SettingsRoute())),
-          if (initialController.isLoggedIn)
+          if (initialController.isLoggedIn) ...[
+            PlatformIconButton(
+                icon: Badge(
+                    backgroundColor: theme.colorScheme.secondary,
+                    isLabelVisible: (initialController
+                                .initial?.user?.notificationsNewCount ??
+                            0) >
+                        0,
+                    child: const Icon(Icons.notifications)),
+                onPressed: () =>
+                    context.router.push(const NotificationsRoute())),
             PlatformIconButton(
                 icon: const Icon(Icons.logout),
-                onPressed: () => _logout(initialController))
+                onPressed: () => _logout(initialController)),
+          ]
         ],
       ),
       body: ListView.builder(

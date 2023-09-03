@@ -112,6 +112,57 @@
   "settingsFeedViewTypeRegular": "Regular",
   "settingsFeedViewTypeCompact": "Compact",
   "settingsFeedViewTypeMicro": "Title only",
+  "notificationsTitle": "Notifications",
+  "notificationsEmpty": "No notifications",
+  "notificationNewComment": "**@{author}** commented on **{title}**",
+  "@notificationNewComment": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationNewReply": "**@{author}** replied to your comment on **{title}**",
+  "@notificationNewReply": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationModAdd": "**@{author}** added you as a moderator of **{community}**",
+  "@notificationModAdd": {
+    "placeholders": {
+      "author": {
+        "type": "String"
+      },
+      "community": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationGenericPost": "Post: **{title}**",
+  "@notificationGenericPost": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationGenericCommunity": "Community: **{community}**",
+  "@notificationGenericCommunity": {
+    "placeholders": {
+      "community": {
+        "type": "String"
+      }
+    }
+  },
   "elapsedDays": "{days,plural,=1{1 day ago} other{{days} days ago}}",
   "@elapsedDays": {
     "placeholders": {

@@ -22,6 +22,7 @@ class AppRouter extends $AppRouter {
           AutoRoute(path: 'settings', page: SettingsRoute.page),
           AutoRoute(path: 'image_preview', page: ImagePreviewRoute.page),
           AutoRoute(path: 'compose', page: ComposeRoute.page),
+          AutoRoute(path: 'notifications', page: NotificationsRoute.page),
           CustomRoute(
               path: 'youtube',
               page: YoutubeRoute.page,

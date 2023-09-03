@@ -29,4 +29,9 @@ enum ContentSorting {
   all
 }
 
-
+// Not documented, is not complete
+enum NotificationType {
+  newComment,
+  commentReply,
+  modAdd,
+}
