@@ -58,11 +58,12 @@ class PostImage extends StatelessWidget {
             }
           : null,
       child: Stack(
-        alignment: AlignmentDirectional.topEnd,
+        fit: StackFit.passthrough,
         children: [
           image,
           if (link?.hostname != null)
-            Padding(
+            Container(
+              alignment: Alignment.topRight,
               padding: const EdgeInsets.all(8.0),
               child: Container(
                   decoration: BoxDecoration(
