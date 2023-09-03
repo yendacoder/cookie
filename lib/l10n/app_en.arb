@@ -51,6 +51,20 @@
   "composePostButton": "Post",
   "composeEditButton": "Update",
   "composeMarkdownCheatsheet": "Markdown cheatsheet:\nHeading: # heading\nBold: **bold**\nItalic: *italic*\nLink: [link](https://example.com)\nQuote: > quote\nCode: `code`",
+  "votesStats": "Upvotes: {upvotes}\nDownvotes: {downvotes}\n{percentage}% upvoted",
+  "@votesStats": {
+    "placeholders": {
+      "upvotes": {
+        "type": "int"
+      },
+      "downvotes": {
+        "type": "int"
+      },
+      "percentage": {
+        "type": "String"
+      }
+    }
+  },
   "profile": "Profile",
   "authUsernameHint": "Username",
   "authPasswordHint": "Password",

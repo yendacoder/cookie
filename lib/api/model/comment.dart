@@ -60,6 +60,14 @@ class Comment {
   bool postDeleted;
   String? postDeletedAs;
 
+  String get upvotePercentage {
+    final total = upvotes + downvotes;
+    if (total == 0) {
+      return '0.0';
+    }
+    return (upvotes / total * 100).toStringAsFixed(1);
+  }
+
   factory Comment.fromJson(Map<String, dynamic> json) =>
       _$CommentFromJson(json);
 }

@@ -107,14 +107,19 @@ class CommentItem extends StatelessWidget {
                               .copyWith(color: theme.hintColor),
                         ),
                         const Spacer(),
-                        Text(formatRating(comment.upvotes, comment.downvotes),
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                                color: (comment.userVoted == true &&
-                                        comment.userVotedUp == true)
-                                    ? Colors.green
-                                    : (comment.userVoted == true
-                                        ? Colors.red
-                                        : theme.hintColor))),
+                        Tooltip(
+                          message: context.l.votesStats(
+                            comment.upvotes, comment.downvotes, comment.upvotePercentage
+                          ),
+                          child: Text(formatRating(comment.upvotes, comment.downvotes),
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                  color: (comment.userVoted == true &&
+                                          comment.userVotedUp == true)
+                                      ? Colors.green
+                                      : (comment.userVoted == true
+                                          ? Colors.red
+                                          : theme.hintColor))),
+                        ),
                       ],
                     ),
                   ),

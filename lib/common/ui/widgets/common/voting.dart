@@ -1,4 +1,5 @@
 import 'package:cookie/common/ui/widgets/common/progress_icon_button.dart';
+import 'package:cookie/common/util/context_util.dart';
 import 'package:cookie/common/util/string_util.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,14 @@ class Voting extends StatelessWidget {
   /// disabled (user not logged in).
   final void Function(bool up)? onVote;
 
+  String get _upvotePercentage {
+    final total = upvotes + downvotes;
+    if (total == 0) {
+      return '0.0';
+    }
+    return (upvotes / total * 100).toStringAsFixed(1);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -37,9 +46,13 @@ class Voting extends StatelessWidget {
               ? null
               : () => onVote!(true),
         ),
-        Text(
-          formatRating(upvotes, downvotes),
-          style: theme.textTheme.labelMedium!.copyWith(color: theme.hintColor),
+        Tooltip(
+          message: context.l.votesStats(upvotes, downvotes, _upvotePercentage),
+          child: Text(
+            formatRating(upvotes, downvotes),
+            style:
+                theme.textTheme.labelMedium!.copyWith(color: theme.hintColor),
+          ),
         ),
         ProgressIconButton(
           icon: Icons.arrow_downward,
