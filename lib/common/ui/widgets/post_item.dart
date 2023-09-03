@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:cookie/api/model/enums.dart';
 import 'package:cookie/api/model/link.dart';
@@ -71,6 +73,7 @@ class _PostItemState extends State<PostItem> {
         }
       }
     } catch (e) {
+      log('Error: $e');
       if (mounted) {
         showApiErrorMessage(context, e);
       }
@@ -352,10 +355,18 @@ class _PostItemState extends State<PostItem> {
             width: 8.0,
           ),
           if (widget.post.userId ==
-              Provider.of<InitialController>(context).initial?.user?.id) ...[
+              Provider.of<InitialController>(context, listen: false)
+                  .initial
+                  ?.user
+                  ?.id) ...[
             ProgressIconButton(
-              onPressed: () =>
-                  context.router.push(ComposeRoute(editPost: widget.post)),
+              onPressed: () {
+                if (widget.isDetailScreen) {
+                  context.router.replace(ComposeRoute(editPost: widget.post));
+                } else {
+                  context.router.push(ComposeRoute(editPost: widget.post));
+                }
+              },
               icon: Icons.edit,
               color: theme.hintColor,
             ),

@@ -167,7 +167,7 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (_) => PostController(
-            PostRepository(Provider.of<InitialController>(context)),
+            PostRepository(Provider.of<InitialController>(context, listen: false)),
             widget.postId,
             widget.post),
         child: Consumer<PostController>(

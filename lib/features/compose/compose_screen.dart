@@ -170,7 +170,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
                           icon: const Icon(Icons.close),
                           onPressed: () => controller.removeImage()),
                       IconButton(
-                        icon: const Icon(Icons.replay),
+                        icon: const Icon(Icons.change_circle),
                         onPressed: () =>
                             _pickImage(controller, ImageSource.gallery),
                       ),
@@ -195,7 +195,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
     final theme = Theme.of(context);
     return ChangeNotifierProvider(create: (_) {
       final controller = ComposeController(
-          ComposeRepository(Provider.of<InitialController>(context)),
+          ComposeRepository(Provider.of<InitialController>(context, listen: false)),
           widget.community,
           widget.editPost);
       _getLostData(controller);

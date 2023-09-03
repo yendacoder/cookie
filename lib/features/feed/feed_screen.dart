@@ -21,7 +21,7 @@ class FeedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (_) => FeedController(
-            PostRepository(Provider.of<InitialController>(context)),
+            PostRepository(Provider.of<InitialController>(context, listen: false)),
             feedType?.toEnumOrNull(FeedType.values),
             communityId),
         child: const AutoRouter());
