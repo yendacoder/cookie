@@ -64,7 +64,7 @@ class Repository {
         if (body is List<int>) {
           request.add(body);
         } else {
-          request.write(json.encode(body));
+          request.add(utf8.encode(json.encode(body)));
         }
       }
       response = await request.close();
