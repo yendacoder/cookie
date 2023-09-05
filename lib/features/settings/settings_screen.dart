@@ -68,7 +68,21 @@ class SettingsScreen extends StatelessWidget {
                         isInverted: true,
                         style: theme.textTheme.titleMedium,
                       ),
-                    ))
+                    )),
+                const SizedBox(height: kPrimaryPaddingDouble,),
+                Text(context.l.settingsCompatibility,
+                    style: theme.textTheme.titleLarge),
+                const SizedBox(height: 6.0,),
+                Row(
+                  children: [
+                    PlatformSwitch(
+                        value: controller.disableImageCache,
+                        onChanged: (selected) =>
+                            controller.disableImageCache = selected),
+                    const SizedBox(width: kSecondaryPadding),
+                    Text(context.l.settingsDisableImageCache),
+                  ],
+                ),
               ],
             ),
           );

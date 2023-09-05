@@ -21,7 +21,7 @@ class InitialController with ChangeNotifier implements AuthRecordProvider {
   AuthRecord _authRecord = AuthRecord.empty();
   Initial? initial;
 
-  // we will make a settings objects later, right now we have a single setting
+  // we will make a settings objects later, right now we only a few settings
   FeedViewType _feedViewType = FeedViewType.regular;
 
   FeedViewType get feedViewType => _feedViewType;
@@ -31,10 +31,20 @@ class InitialController with ChangeNotifier implements AuthRecordProvider {
     notifyListeners();
   }
 
+  bool _disableImageCache = false;
+
+  bool get disableImageCache => _disableImageCache;
+  set disableImageCache(bool value) {
+    _disableImageCache = value;
+    settingsRepository.persistDisableImageCache(value);
+    notifyListeners();
+  }
+
   bool get isLoggedIn => initial?.user != null;
 
   Future<void> _initialize() async {
     _feedViewType = await settingsRepository.getSavedFeedViewType();
+    _disableImageCache = await settingsRepository.getDisableImageCache();
 
     final persistedAuthRecord =
         await initialRepository.getPersistedAuthRecord();

@@ -3,15 +3,17 @@ import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:cookie/api/model/link.dart';
+import 'package:cookie/common/controller/initial_controller.dart';
 import 'package:cookie/common/ui/widgets/common/icon_text.dart';
 import 'package:cookie/common/ui/widgets/common/tappable_item.dart';
 import 'package:cookie/common/util/string_util.dart';
 import 'package:cookie/router/router.gr.dart';
 import 'package:cookie/settings/app_config.dart';
 import 'package:cookie/settings/consts.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cookie/api/model/image.dart' as api_img;
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -96,9 +98,11 @@ class PostImage extends StatelessWidget {
     final url = isAbsoluteUrl(image.url)
         ? image.url
         : AppConfigProvider.of(context).getFullImageUrl(image.url);
+    final cached = !Provider.of<InitialController>(context, listen: false)
+        .disableImageCache;
     Image imageWidget = Image(
       fit: BoxFit.contain,
-      image: CachedNetworkImageProvider(url),
+      image: ExtendedNetworkImageProvider(url, cache: cached),
       errorBuilder: (_, url, ___) {
         log('Failed to load image from $url');
         if (tryFallback && link != null) {

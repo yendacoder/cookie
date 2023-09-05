@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum FeedViewType { full, regular, compact, micro }
 
 const _kFeedViewKey = 'feed_view';
+const _kDisableImageCacheKey = 'disable_image_cache';
 
 class SettingsRepository {
   Future<FeedViewType> getSavedFeedViewType() async {
@@ -16,4 +17,15 @@ class SettingsRepository {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(_kFeedViewKey, feedViewType.name);
   }
+
+  Future<bool> getDisableImageCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_kDisableImageCacheKey) ?? false;
+  }
+
+  Future<void> persistDisableImageCache(bool disable) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(_kDisableImageCacheKey, disable);
+  }
+
 }
