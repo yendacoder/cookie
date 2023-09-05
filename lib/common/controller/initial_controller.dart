@@ -40,11 +40,21 @@ class InitialController with ChangeNotifier implements AuthRecordProvider {
     notifyListeners();
   }
 
+  bool _inlineFullImages = true;
+
+  bool get inlineFullImages => _inlineFullImages;
+  set inlineFullImages(bool value) {
+    _inlineFullImages = value;
+    settingsRepository.persistInlineFullImages(value);
+    notifyListeners();
+  }
+
   bool get isLoggedIn => initial?.user != null;
 
   Future<void> _initialize() async {
     _feedViewType = await settingsRepository.getSavedFeedViewType();
     _disableImageCache = await settingsRepository.getDisableImageCache();
+    _inlineFullImages = await settingsRepository.getInlineFullImages();
 
     final persistedAuthRecord =
         await initialRepository.getPersistedAuthRecord();

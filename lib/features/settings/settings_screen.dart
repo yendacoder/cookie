@@ -83,6 +83,17 @@ class SettingsScreen extends StatelessWidget {
                     Text(context.l.settingsDisableImageCache),
                   ],
                 ),
+                const SizedBox(height: 6.0,),
+                Row(
+                  children: [
+                    PlatformSwitch(
+                        value: controller.inlineFullImages,
+                        onChanged: (selected) =>
+                            controller.inlineFullImages = selected),
+                    const SizedBox(width: kSecondaryPadding),
+                    Text(context.l.settingsInlineFullImages),
+                  ],
+                ),
               ],
             ),
           );

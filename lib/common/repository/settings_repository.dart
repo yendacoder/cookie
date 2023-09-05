@@ -5,6 +5,7 @@ enum FeedViewType { full, regular, compact, micro }
 
 const _kFeedViewKey = 'feed_view';
 const _kDisableImageCacheKey = 'disable_image_cache';
+const _kInlineFullImagesKey = 'inline_full_images';
 
 class SettingsRepository {
   Future<FeedViewType> getSavedFeedViewType() async {
@@ -26,6 +27,16 @@ class SettingsRepository {
   Future<void> persistDisableImageCache(bool disable) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(_kDisableImageCacheKey, disable);
+  }
+
+  Future<bool> getInlineFullImages() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_kInlineFullImagesKey) ?? true;
+  }
+
+  Future<void> persistInlineFullImages(bool disable) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(_kInlineFullImagesKey, disable);
   }
 
 }

@@ -114,6 +114,7 @@
   "settingsFeedViewTypeMicro": "Title only",
   "settingsCompatibility": "Compatibility",
   "settingsDisableImageCache": "Disable image cache",
+  "settingsInlineFullImages": "Inline full images",
   "notificationsTitle": "Notifications",
   "notificationsEmpty": "No notifications",
   "notificationNewComment": "**@{author}** commented on **{title}**",

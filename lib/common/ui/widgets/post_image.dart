@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:cookie/api/model/image_copy.dart';
 import 'package:cookie/api/model/link.dart';
 import 'package:cookie/common/controller/initial_controller.dart';
 import 'package:cookie/common/ui/widgets/common/icon_text.dart';
@@ -89,20 +90,33 @@ class PostImage extends StatelessWidget {
     image.calculatedLinkImageRatio = ratio;
   }
 
+  ImageCopy? _getBestCopy(double screenWidth, List<ImageCopy> copies) {
+    final copy = copies.firstWhere(
+      (copy) => copy.width >= screenWidth,
+      orElse: () => copies.last,
+    );
+    return copy;
+  }
+
   /// Method for displaying full hosted images.
   /// Image dimensions provided by API are incorrect
   /// We will cache the proportions of the actual image received
   /// so that when scrolling up, the list doesn't flicker
   Widget _buildHostedImage(
       BuildContext context, api_img.Image image, bool tryFallback) {
-    final url = isAbsoluteUrl(image.url)
+    final mediaQuery = MediaQuery.of(context);
+    final initial = Provider.of<InitialController>(context, listen: false);
+    final url = initial.inlineFullImages
         ? image.url
-        : AppConfigProvider.of(context).getFullImageUrl(image.url);
-    final cached = !Provider.of<InitialController>(context, listen: false)
-        .disableImageCache;
+        : (_getBestCopy(mediaQuery.size.width, image.copies)?.url ?? image.url);
+
+    final absoluteUrl = isAbsoluteUrl(url)
+        ? url
+        : AppConfigProvider.of(context).getFullImageUrl(url);
+    final cached = !initial.disableImageCache;
     Image imageWidget = Image(
       fit: BoxFit.contain,
-      image: ExtendedNetworkImageProvider(url, cache: cached),
+      image: ExtendedNetworkImageProvider(absoluteUrl, cache: cached),
       errorBuilder: (_, url, ___) {
         log('Failed to load image from $url');
         if (tryFallback && link != null) {
@@ -136,6 +150,7 @@ class PostImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final img = image ?? link!.image;
+    final initial = Provider.of<InitialController>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(kDefaultCornerRadius),
       child: Container(
@@ -143,7 +158,7 @@ class PostImage extends StatelessWidget {
               img?.getAverageColor() ?? Theme.of(context).colorScheme.surface,
           width: double.infinity,
           child: _canTryInline
-              ? previewOnTap
+              ? !initial.inlineFullImages || previewOnTap
                   ? TappableItem(
                       child: Hero(
                           tag: img!.url,

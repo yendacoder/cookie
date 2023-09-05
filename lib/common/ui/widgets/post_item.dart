@@ -95,7 +95,9 @@ class _PostItemState extends State<PostItem> {
             .vote(widget.post.id, up);
       }
     } catch (e) {
-      showApiErrorMessage(context, e);
+      if (mounted) {
+        showApiErrorMessage(context, e);
+      }
     } finally {
       _isVotingUp.value = null;
     }
