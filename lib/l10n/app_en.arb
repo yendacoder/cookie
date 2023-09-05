@@ -115,6 +115,7 @@
   "settingsCompatibility": "Compatibility",
   "settingsDisableImageCache": "Disable image cache",
   "settingsInlineFullImages": "Inline full images",
+  "settingsInlineFullImagesDescription": "When turned on, full original images will be loaded in the feed and on the post screen. Turning it off may improve performance and save data, but some previews may appear cropped.",
   "notificationsTitle": "Notifications",
   "notificationsEmpty": "No notifications",
   "notificationNewComment": "**@{author}** commented on **{title}**",
