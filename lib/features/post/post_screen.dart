@@ -57,7 +57,7 @@ class _PostScreenState extends State<PostScreen> {
                 _loadPage(controller, true);
                 setState(() {});
               }),
-        if (controller.isLoading && controller.comments.isEmpty)
+        if (controller.isLoading && controller.post == null)
           Center(child: PlatformCircularProgressIndicator()),
         if (controller.lastError == null)
           Divider(
@@ -79,7 +79,7 @@ class _PostScreenState extends State<PostScreen> {
         },
       );
     }
-    if (controller.isLoading && controller.comments.isEmpty) {
+    if (controller.isLoading && controller.post == null) {
       return Center(
         child: PlatformCircularProgressIndicator(),
       );
@@ -111,7 +111,7 @@ class _PostScreenState extends State<PostScreen> {
             );
           }
         }
-        if (controller.displayItemsCount == 0) {
+        if (controller.displayItemsCount == 0 && !controller.isLoading) {
           return Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(kPrimaryPaddingDouble),

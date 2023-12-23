@@ -85,6 +85,7 @@ class PostController with ChangeNotifier {
     if (reload) {
       _comments.clear();
       _next = null;
+      _allPagesLoaded = false;
     }
     if (_allPagesLoaded) {
       return;
@@ -93,7 +94,6 @@ class PostController with ChangeNotifier {
     _lastError = null;
     try {
       _post ??= await _postRepository.getPost(_postId);
-
       final comments = await _postRepository.getComments(_postId, next: _next);
       _next = comments.next;
       _allPagesLoaded = _next == null;
