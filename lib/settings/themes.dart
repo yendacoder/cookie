@@ -21,7 +21,6 @@ class Themes {
   ThemeData _applyCommonMaterialTheme(ThemeData base) {
     return base.copyWith(
       platform: targetPlatform,
-      useMaterial3: true,
       applyElevationOverlayColor: false,
       inputDecorationTheme: InputDecorationTheme(
         contentPadding: const EdgeInsets.fromLTRB(12.0, 8.0, 40.0, 8.0),
@@ -61,7 +60,9 @@ class Themes {
         brightness: Brightness.dark,
         primarySwatch: Colors.blueGrey,
         accentColor: Colors.deepOrangeAccent,
+        backgroundColor: Colors.blueGrey.shade900,
       ),
+      disabledColor: Colors.blueGrey.shade800,
     ));
 
     final Brightness brightness;

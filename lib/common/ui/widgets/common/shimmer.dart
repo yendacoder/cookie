@@ -10,7 +10,7 @@ class Shimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return shimmer.Shimmer.fromColors(
-        baseColor: theme.colorScheme.surface,
+        baseColor: Colors.blueGrey.shade800,
         highlightColor: theme.colorScheme.background,
         child: child);
   }
