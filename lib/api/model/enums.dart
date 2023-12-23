@@ -34,4 +34,5 @@ enum NotificationType {
   newComment,
   commentReply,
   modAdd,
+  newVotes,
 }

@@ -44,6 +44,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       title = context.l.notificationNewReply(
           notification.notif?.commentAuthor ?? '',
           notification.notif?.post?.title ?? '');
+    } else if (notification.typeType == NotificationType.newVotes) {
+      title = context.l.notificationNewVotes(
+          notification.notif?.post?.title ?? '');
     } else if (notification.typeType == NotificationType.modAdd) {
       title = context.l.notificationModAdd(notification.notif?.addedBy ?? '',
           notification.notif?.community?.name ?? '');
@@ -61,19 +64,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     final theme = Theme.of(context);
     return TappableItem(
       padding: const EdgeInsets.symmetric(vertical: kSecondaryPadding),
-      onTap: notification.notif?.postId != null ||
-              notification.notif?.commentId != null
+      onTap: notification.notif?.post?.publicId != null ||
+              notification.notif?.commentId != null ||
+              notification.notif?.community?.id != null
           ? () {
               controller.markAsSeen(notification).ignore();
               if (notification.notif?.post?.publicId != null) {
                 context.router.push(PostRoute(
                     postId: notification.notif!.post!.publicId,
                     post: notification.notif?.post));
-              }
-              if (notification.notif?.communityId != null) {
+              } else if (notification.notif?.community?.id != null) {
                 context.router.push(FeedRoute(
                     feedType: FeedType.community.name,
-                    communityId: notification.notif!.communityId!));
+                    communityId: notification.notif!.community!.id));
               }
             }
           : null,
