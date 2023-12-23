@@ -11,7 +11,7 @@ jobs:
 
     uses: ./.github/workflows/release-android.yaml
     with:
-      FLUTTER_VERSION: 3.13.0
+      FLUTTER_VERSION: 3.16.4
       VERSION_TAG: ${{ github.ref_name }}
     secrets:
       ANDROID_KEY_PROPERTIES: ${{ secrets.ANDROID_KEY_PROPERTIES }}
