@@ -15,6 +15,9 @@ Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
       json['userId'] as String,
       json['username'] as String,
       json['userGroup'] as String,
+      json['author'] == null
+          ? null
+          : User.fromJson(json['author'] as Map<String, dynamic>),
       json['userDeleted'] as bool,
       json['parentId'] as String?,
       json['depth'] as int,
@@ -44,6 +47,7 @@ Map<String, dynamic> _$CommentToJson(Comment instance) => <String, dynamic>{
       'userId': instance.userId,
       'username': instance.username,
       'userGroup': instance.userGroup,
+      'author': instance.author,
       'userDeleted': instance.userDeleted,
       'parentId': instance.parentId,
       'depth': instance.depth,

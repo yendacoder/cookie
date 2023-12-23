@@ -54,7 +54,7 @@ class OverflowMarkdown extends MarkdownBody {
       if (richText != null) {
         return RichText(
           text: richText.text,
-          textScaleFactor: richText.textScaleFactor,
+          textScaler: richText.textScaler,
           textAlign: richText.textAlign,
           maxLines: maxLines,
           overflow: overflow ?? TextOverflow.visible,
@@ -90,7 +90,7 @@ class MarkdownText extends StatelessWidget {
     final linkColor = theme.brightness == Brightness.dark
         ? kLinkTextColorDark
         : kLinkTextColorLight;
-    final baseStyle = style ?? theme.textTheme.bodyLarge;
+    final baseStyle = style ?? theme.textTheme.bodyMedium;
     return OverflowMarkdown(
         // softLineBreak: true,
         maxLines: maxLines,

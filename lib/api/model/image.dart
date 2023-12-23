@@ -31,12 +31,27 @@ class Image {
 
   Color? getAverageColor() {
     try {
-      final rgb = averageColor.substring(4, averageColor.length - 1).split(', ');
-      return Color.fromARGB(255, int.parse(rgb[0]), int.parse(rgb[1]), int.parse(rgb[2]));
+      final rgb = averageColor.substring(4, averageColor.length - 1).split(',');
+      return Color.fromARGB(255, int.parse(rgb[0].trim()), int.parse(rgb[1].trim()), int.parse(rgb[2].trim()));
     } catch (e) {
       log('cannot parse color "$averageColor": $e');
       return null;
     }
+  }
+
+  /// Get the url of the image copy that has both dimensions
+  /// greater than or equal to the target dimensions.
+  String getBestMatchingUrl({double? targetWidth, double? targetHeight}) {
+    final w = targetWidth ?? width;
+    final h = targetHeight ?? height;
+    if (w >= width && h >= height) {
+      return url;
+    }
+    final copy = copies.firstWhere(
+          (copy) => copy.width >= w && copy.height >= h,
+      orElse: () => copies.last,
+    );
+    return copy.url;
   }
 
   factory Image.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);

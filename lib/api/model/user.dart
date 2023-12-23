@@ -1,3 +1,4 @@
+import 'package:cookie/api/model/image.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
@@ -24,6 +25,7 @@ class User {
 
   String id;
   String username;
+  Image? proPic;
   String? email;
   String? emailConfirmedAt;
   String? aboutMe;

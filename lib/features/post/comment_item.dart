@@ -85,6 +85,7 @@ class CommentItem extends StatelessWidget {
                       children: [
                         Username(
                           username: comment.username,
+                          userImage: comment.author?.proPic,
                           isDeleted: comment.deletedAt != null,
                         ),
                         if (isOp)

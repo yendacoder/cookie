@@ -111,7 +111,8 @@ class _PostItemState extends State<PostItem> {
         children: [
           Expanded(
               child: Username(
-            username: widget.post.username,
+            username: widget.post.author.username,
+            userImage: widget.post.author.proPic,
           )),
           const SizedBox(
             width: 6.0,

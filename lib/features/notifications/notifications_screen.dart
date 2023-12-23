@@ -81,6 +81,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         leading: notification.notif?.commentAuthor != null
             ? UserImage(
                 username: notification.notif!.commentAuthor!,
+                userImage: null,
                 size: 48.0,
               )
             : CommunityIcon(

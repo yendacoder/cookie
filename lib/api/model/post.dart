@@ -3,6 +3,7 @@ import 'package:cookie/api/model/community.dart';
 import 'package:cookie/api/model/enums.dart';
 import 'package:cookie/api/model/image.dart';
 import 'package:cookie/api/model/link.dart';
+import 'package:cookie/api/model/user.dart';
 import 'package:cookie/common/util/common_util.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -16,6 +17,7 @@ class Post {
       this.type,
       this.userId,
       this.username,
+      this.author,
       this.userGroup,
       this.userDeleted,
       this.isPinned,
@@ -57,6 +59,7 @@ class Post {
   PostType get postType => type.toEnum(PostType.values);
   String userId;
   String username;
+  User author;
   String userGroup;
 
   UserGroup get userGroupType => userGroup.toEnum(UserGroup.values);

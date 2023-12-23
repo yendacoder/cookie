@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:cookie/api/model/image_copy.dart';
 import 'package:cookie/api/model/link.dart';
 import 'package:cookie/common/controller/initial_controller.dart';
 import 'package:cookie/common/ui/widgets/common/icon_text.dart';
@@ -90,14 +89,6 @@ class PostImage extends StatelessWidget {
     image.calculatedLinkImageRatio = ratio;
   }
 
-  ImageCopy? _getBestCopy(double screenWidth, List<ImageCopy> copies) {
-    final copy = copies.firstWhere(
-      (copy) => copy.width >= screenWidth,
-      orElse: () => copies.last,
-    );
-    return copy;
-  }
-
   /// Method for displaying full hosted images.
   /// Image dimensions provided by API are incorrect
   /// We will cache the proportions of the actual image received
@@ -108,7 +99,7 @@ class PostImage extends StatelessWidget {
     final initial = Provider.of<InitialController>(context, listen: false);
     final url = initial.inlineFullImages
         ? image.url
-        : (_getBestCopy(mediaQuery.size.width, image.copies)?.url ?? image.url);
+        : image.getBestMatchingUrl(targetWidth: mediaQuery.size.width * mediaQuery.devicePixelRatio);
 
     final absoluteUrl = isAbsoluteUrl(url)
         ? url

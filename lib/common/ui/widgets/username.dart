@@ -1,10 +1,16 @@
 import 'package:cookie/common/ui/widgets/user_image.dart';
+import 'package:cookie/api/model/image.dart' as api;
 import 'package:flutter/material.dart';
 
 class Username extends StatelessWidget {
-  const Username({super.key, required this.username, this.isDeleted = false});
+  const Username(
+      {super.key,
+      required this.username,
+      required this.userImage,
+      this.isDeleted = false});
 
   final String username;
+  final api.Image? userImage;
   final bool isDeleted;
 
   @override
@@ -15,6 +21,7 @@ class Username extends StatelessWidget {
       children: [
         UserImage(
           username: username,
+          userImage: userImage,
           isDeleted: isDeleted,
         ),
         const SizedBox(

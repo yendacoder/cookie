@@ -116,6 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Center(
             child: UserImage(
               username: initialController.initial!.user!.username,
+              userImage: initialController.initial!.user!.proPic,
               size: 80,
             ),
           ),

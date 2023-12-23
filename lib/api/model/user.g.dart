@@ -22,11 +22,14 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       json['bannedAt'] as String?,
       json['notificationsNewCount'] as int,
       (json['moddingList'] as List<dynamic>?)?.map((e) => e as String).toList(),
-    );
+    )..proPic = json['proPic'] == null
+        ? null
+        : Image.fromJson(json['proPic'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'id': instance.id,
       'username': instance.username,
+      'proPic': instance.proPic,
       'email': instance.email,
       'emailConfirmedAt': instance.emailConfirmedAt,
       'aboutMe': instance.aboutMe,

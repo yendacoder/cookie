@@ -1,3 +1,4 @@
+import 'package:cookie/api/model/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'comment.g.dart';
@@ -13,6 +14,7 @@ class Comment {
       this.userId,
       this.username,
       this.userGroup,
+      this.author,
       this.userDeleted,
       this.parentId,
       this.depth,
@@ -40,6 +42,7 @@ class Comment {
   String userId;
   String username;
   String userGroup;
+  User? author;
   bool userDeleted;
   String? parentId;
   int depth;
