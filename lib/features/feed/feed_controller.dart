@@ -159,8 +159,8 @@ class FeedController with ChangeNotifier {
     try {
       final updatedPost = await _postRepository.vote(postId, up);
       final post = _posts.firstWhere((element) => element.id == postId);
-      post.userVoted = true;
-      post.userVotedUp = up;
+      post.userVoted = updatedPost.userVoted;
+      post.userVotedUp = updatedPost.userVotedUp;
       post.upvotes = updatedPost.upvotes;
       post.downvotes = updatedPost.downvotes;
 
