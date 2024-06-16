@@ -49,7 +49,8 @@ class OverflowMarkdown extends MarkdownBody {
 
   @override
   Widget build(BuildContext context, List<Widget>? children) {
-    if (maxLines != null || overflow != null) {
+    if (children?.isNotEmpty == true &&
+        (maxLines != null || overflow != null)) {
       final RichText? richText = _findWidgetOfType<RichText>(children?.first);
       if (richText != null) {
         return RichText(
@@ -92,30 +93,30 @@ class MarkdownText extends StatelessWidget {
         : kLinkTextColorLight;
     final baseStyle = style ?? theme.textTheme.bodyMedium;
     return OverflowMarkdown(
-        // softLineBreak: true,
-        maxLines: maxLines,
-        overflow: overflow,
-        styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-            p: baseStyle,
-            em: emStyle ?? baseStyle?.copyWith(fontStyle: FontStyle.italic),
-            strong:
-                strongStyle ?? baseStyle?.copyWith(fontWeight: FontWeight.bold),
-            blockquotePadding: const EdgeInsets.all(kSecondaryPadding),
-            blockquoteDecoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                borderRadius: BorderRadius.circular(kDefaultCornerRadius)),
-            a: baseStyle?.copyWith(
-                decoration: TextDecoration.underline, color: linkColor)),
-        data: text,
-        onTapLink: (text, ref, title) {
-          if (ref != null) {
-            if (text.toLowerCase().startsWith('http')) {
-              launchUrlString(text, mode: LaunchMode.externalApplication);
-            } else {
-              launchUrlString(ref, mode: LaunchMode.externalApplication);
-            }
+      // softLineBreak: true,
+      maxLines: maxLines,
+      overflow: overflow,
+      styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+          p: baseStyle,
+          em: emStyle ?? baseStyle?.copyWith(fontStyle: FontStyle.italic),
+          strong:
+              strongStyle ?? baseStyle?.copyWith(fontWeight: FontWeight.bold),
+          blockquotePadding: const EdgeInsets.all(kSecondaryPadding),
+          blockquoteDecoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(kDefaultCornerRadius)),
+          a: baseStyle?.copyWith(
+              decoration: TextDecoration.underline, color: linkColor)),
+      data: text,
+      onTapLink: (text, ref, title) {
+        if (ref != null) {
+          if (text.toLowerCase().startsWith('http')) {
+            launchUrlString(text, mode: LaunchMode.externalApplication);
+          } else {
+            launchUrlString(ref, mode: LaunchMode.externalApplication);
           }
-        },
+        }
+      },
     );
   }
 }
