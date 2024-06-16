@@ -51,7 +51,7 @@ android {
 
     defaultConfig {
         applicationId "me.k7a.cookie"
-        minSdkVersion 19
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

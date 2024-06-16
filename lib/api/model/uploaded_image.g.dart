@@ -18,7 +18,7 @@ UploadedImage _$UploadedImageFromJson(Map<String, dynamic> json) =>
       Color.fromJson(json['averageColor'] as Map<String, dynamic>),
       json['url'] as String,
       (json['urls'] as List<dynamic>).map((e) => e as String).toList(),
-      json['createdAt'] as String,
+      DateTime.parse(json['createdAt'] as String),
       json['deleted'] as bool,
     );
 
@@ -34,6 +34,6 @@ Map<String, dynamic> _$UploadedImageToJson(UploadedImage instance) =>
       'averageColor': instance.averageColor,
       'url': instance.url,
       'urls': instance.urls,
-      'createdAt': instance.createdAt,
+      'createdAt': instance.createdAt.toIso8601String(),
       'deleted': instance.deleted,
     };

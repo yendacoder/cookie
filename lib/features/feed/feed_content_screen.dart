@@ -32,6 +32,7 @@ class FeedContentScreen extends StatefulWidget {
 
 class _FeedContentScreenScreenState extends State<FeedContentScreen> {
   final _sortMenuKey = GlobalKey<PlatformCustomPopupMenuState>();
+  final _listKey = GlobalKey();
   final _scrollController = ScrollController();
 
   @override
@@ -126,6 +127,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
       );
     }
     return RefreshableList(
+      key: _listKey,
       refreshRequest: () => _loadPage(controller, true),
       nextPageRequest: () => _loadPage(controller, false),
       isLoading: controller.isLoading,
@@ -164,7 +166,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
           child: Icon(icon,
               color: onTap == null
                   ? theme.disabledColor
-                  : theme.colorScheme.onBackground)),
+                  : theme.colorScheme.onSurface)),
     );
     if (backgroundColor != null) {
       return DecoratedBox(
@@ -271,7 +273,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
         Provider.of<InitialController>(context, listen: false).isLoggedIn;
     return Container(
       height: kNavigationBarHeight,
-      color: theme.colorScheme.background,
+      color: theme.colorScheme.surface,
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -315,7 +317,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
     final initialController = Provider.of<InitialController>(context);
     return Container(
       height: kNavigationBarHeight,
-      color: theme.colorScheme.background,
+      color: theme.colorScheme.surface,
       child: Row(
         children: [
           const SizedBox(
@@ -338,7 +340,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
                         try {
                           await initialController
                               .toggleJoinCommunity(community);
-                          if (mounted) {
+                          if (context.mounted) {
                             if (community.userJoined == true) {
                               showNotification(
                                   context,
@@ -352,7 +354,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
                             }
                           }
                         } catch (e) {
-                          if (mounted) {
+                          if (context.mounted) {
                             showApiErrorMessage(context, e);
                           }
                         }

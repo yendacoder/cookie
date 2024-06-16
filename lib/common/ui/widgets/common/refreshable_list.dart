@@ -14,7 +14,8 @@ class RefreshableList extends StatefulWidget {
       this.nextPageRequest,
       this.dividerBuilder,
       this.padding = EdgeInsets.zero,
-      this.scrollController})
+      this.scrollController,
+      this.needsOverlapInjector = false})
       : super(key: key);
 
   final VoidCallback refreshRequest;
@@ -25,6 +26,7 @@ class RefreshableList extends StatefulWidget {
   final int itemCount;
   final EdgeInsets padding;
   final ScrollController? scrollController;
+  final bool needsOverlapInjector;
 
   @override
   State<StatefulWidget> createState() => _RefreshableListState();
@@ -32,18 +34,26 @@ class RefreshableList extends StatefulWidget {
 
 class _RefreshableListState extends State<RefreshableList> {
   Completer<void>? _refreshCompleter;
-  late final ScrollController _scrollController;
+  late final ScrollController? _scrollController;
 
   @override
   void initState() {
-    _scrollController = widget.scrollController ?? ScrollController();
+    if (widget.needsOverlapInjector) {
+      // for overlap injector to work,
+      // the scroll controller for the list must be the primary scroll
+      // controller. So, with injector, we need to skip creating
+      // the scroll controller here.
+      _scrollController = widget.scrollController;
+    } else {
+      _scrollController = widget.scrollController ?? ScrollController();
+    }
     super.initState();
   }
 
   @override
   void dispose() {
     if (widget.scrollController == null) {
-      _scrollController.dispose();
+      _scrollController?.dispose();
     }
     super.dispose();
   }
@@ -65,9 +75,18 @@ class _RefreshableListState extends State<RefreshableList> {
       return NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification notification) {
             if (notification is ScrollEndNotification) {
-              if (_scrollController.position.extentAfter <
-                  kDefaultTappableItemHeight) {
-                widget.nextPageRequest?.call();
+              if (_scrollController == null) {
+                // this can probably be a bit more elegant
+                // need to find which position belongs to the current list
+                if (PrimaryScrollController.of(context).positions.any(
+                    (pos) => pos.extentAfter < kDefaultTappableItemHeight)) {
+                  widget.nextPageRequest?.call();
+                }
+              } else {
+                if (_scrollController!.position.extentAfter <
+                    kDefaultTappableItemHeight) {
+                  widget.nextPageRequest?.call();
+                }
               }
             }
             return false;
@@ -90,6 +109,10 @@ class _RefreshableListState extends State<RefreshableList> {
               _refreshCompleter = Completer();
               return _refreshCompleter!.future;
             },
+          ),
+        if (widget.needsOverlapInjector)
+          SliverOverlapInjector(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
           ),
         SliverPadding(
             padding: widget.padding,

@@ -1,4 +1,3 @@
-
 import 'package:cookie/api/model/notifications.dart';
 import 'package:cookie/common/controller/initial_controller.dart';
 import 'package:cookie/common/repository/repository.dart';

@@ -9,6 +9,7 @@ class Comment {
       this.id,
       this.postId,
       this.postPublicId,
+      this.postTitle,
       this.communityId,
       this.communityName,
       this.userId,
@@ -37,6 +38,7 @@ class Comment {
   String id;
   String postId;
   String postPublicId;
+  String? postTitle;
   String? communityId;
   String? communityName;
   String userId;
@@ -52,10 +54,9 @@ class Comment {
   String body;
   int upvotes;
   int downvotes;
-  String createdAt;
-  DateTime createdAtDate() => DateTime.parse(createdAt);
-  String? editedAt;
-  String? deletedAt;
+  DateTime createdAt;
+  DateTime? editedAt;
+  DateTime? deletedAt;
   String? deletedBy;
   String? deletedAs;
   bool? userVoted;

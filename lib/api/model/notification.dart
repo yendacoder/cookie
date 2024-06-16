@@ -21,12 +21,8 @@ class Notification {
   NotificationType? get typeType => type.toEnumOrNull(NotificationType.values);
 
   bool seen;
-  final String? seenAt;
-
-  DateTime? get seenAtDate => seenAt?.toDateTime();
-  final String createdAt;
-
-  DateTime get createdAtDate => createdAt.toDateTime();
+  final DateTime? seenAt;
+  final DateTime createdAt;
   final NotificationContent? notif;
 
   factory Notification.fromJson(Map<String, dynamic> json) =>

@@ -98,10 +98,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           style: theme.textTheme.titleSmall!.copyWith(
               color: notification.seen
                   ? theme.disabledColor
-                  : theme.colorScheme.onBackground),
+                  : theme.colorScheme.onSurface),
         ),
         subtitle: Text(
-          '${context.displayElapsedTime(notification.createdAtDate)} - ${notification.createdAtDate.toDisplayDateTimeShort()}',
+          '${context.displayElapsedTime(notification.createdAt)} - ${notification.createdAt.toDisplayDateTimeShort()}',
           style: theme.textTheme.bodyMedium!.copyWith(
               color: notification.seen ? theme.disabledColor : theme.hintColor),
         ),

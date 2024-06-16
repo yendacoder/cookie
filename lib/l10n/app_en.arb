@@ -71,6 +71,9 @@
   "authLogin": "Login",
   "authRegister": "Register on the website",
   "authLogout": "Logout",
+  "userFeedAll": "Activity",
+  "userFeedPosts": "Posts",
+  "userFeedComments": "Comments",
   "profilePoints": "Points: {points}",
   "@profilePoints": {
     "placeholders": {
@@ -95,7 +98,17 @@
       }
     }
   },
+  "profileJoined": "Joined on {date}",
+  "@profileJoined": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "profileCommunities": "Communities",
+  "profileMutedCommunities": "Muted communities",
+  "profileMutedUsers": "Muted users",
   "profileAbout": "About Cookie",
   "profileOpenSourceLicenses": "Open source licenses",
   "profileVersion": "Version {version}",
@@ -209,5 +222,8 @@
   "parseError": "Cannot recognize server response",
   "serverError": "Error on the server",
   "networkError": "Network error",
-  "unknownError": "Unknown error"
+  "mutedAdded": "Muted successfully",
+  "mutedRemoved": "Unmuted successfully",
+  "unknownError": "Unknown error",
+  "genericEmpty": "Nothing here"
 }

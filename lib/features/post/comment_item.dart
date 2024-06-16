@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cookie/api/model/comment.dart';
 import 'package:cookie/common/ui/widgets/common/markdown_text.dart';
 import 'package:cookie/common/ui/widgets/common/tappable_item.dart';
@@ -8,6 +9,7 @@ import 'package:cookie/common/ui/widgets/username.dart';
 import 'package:cookie/common/util/context_util.dart';
 import 'package:cookie/common/util/string_util.dart';
 import 'package:cookie/features/post/compose_comment.dart';
+import 'package:cookie/router/router.gr.dart';
 import 'package:cookie/settings/consts.dart';
 import 'package:flutter/material.dart';
 
@@ -83,11 +85,17 @@ class CommentItem extends StatelessWidget {
                     onTap: onCommentClicked,
                     child: Row(
                       children: [
-                        Username(
-                          username: comment.username,
-                          userImage: comment.author?.proPic,
-                          isDeleted: comment.deletedAt != null,
-                        ),
+                        TappableItem(
+                            onTap: () {
+                              context.router.push(UserRoute(
+                                username: comment.username,
+                              ));
+                            },
+                            child: Username(
+                              username: comment.username,
+                              userImage: comment.author?.proPic,
+                              isDeleted: comment.deletedAt != null,
+                            )),
                         if (isOp)
                           Padding(
                             padding: const EdgeInsets.only(left: 6.0),
@@ -102,17 +110,17 @@ class CommentItem extends StatelessWidget {
                           width: 6.0,
                         ),
                         MarkdownText(
-                          context.displayElapsedTime(comment.createdAtDate(),
+                          context.displayElapsedTime(comment.createdAt,
                               short: true),
                           style: theme.textTheme.bodyMedium!
                               .copyWith(color: theme.hintColor),
                         ),
                         const Spacer(),
                         Tooltip(
-                          message: context.l.votesStats(
-                            comment.upvotes, comment.downvotes, comment.upvotePercentage
-                          ),
-                          child: Text(formatRating(comment.upvotes, comment.downvotes),
+                          message: context.l.votesStats(comment.upvotes,
+                              comment.downvotes, comment.upvotePercentage),
+                          child: Text(
+                              formatRating(comment.upvotes, comment.downvotes),
                               style: theme.textTheme.bodyMedium!.copyWith(
                                   color: (comment.userVoted == true &&
                                           comment.userVotedUp == true)

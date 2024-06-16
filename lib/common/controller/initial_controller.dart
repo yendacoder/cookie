@@ -4,6 +4,8 @@ import 'package:cookie/api/auth_record.dart';
 import 'package:cookie/api/model/community.dart';
 import 'package:cookie/api/model/initial.dart';
 import 'package:cookie/api/model/post.dart';
+import 'package:cookie/api/model/user.dart';
+import 'package:cookie/api/model/user_mute.dart';
 import 'package:cookie/common/repository/initial_repository.dart';
 import 'package:cookie/common/repository/settings_repository.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,6 +27,7 @@ class InitialController with ChangeNotifier implements AuthRecordProvider {
   FeedViewType _feedViewType = FeedViewType.regular;
 
   FeedViewType get feedViewType => _feedViewType;
+
   set feedViewType(FeedViewType value) {
     _feedViewType = value;
     settingsRepository.persistFeedViewType(value);
@@ -34,6 +37,7 @@ class InitialController with ChangeNotifier implements AuthRecordProvider {
   bool _disableImageCache = false;
 
   bool get disableImageCache => _disableImageCache;
+
   set disableImageCache(bool value) {
     _disableImageCache = value;
     settingsRepository.persistDisableImageCache(value);
@@ -43,6 +47,7 @@ class InitialController with ChangeNotifier implements AuthRecordProvider {
   bool _inlineFullImages = true;
 
   bool get inlineFullImages => _inlineFullImages;
+
   set inlineFullImages(bool value) {
     _inlineFullImages = value;
     settingsRepository.persistInlineFullImages(value);
@@ -130,5 +135,24 @@ class InitialController with ChangeNotifier implements AuthRecordProvider {
 
   void notifyNewPost() {
     notifyListeners();
+  }
+
+  bool isUserMuted(String userId) {
+    return initial?.mutes.userMutes.any((mute) => mute.mutedUserId == userId) ??
+        false;
+  }
+
+  Future<bool> toggleMute(User user) async {
+    bool isMuted = isUserMuted(user.id);
+    if (isMuted) {
+      await initialRepository.unmuteUser(_authRecord, user.id);
+      initial?.mutes.userMutes.removeWhere((mute) => mute.mutedUserId == user.id);
+    } else {
+      await initialRepository.muteUser(_authRecord, user.id);
+      initial?.mutes.userMutes
+          .add(UserMute('', 'user', user.id, DateTime.now(), user));
+    }
+    notifyListeners();
+    return !isMuted;
   }
 }

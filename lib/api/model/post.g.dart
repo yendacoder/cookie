@@ -40,11 +40,17 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       json['upvotes'] as int,
       json['downvotes'] as int,
       json['hotness'] as int,
-      json['createdAt'] as String,
-      json['editedAt'] as String?,
-      json['lastActivityAt'] as String?,
+      DateTime.parse(json['createdAt'] as String),
+      json['editedAt'] == null
+          ? null
+          : DateTime.parse(json['editedAt'] as String),
+      json['lastActivityAt'] == null
+          ? null
+          : DateTime.parse(json['lastActivityAt'] as String),
       json['deleted'] as bool,
-      json['deletedAt'] as String?,
+      json['deletedAt'] == null
+          ? null
+          : DateTime.parse(json['deletedAt'] as String),
       json['deletedBy'] as String?,
       json['deletedAs'] as String?,
       json['deletedContent'] as bool,
@@ -86,11 +92,11 @@ Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
       'upvotes': instance.upvotes,
       'downvotes': instance.downvotes,
       'hotness': instance.hotness,
-      'createdAt': instance.createdAt,
-      'editedAt': instance.editedAt,
-      'lastActivityAt': instance.lastActivityAt,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'editedAt': instance.editedAt?.toIso8601String(),
+      'lastActivityAt': instance.lastActivityAt?.toIso8601String(),
       'deleted': instance.deleted,
-      'deletedAt': instance.deletedAt,
+      'deletedAt': instance.deletedAt?.toIso8601String(),
       'deletedBy': instance.deletedBy,
       'deletedAs': instance.deletedAs,
       'deletedContent': instance.deletedContent,

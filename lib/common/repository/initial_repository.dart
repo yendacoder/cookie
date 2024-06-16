@@ -62,4 +62,19 @@ class InitialRepository extends Repository {
     });
     return performRequestEmptyResult(authRecord, () => client.http.deleteUrl(uri));
   }
+
+
+  Future<void> muteUser(AuthRecord authRecord, String userId) async {
+    final uri = client.initRequest('mutes');
+    await performRequestEmptyResult(authRecord, () => client.http.postUrl(uri),
+        body: {
+          'userId': userId,
+        });
+  }
+
+  Future<void> unmuteUser(AuthRecord authRecord, String userId) async {
+    final uri = client.initRequest('mutes/users/$userId');
+    await performRequestEmptyResult(
+        authRecord, () => client.http.deleteUrl(uri));
+  }
 }

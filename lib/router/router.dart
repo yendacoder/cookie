@@ -17,6 +17,7 @@ class AppRouter extends $AppRouter {
           AutoRoute(path: '', page: FeedRoute.page, children: [
             AutoRoute(path: '', page: FeedContentRoute.page),
             AutoRoute(path: ':postId', page: PostRoute.page),
+            AutoRoute(path: 'user/:username', page: UserRoute.page),
           ]),
           AutoRoute(path: 'profile', page: ProfileRoute.page),
           AutoRoute(path: 'settings', page: SettingsRoute.page),

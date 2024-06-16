@@ -21,8 +21,8 @@ class ProgressIconButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       material: (_, __) => MaterialTextButtonData(
           style: ButtonStyle(
-        minimumSize: MaterialStateProperty.all(const Size(0.0, 0.0)),
-        padding: MaterialStateProperty.all(const EdgeInsets.all(0.0)),
+        minimumSize: WidgetStateProperty.all(const Size(0.0, 0.0)),
+        padding: WidgetStateProperty.all(const EdgeInsets.all(0.0)),
             visualDensity: VisualDensity.compact,
       )),
       onPressed: isRunning ? null : onPressed,
@@ -37,7 +37,7 @@ class ProgressIconButton extends StatelessWidget {
                   color: color ??
                       (onPressed == null
                           ? theme.disabledColor
-                          : theme.colorScheme.onBackground),
+                          : theme.colorScheme.onSurface),
                 )),
     );
   }

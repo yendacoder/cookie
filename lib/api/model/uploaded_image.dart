@@ -34,7 +34,7 @@ class UploadedImage {
   final List<String> urls;
   // Image copy object is different, let's skip it for now
   // final List<ImageCopy> copies;
-  final String createdAt;
+  final DateTime createdAt;
   final bool deleted;
 
   @JsonKey(includeFromJson: false, includeToJson: false)

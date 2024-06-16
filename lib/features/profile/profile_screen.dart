@@ -1,6 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cookie/api/model/community.dart';
+import 'package:cookie/api/model/community_mute.dart';
 import 'package:cookie/api/model/enums.dart';
+import 'package:cookie/api/model/user.dart';
+import 'package:cookie/api/model/user_mute.dart';
 import 'package:cookie/common/controller/initial_controller.dart';
 import 'package:cookie/common/ui/notifications.dart';
 import 'package:cookie/common/ui/widgets/common/icon_text.dart';
@@ -83,6 +86,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Widget _buildUser(BuildContext context, User user) {
+    return TappableItem(
+      child: ListTile(
+        leading: UserImage(
+          username: user.username,
+          userImage: user.proPic,
+        ),
+        title: Text('@${user.username}'),
+      ),
+      onTap: () => context.router.push(UserRoute(username: user.username)),
+    );
+  }
+
+  Widget _buildSection(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: kPrimaryPadding),
+      child: Text(
+        title,
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
+    );
+  }
+
   Widget _buildHeader(
       BuildContext context, InitialController initialController) {
     final theme = Theme.of(context);
@@ -114,10 +140,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             height: kSecondaryPadding,
           ),
           Center(
-            child: UserImage(
-              username: initialController.initial!.user!.username,
-              userImage: initialController.initial!.user!.proPic,
-              size: 80,
+            child: TappableItem(
+              onTap: () => context.router.push(UserRoute(
+                  username: initialController.initial!.user!.username)),
+              child: UserImage(
+                username: initialController.initial!.user!.username,
+                userImage: initialController.initial!.user!.proPic,
+                size: 80,
+              ),
             ),
           ),
           Container(
@@ -137,14 +167,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               context.l.profileComments(
                   initialController.initial!.user!.noComments)),
         ],
-        if ((initialController.initial?.communities.length ?? 0) > 0)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: kPrimaryPadding),
-            child: Text(
-              context.l.profileCommunities,
-              style: theme.textTheme.titleMedium,
-            ),
-          )
       ],
     );
   }
@@ -189,9 +211,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final initialController = Provider.of<InitialController>(context);
-    final communitiesCount =
-        (initialController.initial?.communities.length ?? 0);
     final theme = Theme.of(context);
+    final List<dynamic> items = [
+      if ((initialController.initial?.communities.length ?? 0) > 0) ...[
+        context.l.profileCommunities,
+        ...initialController.initial!.communities,
+      ],
+      if ((initialController.initial?.mutes.communityMutes.length ?? 0) >
+          0) ...[
+        context.l.profileMutedCommunities,
+        ...initialController.initial!.mutes.communityMutes,
+      ],
+      if ((initialController.initial?.mutes.userMutes.length ?? 0) > 0) ...[
+        context.l.profileMutedUsers,
+        ...initialController.initial!.mutes.userMutes,
+      ],
+    ];
     return PlatformScaffold(
       appBar: PlatformAppBar(
         title: Text(
@@ -219,16 +254,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
       body: ListView.builder(
-        itemCount: communitiesCount + 2,
+        itemCount: items.length + 2,
         padding: const EdgeInsets.all(kPrimaryPadding),
         itemBuilder: (BuildContext context, int index) {
           if (index == 0) {
             return _buildHeader(context, initialController);
-          } else if (index > communitiesCount) {
+          } else if (index > items.length) {
             return _buildFooter(context);
           } else {
-            return _buildCommunity(
-                context, initialController.initial!.communities[index - 1]);
+            final item = items[index - 1];
+            if (item is String) {
+              return _buildSection(context, item);
+            } else if (item is UserMute) {
+              return _buildUser(context, item.mutedUser);
+            } else if (item is CommunityMute) {
+              return _buildCommunity(context, item.mutedCommunity);
+            } else if (item is Community) {
+              return _buildCommunity(context, item);
+            }
+            return const SizedBox.shrink();
           }
         },
       ),

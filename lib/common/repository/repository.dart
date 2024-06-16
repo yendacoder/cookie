@@ -15,7 +15,7 @@ class Repository {
   final client = ApiClient();
 
   Future<List<T>> performRequestListResult<T>(
-      AuthRecord authRecord,
+      AuthRecord? authRecord,
       PerformRequestCallback performRequestCallback,
       ParseResultObjectCallback<T> parseResultObjectCallback, {dynamic body}) async {
     return performRequest<Iterable<dynamic>, List<T>>(

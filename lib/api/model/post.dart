@@ -84,23 +84,14 @@ class Post {
   int downvotes;
   int hotness;
 
-  String createdAt;
-
-  DateTime get createdAtDate => createdAt.toDateTime();
-  String? editedAt;
-
-  DateTime? get editedAtDate => editedAt?.toDateTime();
-  String? lastActivityAt;
-
-  DateTime? get lastActivityAtDate => lastActivityAt?.toDateTime();
+  DateTime createdAt;
+  DateTime? editedAt;
+  DateTime? lastActivityAt;
 
   bool deleted;
-  String? deletedAt;
+  DateTime? deletedAt;
 
-  DateTime? get deletedAtDate => deletedAt?.toDateTime();
   String? deletedBy;
-
-  DateTime? get deletedByDate => deletedBy?.toDateTime();
   String? deletedAs;
 
   UserGroup? get deletedAsType => deletedAs?.toEnum(UserGroup.values);

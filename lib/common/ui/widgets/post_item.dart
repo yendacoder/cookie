@@ -32,11 +32,13 @@ class PostItem extends StatefulWidget {
       required this.post,
       required this.showCommunity,
       required this.isDetailScreen,
+      this.showAuthor = true,
       this.isContentClickable = true,
       this.viewType = FeedViewType.full});
 
   final Post post;
   final bool showCommunity;
+  final bool showAuthor;
   final bool isDetailScreen;
   final FeedViewType viewType;
 
@@ -66,7 +68,7 @@ class _PostItemState extends State<PostItem> {
     }
     try {
       await controller.deletePost(widget.post);
-      if (mounted) {
+      if (context.mounted) {
         Provider.of<FeedController>(context, listen: false).reset();
         if (widget.isDetailScreen) {
           context.router.pop();
@@ -74,7 +76,7 @@ class _PostItemState extends State<PostItem> {
       }
     } catch (e) {
       log('Error: $e');
-      if (mounted) {
+      if (context.mounted) {
         showApiErrorMessage(context, e);
       }
     }
@@ -95,7 +97,7 @@ class _PostItemState extends State<PostItem> {
             .vote(widget.post.id, up);
       }
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         showApiErrorMessage(context, e);
       }
     } finally {
@@ -109,11 +111,20 @@ class _PostItemState extends State<PostItem> {
       padding: const EdgeInsets.symmetric(horizontal: kPrimaryPadding),
       child: Row(
         children: [
-          Expanded(
-              child: Username(
-            username: widget.post.author.username,
-            userImage: widget.post.author.proPic,
-          )),
+          if (widget.showAuthor)
+            Expanded(
+                child: TappableItem(
+                    onTap: () {
+                      context.router.push(UserRoute(
+                        username: widget.post.author.username,
+                      ));
+                    },
+                    child: Username(
+                      username: widget.post.author.username,
+                      userImage: widget.post.author.proPic,
+                    )))
+          else
+            const Spacer(),
           const SizedBox(
             width: 6.0,
           ),
@@ -347,9 +358,9 @@ class _PostItemState extends State<PostItem> {
             ),
           ),
           Tooltip(
-            message: widget.post.createdAtDate.toDisplayDateTimeShort(),
+            message: widget.post.createdAt.toDisplayDateTimeShort(),
             child: Text(
-              context.displayElapsedTime(widget.post.createdAtDate),
+              context.displayElapsedTime(widget.post.createdAt),
               style:
                   theme.textTheme.labelMedium!.copyWith(color: theme.hintColor),
             ),
