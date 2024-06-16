@@ -2,6 +2,7 @@ import 'package:cookie/common/ui/widgets/settings_image.dart';
 import 'package:cookie/api/model/image.dart' as api;
 import 'package:cookie/settings/consts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class UserImage extends StatelessWidget {
   const UserImage(
@@ -32,11 +33,8 @@ class UserImage extends StatelessWidget {
                       fit: BoxFit.cover,
                       url: userImage!.getBestMatchingUrl(
                           targetWidth: imageSize, targetHeight: imageSize))
-                  : SettingsImage(
-                      fit: BoxFit.cover,
-                      isRelativeUrl: false,
-                      url:
-                          'https://api.dicebear.com/6.x/initials/png?seed=$username&size=${imageSize.toInt().clamp(16, 256)}'))),
+                  : SvgPicture.network(
+                      'https://api.dicebear.com/6.x/initials/svg?radius=50&scale=80&seed=$username'))),
     );
   }
 }
