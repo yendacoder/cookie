@@ -33,3 +33,12 @@ extension ContextUtil on BuildContext {
     }
   }
 }
+
+int countLines(BuildContext context, {required String text, TextStyle? style, double? maxWidth}) {
+  final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textScaler: MediaQuery.of(context).textScaler,
+      textDirection: TextDirection.ltr)
+    ..layout(maxWidth: maxWidth ?? double.infinity);
+  return textPainter.computeLineMetrics().length;
+}

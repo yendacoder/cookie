@@ -223,11 +223,36 @@ class _PostItemState extends State<PostItem> {
             height: 12.0,
           ),
           if (widget.post.body != null)
-            MarkdownText(
-              widget.post.body!,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
+            LayoutBuilder(builder: (context, constraints) {
+              final lines = countLines(context,
+                  // removing empty lines as they can be confusing
+                  // if counted
+                  text: widget.post.body!.replaceAll(RegExp(r'\n\s*\n'), '\n'),
+                  maxWidth: constraints.maxWidth,
+                  style: theme.textTheme.bodyMedium);
+              final body = MarkdownText(
+                widget.post.body!,
+                maxLines: lines <= 3 ? null : 3,
+                style: theme.textTheme.bodyMedium,
+                overflow: TextOverflow.ellipsis,
+              );
+              if (lines <= 3) {
+                return body;
+              }
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  body,
+                  const SizedBox(height: 4.0),
+                  Text(
+                    context.l.postExtraLines(lines - 3),
+                    style: theme.textTheme.labelMedium!.copyWith(
+                        color: theme.hintColor, fontStyle: FontStyle.italic),
+                  ),
+                ],
+              );
+            }),
           if (widget.post.postType == PostType.link &&
               widget.post.link?.image != null)
             PostImage(
