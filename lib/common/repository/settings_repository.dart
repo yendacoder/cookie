@@ -11,7 +11,7 @@ class SettingsRepository {
   Future<FeedViewType> getSavedFeedViewType() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_kFeedViewKey)?.toEnumOrNull(FeedViewType.values) ??
-        FeedViewType.full;
+        FeedViewType.regular;
   }
 
   Future<void> persistFeedViewType(FeedViewType feedViewType) async {
@@ -31,7 +31,7 @@ class SettingsRepository {
 
   Future<bool> getInlineFullImages() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_kInlineFullImagesKey) ?? true;
+    return prefs.getBool(_kInlineFullImagesKey) ?? false;
   }
 
   Future<void> persistInlineFullImages(bool disable) async {
