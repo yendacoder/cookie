@@ -111,5 +111,8 @@ class Post {
 
   Community? community;
 
+  @JsonKey(includeFromJson: false)
+  dynamic youtubeMeta;
+
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
 }

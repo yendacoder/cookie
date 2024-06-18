@@ -120,7 +120,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
   Widget _buildBody(BuildContext context, FeedController controller) {
     final feedViewType =
         Provider.of<InitialController>(context, listen: false).feedViewType;
-    if (controller.lastError != null) {
+    if (controller.lastError != null && controller.posts.isEmpty) {
       return ErrorContent(
         error: controller.lastError!,
         retry: () {
@@ -374,89 +374,98 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
       InitialController initialController) {
     final theme = Theme.of(context);
     return Padding(
-        padding: const EdgeInsets.fromLTRB(kPrimaryPadding,
-            kToolbarHeight + kSecondaryPadding, kPrimaryPadding, kSecondaryPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 6.0,
-                      right: kPrimaryPadding,
-                      bottom: kSecondaryPadding),
-                  child: CommunityIcon(
-                    image: community.proPic,
-                    size: 80.0,
-                  ),
+      padding: const EdgeInsets.fromLTRB(
+          kPrimaryPadding,
+          kToolbarHeight + kSecondaryPadding,
+          kPrimaryPadding,
+          kSecondaryPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 6.0,
+                    right: kPrimaryPadding,
+                    bottom: kSecondaryPadding),
+                child: CommunityIcon(
+                  image: community.proPic,
+                  size: 80.0,
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      IconText(
-                        icon: Icons.people,
-                        text: context.l.communityNoMembers(community.noMembers),
-                        style: theme.textTheme.bodyMedium,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    IconText(
+                      icon: Icons.people,
+                      text: context.l.communityNoMembers(community.noMembers),
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                    const SizedBox(
+                      height: 4.0,
+                    ),
+                    Text(
+                      context.l.communityCreated(
+                          community.createdAt.toDisplayDate()),
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        color: theme.hintColor,
                       ),
-                      const SizedBox(
-                        height: 4.0,
-                      ),
-                      Text(
-                        context.l.communityCreated(
-                            community.createdAt.toDisplayDate()),
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                          color: theme.hintColor,
-                        ),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: kPrimaryPadding),
-            if (community.about != null) MarkdownText(community.about!),
-            Padding(
-              padding: const EdgeInsets.only(top: kSecondaryPadding),
-              child: PlatformElevatedButton(
-                  color:
-                      initialController.isLoggedIn && community.userJoined != true
-                          ? theme.colorScheme.secondary
-                          : null,
-                  onPressed: initialController.isLoggedIn &&
-                          community.userMod != true
-                      ? () async {
-                          try {
-                            await initialController
-                                .toggleJoinCommunity(community);
-                            if (context.mounted) {
-                              if (community.userJoined == true) {
-                                showNotification(
-                                    context,
-                                    context.l
-                                        .communityJoinMessage(community.name));
-                              } else {
-                                showNotification(
-                                    context,
-                                    context.l
-                                        .communityLeaveMessage(community.name));
-                              }
-                            }
-                          } catch (e) {
-                            if (context.mounted) {
-                              showApiErrorMessage(context, e);
+              ),
+            ],
+          ),
+          const SizedBox(height: kPrimaryPadding),
+          if (community.about != null)
+            Align(
+                alignment: Alignment.centerLeft,
+                child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 200.0),
+                    child: SingleChildScrollView(
+                        child: MarkdownText(community.about!)))),
+          Padding(
+            padding: const EdgeInsets.only(top: kSecondaryPadding),
+            child: PlatformElevatedButton(
+                color:
+                    initialController.isLoggedIn && community.userJoined != true
+                        ? theme.colorScheme.secondary
+                        : null,
+                onPressed: initialController.isLoggedIn &&
+                        community.userMod != true
+                    ? () async {
+                        try {
+                          await initialController
+                              .toggleJoinCommunity(community);
+                          if (context.mounted) {
+                            if (community.userJoined == true) {
+                              showNotification(
+                                  context,
+                                  context.l
+                                      .communityJoinMessage(community.name));
+                            } else {
+                              showNotification(
+                                  context,
+                                  context.l
+                                      .communityLeaveMessage(community.name));
                             }
                           }
+                        } catch (e) {
+                          if (context.mounted) {
+                            showApiErrorMessage(context, e);
+                          }
                         }
-                      : null,
-                  child: Text(community.userJoined == true
-                      ? context.l.communityLeave
-                      : context.l.communityJoin)),
-            ),
-          ],
-        ),
+                      }
+                    : null,
+                child: Text(community.userJoined == true
+                    ? context.l.communityLeave
+                    : context.l.communityJoin)),
+          ),
+        ],
+      ),
     );
   }
 
@@ -552,7 +561,8 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
     return Consumer<InitialController>(builder: (context, _, __) {
       return Consumer<FeedController>(
         builder: (context, controller, _) {
-          if (controller.feedType != FeedType.community && _scrollController == null) {
+          if (controller.feedType != FeedType.community &&
+              _scrollController == null) {
             _scrollController = ScrollController();
           }
           if (controller.lastError == null &&

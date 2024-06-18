@@ -67,7 +67,9 @@ class Themes {
         primarySwatch: Colors.blueGrey,
         accentColor: Colors.deepOrangeAccent,
         backgroundColor: Colors.blueGrey.shade900,
-      ).copyWith(tertiary: Colors.blueGrey.shade800),
+      ).copyWith(
+          tertiary: Colors.blueGrey.shade800,
+          surface: Colors.grey.shade700),
     ));
 
     final Brightness brightness;

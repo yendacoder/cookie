@@ -15,6 +15,7 @@ import 'package:cookie/common/ui/widgets/common/tappable_item.dart';
 import 'package:cookie/common/ui/widgets/common/voting.dart';
 import 'package:cookie/common/ui/widgets/community_icon.dart';
 import 'package:cookie/common/ui/widgets/post_image.dart';
+import 'package:cookie/common/ui/widgets/post_youtube_image.dart';
 import 'package:cookie/common/ui/widgets/username.dart';
 import 'package:cookie/common/util/context_util.dart';
 import 'package:cookie/common/util/datetime_util.dart';
@@ -25,6 +26,7 @@ import 'package:cookie/settings/consts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class PostItem extends StatefulWidget {
   const PostItem(
@@ -51,6 +53,10 @@ class PostItem extends StatefulWidget {
 
 class _PostItemState extends State<PostItem> {
   final ValueNotifier<bool?> _isVotingUp = ValueNotifier(null);
+
+  bool get _isYoutube =>
+      widget.post.link != null &&
+      YoutubePlayer.convertUrlToId(widget.post.link!.url) != null;
 
   @override
   void dispose() {
@@ -196,13 +202,15 @@ class _PostItemState extends State<PostItem> {
             height: 12.0,
           ),
           if (widget.post.body != null) MarkdownText(widget.post.body!),
-          if (widget.post.postType == PostType.link &&
+          if (_isYoutube)
+            PostYoutubeImage(post: widget.post)
+          else if (widget.post.postType == PostType.link &&
               widget.post.link?.image != null)
-            PostImage(link: widget.post.link),
-          if (widget.post.postType == PostType.image &&
+            PostImage(link: widget.post.link)
+          else if (widget.post.postType == PostType.image &&
               widget.post.image != null)
-            PostImage(image: widget.post.image),
-          if (widget.post.postType == PostType.link &&
+            PostImage(image: widget.post.image)
+          else if (widget.post.postType == PostType.link &&
               widget.post.link != null &&
               widget.post.link?.image == null)
             _buildTextLink(context, widget.post.link!)
@@ -253,21 +261,26 @@ class _PostItemState extends State<PostItem> {
                 ],
               );
             }),
-          if (widget.post.postType == PostType.link &&
+          if (_isYoutube)
+            PostYoutubeImage(
+              post: widget.post,
+              aspectRatio: kDefaultImageAspectRatio,
+            )
+          else if (widget.post.postType == PostType.link &&
               widget.post.link?.image != null)
             PostImage(
               link: widget.post.link,
               aspectRatio: kDefaultImageAspectRatio,
               previewOnTap: true,
-            ),
-          if (widget.post.postType == PostType.image &&
+            )
+          else if (widget.post.postType == PostType.image &&
               widget.post.image != null)
             PostImage(
               image: widget.post.image,
               aspectRatio: kDefaultImageAspectRatio,
               previewOnTap: true,
-            ),
-          if (widget.post.postType == PostType.link &&
+            )
+          else if (widget.post.postType == PostType.link &&
               widget.post.link != null &&
               widget.post.link?.image == null)
             _buildTextLink(context, widget.post.link!)

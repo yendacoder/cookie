@@ -7,7 +7,8 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 @RoutePage()
 class YoutubeScreen extends StatefulWidget {
-  const YoutubeScreen({super.key, @PathParam() required this.videoId, this.url});
+  const YoutubeScreen(
+      {super.key, @PathParam() required this.videoId, this.url});
 
   final String videoId;
   final String? url;
@@ -35,32 +36,29 @@ class _YoutubeScreenState extends State<YoutubeScreen> {
     final theme = Theme.of(context);
     return PlatformScaffold(
         backgroundColor: Colors.black87,
-        appBar: FlatAppBar(trailingActions: [
-          if (widget.url != null)
-          PlatformIconButton(
-            icon: const Icon(Icons.open_in_new),
-            onPressed: () => launchUrlString(widget.url!, mode: LaunchMode.externalApplication)
-          )
-        ],),
-        body: InkWell(
-            onTap: () => context.router.pop(),
-            enableFeedback: false,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            child: SizedBox.expand(
-                child: Center(
-              child: YoutubePlayerBuilder(
-                player: YoutubePlayer(
-                  controller: _controller,
-                  showVideoProgressIndicator: true,
-                  progressIndicatorColor: theme.colorScheme.secondary,
-                  progressColors: ProgressBarColors(
-                    playedColor: theme.colorScheme.primary,
-                    handleColor: theme.colorScheme.secondary,
-                  ),
-                ),
-                builder: (context, player) => player,
+        appBar: FlatAppBar(
+          trailingActions: [
+            if (widget.url != null)
+              PlatformIconButton(
+                  icon: const Icon(Icons.open_in_new),
+                  onPressed: () => launchUrlString(widget.url!,
+                      mode: LaunchMode.externalApplication))
+          ],
+        ),
+        body: SizedBox.expand(
+            child: Center(
+          child: YoutubePlayerBuilder(
+            player: YoutubePlayer(
+              controller: _controller,
+              showVideoProgressIndicator: true,
+              progressIndicatorColor: theme.colorScheme.secondary,
+              progressColors: ProgressBarColors(
+                playedColor: theme.colorScheme.primary,
+                handleColor: theme.colorScheme.secondary,
               ),
-            ))));
+            ),
+            builder: (context, player) => player,
+          ),
+        )));
   }
 }

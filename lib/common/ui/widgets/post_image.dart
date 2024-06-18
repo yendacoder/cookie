@@ -15,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:cookie/api/model/image.dart' as api_img;
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class PostImage extends StatelessWidget {
   const PostImage(
@@ -44,20 +43,12 @@ class PostImage extends StatelessWidget {
 
   /// External images, like fetched from og tags
   Widget _buildLinkImage(BuildContext context, {bool withTapHandler = true}) {
-    final videoId = YoutubePlayer.convertUrlToId(link!.url);
     final image = _buildHostedImage(context, link!.image!, false);
 
     return TappableItem(
       onTap: withTapHandler
-          ? () {
-              if (videoId != null) {
-                context.router
-                    .push(YoutubeRoute(videoId: videoId, url: link!.url));
-              } else if (link?.hostname != null) {
-                launchUrlString(link!.url,
-                    mode: LaunchMode.externalApplication);
-              }
-            }
+          ? () =>
+              launchUrlString(link!.url, mode: LaunchMode.externalApplication)
           : null,
       child: Stack(
         fit: StackFit.passthrough,
@@ -99,7 +90,8 @@ class PostImage extends StatelessWidget {
     final initial = Provider.of<InitialController>(context, listen: false);
     final url = initial.inlineFullImages
         ? image.url
-        : image.getBestMatchingUrl(targetWidth: mediaQuery.size.width * mediaQuery.devicePixelRatio);
+        : image.getBestMatchingUrl(
+            targetWidth: mediaQuery.size.width * mediaQuery.devicePixelRatio);
 
     final absoluteUrl = isAbsoluteUrl(url)
         ? url

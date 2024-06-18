@@ -111,8 +111,12 @@ class _UserScreenState extends State<UserScreen>
           const SizedBox(height: kPrimaryPadding),
           if (user.aboutMe != null)
             Align(
-                alignment: Alignment.centerLeft,
-                child: MarkdownText(user.aboutMe!)),
+              alignment: Alignment.centerLeft,
+              child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 200.0),
+                  child: SingleChildScrollView(
+                      child: MarkdownText(user.aboutMe!))),
+            ),
         ],
       ),
     );

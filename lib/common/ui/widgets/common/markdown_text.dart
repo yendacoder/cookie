@@ -49,8 +49,7 @@ class OverflowMarkdown extends MarkdownBody {
 
   @override
   Widget build(BuildContext context, List<Widget>? children) {
-    if (children?.isNotEmpty == true &&
-        (maxLines != null || overflow != null)) {
+    if (children?.isNotEmpty == true && maxLines != null) {
       final RichText? richText = _findWidgetOfType<RichText>(children?.first);
       if (richText != null) {
         return RichText(
