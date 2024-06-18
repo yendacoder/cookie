@@ -243,6 +243,8 @@
   "parseError": "Cannot recognize server response",
   "serverError": "Error on the server",
   "networkError": "Network error",
+  "mute": "Mute",
+  "unmute": "Unmute",
   "mutedAdded": "Muted successfully",
   "mutedRemoved": "Unmuted successfully",
   "unknownError": "Unknown error",

@@ -501,8 +501,8 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
                               labels: [
                                 initialController.isCommunityMuted(
                                         controller.community!.id)
-                                    ? 'Unmute'
-                                    : 'Mute',
+                                    ? context.l.unmute
+                                    : context.l.mute,
                               ],
                               values: const [
                                 'mute',

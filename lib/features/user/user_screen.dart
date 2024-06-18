@@ -159,8 +159,8 @@ class _UserScreenState extends State<UserScreen>
                         },
                         labels: [
                           initial.isUserMuted(controller.user!.id)
-                              ? 'Unmute'
-                              : 'Mute',
+                              ? context.l.unmute
+                              : context.l.mute,
                         ],
                         values: const [
                           'mute',
