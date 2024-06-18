@@ -30,8 +30,6 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
-  List<String>? _highlightedCommentsTree;
-
   void _loadPage(PostController controller, bool reload) {
     controller
         .loadCommentsPage(reload: reload)
@@ -104,9 +102,7 @@ class _PostScreenState extends State<PostScreen> {
           } else {
             return const Padding(
               padding: EdgeInsets.only(
-                  top: 40.0,
-                  left: kPrimaryPadding,
-                  right: kPrimaryPadding),
+                  top: 40.0, left: kPrimaryPadding, right: kPrimaryPadding),
               child: ComposeComment(parentComment: null),
             );
           }
@@ -123,20 +119,9 @@ class _PostScreenState extends State<PostScreen> {
         }
         final comment = controller.comments.elementAtOrNullSafe(index - 1);
         if (comment != null) {
-          late final Color? nestingIndicatorColor;
-          if (_highlightedCommentsTree?.contains(comment.id) == true) {
-            nestingIndicatorColor = theme.colorScheme.secondary;
-          } else if (_highlightedCommentsTree != null &&
-              comment.parentId == _highlightedCommentsTree?.last) {
-            nestingIndicatorColor = theme.colorScheme.onBackground;
-          } else {
-            nestingIndicatorColor = null;
-          }
-
           return CommentItem(
             comment: comment,
             isOp: comment.userId == widget.post?.userId,
-            nestingIndicatorColor: nestingIndicatorColor,
             isExpanded: controller.selectedCommentId == comment.id,
             onCommentClicked: initialController.isLoggedIn
                 ? () {
@@ -147,15 +132,6 @@ class _PostScreenState extends State<PostScreen> {
                     }
                   }
                 : null,
-            onNestingClicked: () {
-              if (_highlightedCommentsTree?.last == comment.id) {
-                _highlightedCommentsTree = null;
-              } else {
-                _highlightedCommentsTree =
-                    (comment.ancestors ?? []) + [comment.id];
-              }
-              setState(() {});
-            },
           );
         }
         return const ListLoadingItem();
@@ -167,7 +143,8 @@ class _PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (_) => PostController(
-            PostRepository(Provider.of<InitialController>(context, listen: false)),
+            PostRepository(
+                Provider.of<InitialController>(context, listen: false)),
             widget.postId,
             widget.post),
         child: Consumer<PostController>(

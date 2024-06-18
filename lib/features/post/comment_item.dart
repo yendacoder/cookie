@@ -17,26 +17,29 @@ import 'package:flutter/material.dart';
 const _kNestedIndicatorSize = 6.0;
 const _kNestedIndicatorPadding = 2.0;
 
+const _kNestedColors = [
+  Color(0xFF80CB7B),
+  Color(0xFFF6E58D),
+  Color(0xFF7B88CB),
+  Color(0xFFCB7B7B),
+];
+
 class CommentItem extends StatelessWidget {
   const CommentItem(
       {super.key,
       required this.comment,
       required this.isOp,
       required this.isExpanded,
-      this.nestingIndicatorColor,
-      this.onCommentClicked,
-      this.onNestingClicked});
+      this.onCommentClicked});
 
   final Comment comment;
   final bool isOp;
   final bool isExpanded;
-  final Color? nestingIndicatorColor;
   final VoidCallback? onCommentClicked;
-  final VoidCallback? onNestingClicked;
 
   Widget _buildNestedDisplay(BuildContext context, int level) {
-    return TappableItem(
-      onTap: onNestingClicked,
+
+    return Padding(
       padding: const EdgeInsets.only(
           top: kUserIconSize / 2 -
               _kNestedIndicatorSize / 2 -
@@ -49,7 +52,7 @@ class CommentItem extends StatelessWidget {
             NestedIndicator(
               size: _kNestedIndicatorSize,
               padding: _kNestedIndicatorPadding,
-              color: nestingIndicatorColor,
+              color: _kNestedColors[(level - 1) % 4],
             )
         ],
       ),
@@ -59,9 +62,9 @@ class CommentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final nestedWidth = min(comment.depth + 1, 5) *
+    final nestedWidth = min(comment.depth + 1, 4) *
         (_kNestedIndicatorPadding + _kNestedIndicatorSize);
-    return Padding(
+    return TappableItem(
       padding: const EdgeInsets.symmetric(
           horizontal: kPrimaryPadding, vertical: kSecondaryPadding),
       // This would have looked cleaner with IntrinsicHeight,
@@ -82,9 +85,7 @@ class CommentItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  TappableItem(
-                    onTap: onCommentClicked,
-                    child: Row(
+                  Row(
                       children: [
                         TappableItem(
                             onTap: () {
@@ -132,7 +133,6 @@ class CommentItem extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
                   const SizedBox(
                     height: 6.0,
                   ),

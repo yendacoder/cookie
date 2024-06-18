@@ -60,19 +60,25 @@ class _CommentGifState extends State<CommentGif> {
             }
           }
           // no image candidate found
-          setState(() {
-            _isFailed = true;
-          });
+          if (mounted) {
+            setState(() {
+              _isFailed = true;
+            });
+          }
         } else {
-          setState(() {
-            _gifData = response.bodyBytes;
-          });
+          if (mounted) {
+            setState(() {
+              _gifData = response.bodyBytes;
+            });
+          }
         }
       }
     } catch (e) {
-      setState(() {
-        _isFailed = true;
-      });
+      if (mounted) {
+        setState(() {
+          _isFailed = true;
+        });
+      }
     }
   }
 
