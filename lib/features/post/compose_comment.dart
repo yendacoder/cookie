@@ -42,7 +42,9 @@ class _ComposeCommentState extends State<ComposeComment> {
           Provider.of<PostController>(context, listen: false);
       await postController.voteComment(widget.parentComment!.id, up);
     } catch (e) {
-      showApiErrorMessage(context, e);
+      if (context.mounted) {
+        showApiErrorMessage(context, e);
+      }
     } finally {
       setState(() {
         _isVotingUp = null;
@@ -72,7 +74,9 @@ class _ComposeCommentState extends State<ComposeComment> {
       }
       _textEditingController.text = '';
     } catch (e) {
-      showApiErrorMessage(context, e);
+      if (context.mounted) {
+        showApiErrorMessage(context, e);
+      }
     } finally {
       setState(() {
         _isCommenting = false;
@@ -82,8 +86,7 @@ class _ComposeCommentState extends State<ComposeComment> {
 
   Future<void> _deleteComment(BuildContext context) async {
     final postController = Provider.of<PostController>(context, listen: false);
-    final feedController =
-    Provider.of<FeedController>(context, listen: false);
+    final feedController = Provider.of<FeedController>(context, listen: false);
     if (!await showConfirmationDialog(context, context.l.commentDeleteConfirm,
         okText: context.l.commentDeleteConfirmOk,
         cancelText: context.l.commentDeleteConfirmCancel,
@@ -94,7 +97,7 @@ class _ComposeCommentState extends State<ComposeComment> {
       await postController.deleteComment(widget.parentComment!.id);
       feedController.updateCommented(postController.post);
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         showApiErrorMessage(context, e);
       }
     }
@@ -105,53 +108,52 @@ class _ComposeCommentState extends State<ComposeComment> {
     final bool isMyComment = widget.parentComment?.userId ==
         Provider.of<InitialController>(context).initial?.user?.id;
     return Column(
-      children: [
-        Row(
-          children: [
-            if (widget.parentComment != null) ...[
-              ProgressIconButton(
-                  icon: Icons.arrow_upward,
-                  color: widget.parentComment?.userVotedUp == true
-                      ? Colors.green
-                      : null,
-                  isRunning: _isVotingUp == true,
-                  onPressed: _isVotingUp != null
-                      ? null
-                      : () => _voteComment(context, true)),
-              ProgressIconButton(
-                  icon: Icons.arrow_downward,
-                  color: widget.parentComment?.userVotedUp == false
-                      ? Colors.red
-                      : null,
-                  isRunning: _isVotingUp == false,
-                  onPressed: _isVotingUp != null
-                      ? null
-                      : () => _voteComment(context, false)),
+        children: [
+          Row(
+            children: [
+              if (widget.parentComment != null) ...[
+                ProgressIconButton(
+                    icon: Icons.arrow_upward,
+                    color: widget.parentComment?.userVotedUp == true
+                        ? Colors.green
+                        : null,
+                    isRunning: _isVotingUp == true,
+                    onPressed: _isVotingUp != null
+                        ? null
+                        : () => _voteComment(context, true)),
+                ProgressIconButton(
+                    icon: Icons.arrow_downward,
+                    color: widget.parentComment?.userVotedUp == false
+                        ? Colors.red
+                        : null,
+                    isRunning: _isVotingUp == false,
+                    onPressed: _isVotingUp != null
+                        ? null
+                        : () => _voteComment(context, false)),
+              ],
+              const Spacer(),
+              if (isMyComment) ...[
+                TappableItem(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconText(icon: Icons.edit, text: context.l.commentEdit),
+                  onTap: () {
+                    _textEditingController.text =
+                        widget.parentComment?.body ?? '';
+                    _isEditing = true;
+                  },
+                ),
+                const SizedBox(
+                  width: 6.0,
+                ),
+                TappableItem(
+                  padding: const EdgeInsets.all(8.0),
+                  child:
+                      IconText(icon: Icons.delete, text: context.l.commentDelete),
+                  onTap: () => _deleteComment(context),
+                ),
+              ],
             ],
-            const Spacer(),
-            if (isMyComment) ...[
-              TappableItem(
-                padding: const EdgeInsets.all(8.0),
-                child: IconText(icon: Icons.edit, text: context.l.commentEdit),
-                onTap: () {
-                  _textEditingController.text =
-                      widget.parentComment?.body ?? '';
-                  _isEditing = true;
-                },
-              ),
-              const SizedBox(
-                width: 6.0,
-              ),
-              TappableItem(
-                padding: const EdgeInsets.all(8.0),
-                child:
-                    IconText(icon: Icons.delete, text: context.l.commentDelete),
-                onTap: () => _deleteComment(context),
-              ),
-            ],
-          ],
-        ),
-        Stack(alignment: Alignment.bottomRight, children: [
+          ),
           PlatformTextField(
             style: Theme.of(context).textTheme.bodyMedium,
             controller: _textEditingController,
@@ -161,12 +163,16 @@ class _ComposeCommentState extends State<ComposeComment> {
                 ? context.l.commentHint
                 : context.l.commentReplyHint,
           ),
-          ProgressIconButton(
-              icon: Icons.send,
-              isRunning: _isCommenting,
-              onPressed: () => _postComment(context)),
-        ])
-      ],
+          Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ProgressIconButton(
+                icon: Icons.arrow_circle_right,
+                text: context.l.commentSend,
+                isRunning: _isCommenting,
+                onPressed: () => _postComment(context)),
+          )
+        ],
     );
   }
 }
