@@ -64,6 +64,9 @@ class Comment {
   bool postDeleted;
   String? postDeletedAs;
 
+  @JsonKey(includeFromJson: false)
+  Uri? gifUri;
+
   String get upvotePercentage {
     final total = upvotes + downvotes;
     if (total == 0) {

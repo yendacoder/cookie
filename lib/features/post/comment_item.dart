@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:cookie/api/model/comment.dart';
+import 'package:cookie/common/ui/widgets/comment_gif.dart';
 import 'package:cookie/common/ui/widgets/common/markdown_text.dart';
 import 'package:cookie/common/ui/widgets/common/tappable_item.dart';
 import 'package:cookie/common/ui/widgets/nested_indicator.dart';
@@ -146,6 +147,8 @@ class CommentItem extends StatelessWidget {
                           : null,
                     ),
                   ),
+                  if (comment.gifUri != null)
+                    CommentGif(comment: comment),
                   if (isExpanded) ...[
                     ComposeComment(parentComment: comment),
                   ]

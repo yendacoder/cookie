@@ -131,6 +131,11 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
     if (controller.isLoading && controller.posts.isEmpty) {
       return Shimmer(
         child: ListView(
+          // would be cleaner to add overlapInjector to this list,
+          // but it would be a big overhead, will add fake padding instead
+          padding: controller.feedType == FeedType.community
+              ? const EdgeInsets.only(top: kToolbarHeight)
+              : null,
           physics: const NeverScrollableScrollPhysics(),
           children: [
             for (int i = 0;

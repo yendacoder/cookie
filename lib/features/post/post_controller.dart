@@ -1,6 +1,7 @@
 import 'package:cookie/api/model/comment.dart';
 import 'package:cookie/api/model/post.dart';
 import 'package:cookie/common/repository/post_repository.dart';
+import 'package:cookie/settings/consts.dart';
 import 'package:flutter/foundation.dart';
 
 class PostController with ChangeNotifier {
@@ -54,6 +55,36 @@ class PostController with ChangeNotifier {
     _comments.clear();
   }
 
+  Uri? _extractGifUri(String commentBody) {
+    RegExp urlRegExp = RegExp(r'((https?)://[^\s/$.?#].\S*)',
+        caseSensitive: false, multiLine: true);
+    Iterable<RegExpMatch> matches = urlRegExp.allMatches(commentBody);
+    for (RegExpMatch match in matches) {
+      String? urlString = match.group(0);
+      if (urlString?.endsWith(')') == true) {
+        urlString = urlString?.substring(0, urlString.length - 1);
+      }
+      try {
+        Uri uri = Uri.parse(urlString ?? '');
+        if (kInlineGifsFrom.contains(uri.host)) {
+          return uri;
+        } else if (urlString?.endsWith('.gif') == true ||
+            urlString?.endsWith('.webp') == true) {
+          return uri;
+        }
+      } catch (e) {
+        // do nothing
+      }
+    }
+    return null;
+  }
+
+  Future<void> _preprocessGifs(List<Comment> comments) async {
+    for (final comment in comments) {
+      comment.gifUri = _extractGifUri(comment.body);
+    }
+  }
+
   void _addLoaded(List<Comment> comments) {
     /// The order of comments returned by API is not documented,
     /// and in practice child comments can be returned before parent comments.
@@ -97,6 +128,7 @@ class PostController with ChangeNotifier {
       final comments = await _postRepository.getComments(_postId, next: _next);
       _next = comments.next;
       _allPagesLoaded = _next == null;
+      await _preprocessGifs(comments.comments);
       _addLoaded(comments.comments);
       _isLoading = false;
       notifyListeners();
@@ -138,7 +170,8 @@ class PostController with ChangeNotifier {
   }
 
   Future<void> editComment(String commentId, String text) async {
-    final newComment = await _postRepository.editComment(_postId, commentId, text);
+    final newComment =
+        await _postRepository.editComment(_postId, commentId, text);
     final comment = _comments.firstWhere((c) => c.id == commentId);
     comment.body = newComment.body;
     comment.editedAt = newComment.editedAt;

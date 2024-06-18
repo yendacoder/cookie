@@ -109,7 +109,10 @@ class _UserScreenState extends State<UserScreen>
             ],
           ),
           const SizedBox(height: kPrimaryPadding),
-          if (user.aboutMe != null) MarkdownText(user.aboutMe!),
+          if (user.aboutMe != null)
+            Align(
+                alignment: Alignment.centerLeft,
+                child: MarkdownText(user.aboutMe!)),
         ],
       ),
     );

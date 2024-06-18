@@ -25,10 +25,12 @@ class FeedComment extends StatelessWidget {
       },
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         MarkdownText(
-          comment.postTitle ?? '',
+          '${comment.postTitle ?? '[untitled]'} | **${comment.communityName ?? '[unknown]'}**',
           style: theme.textTheme.bodyMedium!.copyWith(color: theme.hintColor),
         ),
+        const SizedBox(height: 8.0,),
         MarkdownText(comment.body),
+        const SizedBox(height: 8.0,),
         Row(
           children: [
             Tooltip(

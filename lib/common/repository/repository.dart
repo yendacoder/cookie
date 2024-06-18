@@ -40,7 +40,7 @@ class Repository {
         authRecord, performRequestCallback, (_, __) {}, body);
   }
 
-  Future<String> readResponse(HttpClientResponse response) {
+  static Future<String> readResponse(HttpClientResponse response) {
     final completer = Completer<String>();
     final contents = StringBuffer();
     response.transform(utf8.decoder).listen((data) {

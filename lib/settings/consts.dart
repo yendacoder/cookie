@@ -24,3 +24,8 @@ const double kNavigationBarHeight = 56.0;
 const double kDefaultImageAspectRatio = 16.0 / 9.0;
 
 const String kDefaultCommunityName = 'Selfposting';
+
+const kInlineGifsFrom = [
+  'tenor.com',
+  'giphy.com',
+];
