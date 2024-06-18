@@ -19,8 +19,10 @@ Community _$CommunityFromJson(Map<String, dynamic> json) => Community(
       json['bannerImage'] == null
           ? null
           : Image.fromJson(json['bannerImage'] as Map<String, dynamic>),
-      json['createdAt'] as String,
-      json['deletedAt'] as String?,
+      DateTime.parse(json['createdAt'] as String),
+      json['deletedAt'] == null
+          ? null
+          : DateTime.parse(json['deletedAt'] as String),
       json['isDefault'] as bool?,
       json['userJoined'] as bool?,
       json['userMod'] as bool?,
@@ -38,8 +40,8 @@ Map<String, dynamic> _$CommunityToJson(Community instance) => <String, dynamic>{
       'noMembers': instance.noMembers,
       'proPic': instance.proPic,
       'bannerImage': instance.bannerImage,
-      'createdAt': instance.createdAt,
-      'deletedAt': instance.deletedAt,
+      'createdAt': instance.createdAt.toIso8601String(),
+      'deletedAt': instance.deletedAt?.toIso8601String(),
       'isDefault': instance.isDefault,
       'userJoined': instance.userJoined,
       'userMod': instance.userMod,

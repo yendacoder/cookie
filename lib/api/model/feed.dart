@@ -8,7 +8,7 @@ class Feed {
   const Feed(this.posts, this.next);
 
   final List<Post>? posts;
-  final String? next;
+  final dynamic next;
 
   factory Feed.fromJson(Map<String, dynamic> json) => _$FeedFromJson(json);
 }

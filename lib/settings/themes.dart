@@ -33,13 +33,19 @@ class Themes {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           minimumSize: const Size(60, 44),
-          foregroundColor: base.colorScheme.onBackground,
+          foregroundColor: base.colorScheme.onSurface,
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: ElevatedButton.styleFrom(
           minimumSize: const Size(60, 44),
-          foregroundColor: base.colorScheme.onBackground,
+          foregroundColor: base.colorScheme.onSurface,
+        ),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          minimumSize: const Size(60, 44),
+          foregroundColor: base.colorScheme.onSurface,
         ),
       ),
       textTheme: GoogleFonts.openSansTextTheme(base.textTheme),
@@ -81,7 +87,7 @@ class Themes {
     final cupertinoBaseTheme =
         MaterialBasedCupertinoThemeData(materialTheme: materialTheme);
     cupertinoTheme = cupertinoBaseTheme.copyWith(
-        primaryColor: materialTheme.colorScheme.onBackground,
+        primaryColor: materialTheme.colorScheme.onSurface,
         textTheme: cupertinoBaseTheme.textTheme.copyWith(
             navTitleTextStyle: cupertinoBaseTheme.textTheme.navActionTextStyle
                 .copyWith(color: materialTheme.colorScheme.onPrimary)));

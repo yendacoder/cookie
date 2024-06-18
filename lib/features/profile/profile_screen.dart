@@ -112,62 +112,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildHeader(
       BuildContext context, InitialController initialController) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (!initialController.isLoggedIn) ...[
-          PlatformTextField(
-            controller: _usernameController,
-            hintText: context.l.authUsernameHint,
-          ),
-          const SizedBox(height: kSecondaryPadding),
-          PlatformTextField(
-            controller: _passwordController,
-            obscureText: true,
-            hintText: context.l.authPasswordHint,
-          ),
-          const SizedBox(height: kSecondaryPadding),
-          PlatformElevatedButton(
-              child: Text(context.l.authLogin),
-              onPressed: () => _login(initialController)),
-          const SizedBox(height: kSecondaryPadding),
-          PlatformTextButton(
-              child: Text(context.l.authRegister),
-              onPressed: () => launchUrlString('https://discuit.net/',
-                  mode: LaunchMode.externalApplication)),
-        ] else ...[
-          const SizedBox(
-            height: kSecondaryPadding,
-          ),
-          Center(
-            child: TappableItem(
-              onTap: () => context.router.push(UserRoute(
-                  username: initialController.initial!.user!.username)),
+    return TappableItem(
+      onTap: !initialController.isLoggedIn
+          ? null
+          : () => context.router.push(
+              UserRoute(username: initialController.initial!.user!.username)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (!initialController.isLoggedIn) ...[
+            PlatformTextField(
+              controller: _usernameController,
+              hintText: context.l.authUsernameHint,
+            ),
+            const SizedBox(height: kSecondaryPadding),
+            PlatformTextField(
+              controller: _passwordController,
+              obscureText: true,
+              hintText: context.l.authPasswordHint,
+            ),
+            const SizedBox(height: kSecondaryPadding),
+            PlatformElevatedButton(
+                child: Text(context.l.authLogin),
+                onPressed: () => _login(initialController)),
+            const SizedBox(height: kSecondaryPadding),
+            PlatformTextButton(
+                child: Text(context.l.authRegister),
+                onPressed: () => launchUrlString('https://discuit.net/',
+                    mode: LaunchMode.externalApplication)),
+          ] else ...[
+            const SizedBox(
+              height: kSecondaryPadding,
+            ),
+            Center(
               child: UserImage(
                 username: initialController.initial!.user!.username,
                 userImage: initialController.initial!.user!.proPic,
                 size: 80,
               ),
             ),
-          ),
-          Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(vertical: kSecondaryPadding),
-              child: Text(
-                initialController.initial!.user!.username,
-                style: theme.textTheme.headlineMedium,
-              )),
-          _buildProfileItem(context, Icons.score,
-              context.l.profilePoints(initialController.initial!.user!.points)),
-          _buildProfileItem(context, Icons.message,
-              context.l.profilePosts(initialController.initial!.user!.noPosts)),
-          _buildProfileItem(
-              context,
-              Icons.comment,
-              context.l.profileComments(
-                  initialController.initial!.user!.noComments)),
+            Container(
+                alignment: Alignment.center,
+                padding:
+                    const EdgeInsets.symmetric(vertical: kSecondaryPadding),
+                child: Text(
+                  initialController.initial!.user!.username,
+                  style: theme.textTheme.headlineMedium,
+                )),
+            _buildProfileItem(
+                context,
+                Icons.score,
+                context.l
+                    .profilePoints(initialController.initial!.user!.points)),
+            _buildProfileItem(
+                context,
+                Icons.message,
+                context.l
+                    .profilePosts(initialController.initial!.user!.noPosts)),
+            _buildProfileItem(
+                context,
+                Icons.comment,
+                context.l.profileComments(
+                    initialController.initial!.user!.noComments)),
+          ],
         ],
-      ],
+      ),
     );
   }
 

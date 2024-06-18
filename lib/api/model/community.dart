@@ -30,8 +30,8 @@ class Community {
   int noMembers;
   Image? proPic;
   Image? bannerImage;
-  String createdAt;
-  String? deletedAt;
+  DateTime createdAt;
+  DateTime? deletedAt;
   bool? isDefault;
   bool? userJoined;
   bool? userMod;

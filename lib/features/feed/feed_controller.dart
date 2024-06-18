@@ -134,7 +134,7 @@ class FeedController with ChangeNotifier {
       while (!added && !_allPagesLoaded) {
         final feed = await _postRepository.getFeed(contentSorting, feedType,
             communityId: _communityId, next: _next);
-        _next = feed.next;
+        _next = feed.next.toString();
         _allPagesLoaded = _next == null;
         if (feed.posts != null) {
           for (final post in feed.posts!) {

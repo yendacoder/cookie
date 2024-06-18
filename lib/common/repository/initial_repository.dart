@@ -63,7 +63,6 @@ class InitialRepository extends Repository {
     return performRequestEmptyResult(authRecord, () => client.http.deleteUrl(uri));
   }
 
-
   Future<void> muteUser(AuthRecord authRecord, String userId) async {
     final uri = client.initRequest('mutes');
     await performRequestEmptyResult(authRecord, () => client.http.postUrl(uri),
@@ -74,6 +73,20 @@ class InitialRepository extends Repository {
 
   Future<void> unmuteUser(AuthRecord authRecord, String userId) async {
     final uri = client.initRequest('mutes/users/$userId');
+    await performRequestEmptyResult(
+        authRecord, () => client.http.deleteUrl(uri));
+  }
+
+  Future<void> muteCommunity(AuthRecord authRecord, String communityId) async {
+    final uri = client.initRequest('mutes');
+    await performRequestEmptyResult(authRecord, () => client.http.postUrl(uri),
+        body: {
+          'communityId': communityId,
+        });
+  }
+
+  Future<void> unmuteCommunity(AuthRecord authRecord, String communityId) async {
+    final uri = client.initRequest('mutes/communities/$communityId');
     await performRequestEmptyResult(
         authRecord, () => client.http.deleteUrl(uri));
   }

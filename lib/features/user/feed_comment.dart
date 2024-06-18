@@ -4,6 +4,7 @@ import 'package:cookie/common/ui/widgets/common/markdown_text.dart';
 import 'package:cookie/common/ui/widgets/common/tappable_item.dart';
 import 'package:cookie/common/util/context_util.dart';
 import 'package:cookie/common/util/datetime_util.dart';
+import 'package:cookie/common/util/string_util.dart';
 import 'package:cookie/router/router.gr.dart';
 import 'package:cookie/settings/consts.dart';
 import 'package:flutter/material.dart';
@@ -28,16 +29,26 @@ class FeedComment extends StatelessWidget {
           style: theme.textTheme.bodyMedium!.copyWith(color: theme.hintColor),
         ),
         MarkdownText(comment.body),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Tooltip(
-            message: comment.createdAt.toDisplayDateTimeShort(),
-            child: Text(
-              context.displayElapsedTime(comment.createdAt),
-              style:
-                  theme.textTheme.labelMedium!.copyWith(color: theme.hintColor),
+        Row(
+          children: [
+            Tooltip(
+              message: context.l.votesStats(
+                  comment.upvotes, comment.downvotes, comment.upvotePercentage),
+              child: Text(
+                  formatRating(comment.upvotes, comment.downvotes),
+                  style: theme.textTheme.bodyMedium!
+                      .copyWith(color: theme.hintColor)),
             ),
-          ),
+            const Spacer(),
+            Tooltip(
+              message: comment.createdAt.toDisplayDateTimeShort(),
+              child: Text(
+                context.displayElapsedTime(comment.createdAt),
+                style: theme.textTheme.labelMedium!
+                    .copyWith(color: theme.hintColor),
+              ),
+            ),
+          ],
         ),
       ]),
     );

@@ -1,20 +1,25 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cookie/api/model/community.dart';
 import 'package:cookie/api/model/enums.dart';
 import 'package:cookie/common/controller/initial_controller.dart';
 import 'package:cookie/common/repository/settings_repository.dart';
 import 'package:cookie/common/ui/notifications.dart';
+import 'package:cookie/common/ui/widgets/common/custom_dropdown_button.dart';
+import 'package:cookie/common/ui/widgets/common/dynamic_sliver_app_bar.dart';
 import 'package:cookie/common/ui/widgets/common/flat_appbar.dart';
+import 'package:cookie/common/ui/widgets/common/icon_text.dart';
+import 'package:cookie/common/ui/widgets/common/markdown_text.dart';
 import 'package:cookie/common/ui/widgets/common/platform_custom_popup_menu.dart';
 import 'package:cookie/common/ui/widgets/common/refreshable_list.dart';
 import 'package:cookie/common/ui/widgets/common/shimmer.dart';
 import 'package:cookie/common/ui/widgets/common/shimmer_placeholders.dart';
-import 'package:cookie/common/ui/widgets/common/tappable_item.dart';
 import 'package:cookie/common/ui/widgets/community_icon.dart';
 import 'package:cookie/common/ui/widgets/error_content.dart';
 import 'package:cookie/common/ui/widgets/list_loading_item.dart';
 import 'package:cookie/common/ui/widgets/post_item.dart';
 import 'package:cookie/common/util/context_util.dart';
 import 'package:cookie/common/util/iterable_util.dart';
+import 'package:cookie/common/util/datetime_util.dart';
 import 'package:cookie/features/feed/feed_controller.dart';
 import 'package:cookie/router/router.gr.dart';
 import 'package:cookie/settings/consts.dart';
@@ -30,14 +35,17 @@ class FeedContentScreen extends StatefulWidget {
   State<FeedContentScreen> createState() => _FeedContentScreenScreenState();
 }
 
+const _kToolbarItemSize = 56.0;
+
 class _FeedContentScreenScreenState extends State<FeedContentScreen> {
   final _sortMenuKey = GlobalKey<PlatformCustomPopupMenuState>();
   final _listKey = GlobalKey();
-  final _scrollController = ScrollController();
+  ScrollController? _scrollController;
+  double _toolbarOffset = 0.0;
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollController?.dispose();
     super.dispose();
   }
 
@@ -51,6 +59,21 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
         showApiErrorMessage(context, e);
       }
     });
+  }
+
+  void _toggleMute(BuildContext context, Community community) async {
+    try {
+      final controller = Provider.of<InitialController>(context, listen: false);
+      final isMuted = await controller.toggleCommunityMute(community);
+      if (context.mounted) {
+        showNotification(
+            context, isMuted ? context.l.mutedAdded : context.l.mutedRemoved);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showApiErrorMessage(context, e);
+      }
+    }
   }
 
   Widget _buildLoadingItem(FeedViewType viewType) {
@@ -146,51 +169,66 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
         return const ListLoadingItem();
       },
       dividerBuilder: (context, index) => const SizedBox(height: 24.0),
+      needsOverlapInjector: controller.feedType == FeedType.community,
+      onScroll: (delta, controller) {
+        if (_toolbarOffset < 0 &&
+            (controller.position.extentBefore == 0 || delta < -10)) {
+          setState(() {
+            _toolbarOffset = 0;
+          });
+        }
+        if (_toolbarOffset == 0 && delta > 10) {
+          setState(() {
+            _toolbarOffset = -_kToolbarItemSize - kSecondaryPadding * 2;
+          });
+        }
+      },
     );
   }
 
-  Widget _buildToolbarItem(BuildContext context, IconData icon,
+  Widget _buildToolbarItem(BuildContext context, IconData? icon,
       Color? backgroundColor, VoidCallback? onTap,
-      {String? label, bool withBadge = false}) {
+      {String? label, bool withBadge = false, Widget? customContent}) {
     final theme = Theme.of(context);
-    // padding has to be applied on the item level, so that
-    // spacing is equal on all items
-    final item = TappableItem(
-      onTap: onTap,
-      padding: label == null
-          ? const EdgeInsets.symmetric(vertical: 4.0, horizontal: 20.0)
-          : const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 4.0),
-      child: Badge(
-          backgroundColor: theme.colorScheme.secondary,
-          isLabelVisible: withBadge,
-          child: Icon(icon,
-              color: onTap == null
-                  ? theme.disabledColor
-                  : theme.colorScheme.onSurface)),
-    );
-    if (backgroundColor != null) {
-      return DecoratedBox(
-        decoration: ShapeDecoration(
-          shape: const StadiumBorder(),
-          color: backgroundColor,
-        ),
-        child: item,
-      );
-    }
+    Widget content = customContent ??
+        Icon(
+          icon,
+          color:
+              onTap == null ? theme.disabledColor : theme.colorScheme.onSurface,
+        );
     if (label != null) {
-      return Column(
+      content = Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 22.0),
-            child: Text(label, style: theme.textTheme.labelSmall),
-          ),
-          item,
+          Text(label,
+              style: theme.textTheme.labelSmall!.copyWith(
+                fontSize: 8.0,
+              )),
+          content,
         ],
       );
     }
-    return item;
+    // padding has to be applied on the item level, so that
+    // spacing is equal on all items
+    return IconButton(
+      onPressed: onTap,
+      style: theme.iconButtonTheme.style!.copyWith(
+        backgroundColor: WidgetStateProperty.all(
+            backgroundColor ?? theme.colorScheme.surface),
+        shape: WidgetStateProperty.all(CircleBorder(
+            side: BorderSide(color: theme.colorScheme.onSurface, width: 1.0))),
+        minimumSize: WidgetStateProperty.all(
+            const Size(_kToolbarItemSize, _kToolbarItemSize)),
+      ),
+      padding: label == null
+          ? const EdgeInsets.symmetric(vertical: 4.0, horizontal: 20.0)
+          : const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 4.0),
+      icon: Badge(
+          backgroundColor: theme.colorScheme.secondary,
+          isLabelVisible: withBadge,
+          child: content),
+    );
   }
 
   String _getSortingOrderName(FeedController controller) {
@@ -271,10 +309,8 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
     final theme = Theme.of(context);
     final isLoggedIn =
         Provider.of<InitialController>(context, listen: false).isLoggedIn;
-    return Container(
-      height: kNavigationBarHeight,
-      color: theme.colorScheme.surface,
-      padding: const EdgeInsets.only(bottom: 12.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: kSecondaryPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -287,7 +323,7 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
               isLoggedIn
                   ? theme.colorScheme.secondary
                   : theme.colorScheme.primary, () {
-            if (_scrollController.offset > 0) {
+            if (_scrollController!.offset > 0) {
               _loadPage(controller, true);
             } else {
               if (isLoggedIn) {
@@ -312,65 +348,195 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
 
   Widget _buildCommunityToolbar(
       BuildContext context, FeedController controller) {
-    final theme = Theme.of(context);
-    final community = controller.community!;
-    final initialController = Provider.of<InitialController>(context);
-    return Container(
-      height: kNavigationBarHeight,
-      color: theme.colorScheme.surface,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: kSecondaryPadding),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           const SizedBox(
-            width: kPrimaryPadding,
+            width: _kToolbarItemSize,
           ),
-          TappableItem(
-              onTap: () => _loadPage(controller, true),
-              child: CommunityIcon(image: community.proPic, size: 40.0)),
+          ..._buildCommonToolbarActions(context, controller),
           const SizedBox(
-            width: 12.0,
+            width: _kToolbarItemSize,
           ),
-          if (community.userMod != true)
-            PlatformElevatedButton(
-                color:
-                    initialController.isLoggedIn && community.userJoined != true
-                        ? theme.colorScheme.secondary
-                        : null,
-                onPressed: initialController.isLoggedIn
-                    ? () async {
-                        try {
-                          await initialController
-                              .toggleJoinCommunity(community);
-                          if (context.mounted) {
-                            if (community.userJoined == true) {
-                              showNotification(
-                                  context,
-                                  context.l
-                                      .communityJoinMessage(community.name));
-                            } else {
-                              showNotification(
-                                  context,
-                                  context.l
-                                      .communityLeaveMessage(community.name));
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCommunityHeader(BuildContext context, Community community,
+      InitialController initialController) {
+    final theme = Theme.of(context);
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(kPrimaryPadding,
+            kToolbarHeight + kSecondaryPadding, kPrimaryPadding, kSecondaryPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 6.0,
+                      right: kPrimaryPadding,
+                      bottom: kSecondaryPadding),
+                  child: CommunityIcon(
+                    image: community.proPic,
+                    size: 80.0,
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconText(
+                        icon: Icons.people,
+                        text: context.l.communityNoMembers(community.noMembers),
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                      const SizedBox(
+                        height: 4.0,
+                      ),
+                      Text(
+                        context.l.communityCreated(
+                            community.createdAt.toDisplayDate()),
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          color: theme.hintColor,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: kPrimaryPadding),
+            if (community.about != null) MarkdownText(community.about!),
+            Padding(
+              padding: const EdgeInsets.only(top: kSecondaryPadding),
+              child: PlatformElevatedButton(
+                  color:
+                      initialController.isLoggedIn && community.userJoined != true
+                          ? theme.colorScheme.secondary
+                          : null,
+                  onPressed: initialController.isLoggedIn &&
+                          community.userMod != true
+                      ? () async {
+                          try {
+                            await initialController
+                                .toggleJoinCommunity(community);
+                            if (context.mounted) {
+                              if (community.userJoined == true) {
+                                showNotification(
+                                    context,
+                                    context.l
+                                        .communityJoinMessage(community.name));
+                              } else {
+                                showNotification(
+                                    context,
+                                    context.l
+                                        .communityLeaveMessage(community.name));
+                              }
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              showApiErrorMessage(context, e);
                             }
                           }
-                        } catch (e) {
-                          if (context.mounted) {
-                            showApiErrorMessage(context, e);
-                          }
                         }
-                      }
-                    : null,
-                child: Text(community.userJoined == true
-                    ? context.l.communityLeave
-                    : context.l.communityJoin)),
-          const Spacer(),
-          Container(
-              height: kNavigationBarHeight,
-              padding: const EdgeInsets.only(bottom: 12.0),
-              child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: _buildCommonToolbarActions(context, controller))),
+                      : null,
+                  child: Text(community.userJoined == true
+                      ? context.l.communityLeave
+                      : context.l.communityJoin)),
+            ),
+          ],
+        ),
+    );
+  }
+
+  Widget _buildCommunityBody(BuildContext context, FeedController controller) {
+    final initialController =
+        Provider.of<InitialController>(context, listen: false);
+    return SafeArea(
+      child: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: DynamicSliverAppBar(
+                key: ValueKey(controller.community?.id),
+                pinned: true,
+                automaticallyImplyLeading: false,
+                flexibleSpace: controller.community == null
+                    ? null
+                    : _buildCommunityHeader(
+                        context, controller.community!, initialController),
+                title: controller.community == null
+                    ? FlatAppBar()
+                    : FlatAppBar(
+                        text: controller.community!.name,
+                        trailingActions: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(right: kPrimaryPadding),
+                            child: CustomDropdownButton(
+                              builder: (context, open) {
+                                return const Icon(Icons.more_horiz);
+                              },
+                              labels: [
+                                initialController.isCommunityMuted(
+                                        controller.community!.id)
+                                    ? 'Unmute'
+                                    : 'Mute',
+                              ],
+                              values: const [
+                                'mute',
+                              ],
+                              onSelected: (value) {
+                                if (value == 'mute') {
+                                  _toggleMute(context, controller.community!);
+                                }
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                titleSpacing: 0.0,
+                collapsedHeight: kToolbarHeight,
+                toolbarHeight: kToolbarHeight,
+              ),
+            ),
+          ];
+        },
+        body: Stack(
+          children: [
+            Positioned.fill(child: _buildBody(context, controller)),
+            AnimatedPositioned(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                left: 0,
+                right: 0,
+                bottom: _toolbarOffset,
+                child: _buildCommunityToolbar(context, controller)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMainBody(BuildContext context, FeedController controller) {
+    return SafeArea(
+      child: Stack(
+        children: [
+          Positioned.fill(child: _buildBody(context, controller)),
+          AnimatedPositioned(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              left: 0,
+              right: 0,
+              bottom: _toolbarOffset,
+              child: _buildToolbar(context, controller)),
         ],
       ),
     );
@@ -381,26 +547,18 @@ class _FeedContentScreenScreenState extends State<FeedContentScreen> {
     return Consumer<InitialController>(builder: (context, _, __) {
       return Consumer<FeedController>(
         builder: (context, controller, _) {
+          if (controller.feedType != FeedType.community && _scrollController == null) {
+            _scrollController = ScrollController();
+          }
           if (controller.lastError == null &&
               !controller.isLoading &&
               controller.posts.isEmpty) {
             controller.loadPage().ignore();
           }
           return PlatformScaffold(
-            appBar:
-                controller.feedType == FeedType.community ? FlatAppBar() : null,
-            body: SafeArea(
-              child: Column(
-                children: [
-                  Expanded(child: _buildBody(context, controller)),
-                  if (controller.feedType == FeedType.community &&
-                      controller.community != null)
-                    _buildCommunityToolbar(context, controller),
-                  if (controller.feedType != FeedType.community)
-                    _buildToolbar(context, controller),
-                ],
-              ),
-            ),
+            body: controller.feedType == FeedType.community
+                ? _buildCommunityBody(context, controller)
+                : _buildMainBody(context, controller),
           );
         },
       );

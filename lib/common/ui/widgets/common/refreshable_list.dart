@@ -15,7 +15,8 @@ class RefreshableList extends StatefulWidget {
       this.dividerBuilder,
       this.padding = EdgeInsets.zero,
       this.scrollController,
-      this.needsOverlapInjector = false})
+      this.needsOverlapInjector = false,
+      this.onScroll})
       : super(key: key);
 
   final VoidCallback refreshRequest;
@@ -27,6 +28,7 @@ class RefreshableList extends StatefulWidget {
   final EdgeInsets padding;
   final ScrollController? scrollController;
   final bool needsOverlapInjector;
+  final void Function(double delta, ScrollController controller)? onScroll;
 
   @override
   State<StatefulWidget> createState() => _RefreshableListState();
@@ -74,6 +76,11 @@ class _RefreshableListState extends State<RefreshableList> {
     if (widget.nextPageRequest != null && !widget.isLoading) {
       return NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification notification) {
+            if (notification is ScrollUpdateNotification &&
+                widget.onScroll != null) {
+              widget.onScroll!(notification.scrollDelta ?? 0,
+                  _scrollController ?? PrimaryScrollController.of(context));
+            }
             if (notification is ScrollEndNotification) {
               if (_scrollController == null) {
                 // this can probably be a bit more elegant

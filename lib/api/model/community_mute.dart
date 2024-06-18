@@ -7,11 +7,13 @@ part 'community_mute.g.dart';
 class CommunityMute {
   CommunityMute(
       this.id,
+      this.mutedCommunityId,
       this.createdAt,
       this.mutedCommunity,
       );
 
   final String id;
+  final String mutedCommunityId;
   final DateTime createdAt;
   final Community mutedCommunity;
 

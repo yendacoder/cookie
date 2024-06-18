@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cookie/api/auth_record.dart';
 import 'package:cookie/api/model/community.dart';
+import 'package:cookie/api/model/community_mute.dart';
 import 'package:cookie/api/model/initial.dart';
 import 'package:cookie/api/model/post.dart';
 import 'package:cookie/api/model/user.dart';
@@ -142,7 +143,7 @@ class InitialController with ChangeNotifier implements AuthRecordProvider {
         false;
   }
 
-  Future<bool> toggleMute(User user) async {
+  Future<bool> toggleUserMute(User user) async {
     bool isMuted = isUserMuted(user.id);
     if (isMuted) {
       await initialRepository.unmuteUser(_authRecord, user.id);
@@ -151,6 +152,25 @@ class InitialController with ChangeNotifier implements AuthRecordProvider {
       await initialRepository.muteUser(_authRecord, user.id);
       initial?.mutes.userMutes
           .add(UserMute('', 'user', user.id, DateTime.now(), user));
+    }
+    notifyListeners();
+    return !isMuted;
+  }
+
+  bool isCommunityMuted(String communityId) {
+    return initial?.mutes.communityMutes.any((mute) => mute.mutedCommunityId == communityId) ??
+        false;
+  }
+
+  Future<bool> toggleCommunityMute(Community community) async {
+    bool isMuted = isCommunityMuted(community.id);
+    if (isMuted) {
+      await initialRepository.unmuteCommunity(_authRecord, community.id);
+      initial?.mutes.communityMutes.removeWhere((mute) => mute.mutedCommunityId == community.id);
+    } else {
+      await initialRepository.muteCommunity(_authRecord, community.id);
+      initial?.mutes.communityMutes
+          .add(CommunityMute('', community.id, DateTime.now(), community));
     }
     notifyListeners();
     return !isMuted;

@@ -27,16 +27,37 @@
       }
     }
   },
+  "communityNoMembers": "{members,plural,=1{1 member} other{{members} members}}",
+  "@communityNoMembers": {
+    "placeholders": {
+      "members": {}
+    }
+  },
+  "communityCreated": "Created on {date}",
+  "@communityCreated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "commentHint": "Write a comment...",
   "commentReplyHint": "Write a reply...",
   "commentEdit": "Edit",
   "commentDelete": "Delete",
+  "commentSend": "Send",
   "commentDeleteConfirm": "Delete comment?",
   "commentDeleteConfirmOk": "Delete",
   "commentDeleteConfirmCancel": "Cancel",
   "postDeleteConfirm": "Delete post?",
   "postDeleteConfirmOk": "Delete",
   "postDeleteConfirmCancel": "Cancel",
+  "postExtraLines": "~{lines,plural,=1{1 line} other{{lines} lines}}",
+  "@postExtraLines": {
+    "placeholders": {
+      "lines": {}
+    }
+  },
   "composeCommunity": "In {community}",
   "@composeCommunity": {
     "placeholders": {

@@ -118,7 +118,7 @@ class _UserScreenState extends State<UserScreen>
   void _toggleMute(BuildContext context, User user) async {
     try {
       final controller = Provider.of<InitialController>(context, listen: false);
-      final isMuted = await controller.toggleMute(user);
+      final isMuted = await controller.toggleUserMute(user);
       if (context.mounted) {
         showNotification(
             context, isMuted ? context.l.mutedAdded : context.l.mutedRemoved);

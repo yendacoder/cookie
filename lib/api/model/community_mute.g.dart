@@ -9,6 +9,7 @@ part of 'community_mute.dart';
 CommunityMute _$CommunityMuteFromJson(Map<String, dynamic> json) =>
     CommunityMute(
       json['id'] as String,
+      json['mutedCommunityId'] as String,
       DateTime.parse(json['createdAt'] as String),
       Community.fromJson(json['mutedCommunity'] as Map<String, dynamic>),
     );
@@ -16,6 +17,7 @@ CommunityMute _$CommunityMuteFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$CommunityMuteToJson(CommunityMute instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'mutedCommunityId': instance.mutedCommunityId,
       'createdAt': instance.createdAt.toIso8601String(),
       'mutedCommunity': instance.mutedCommunity,
     };
