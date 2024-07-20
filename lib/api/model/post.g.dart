@@ -20,9 +20,9 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       json['communityName'] as String,
       json['title'] as String,
       json['body'] as String?,
-      json['image'] == null
-          ? null
-          : Image.fromJson(json['image'] as Map<String, dynamic>),
+      (json['images'] as List<dynamic>?)
+          ?.map((e) => Image.fromJson(e as Map<String, dynamic>))
+          .toList(),
       json['link'] == null
           ? null
           : Link.fromJson(json['link'] as Map<String, dynamic>),
@@ -80,7 +80,7 @@ Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
       'communityId': instance.communityId,
       'communityName': instance.communityName,
       'title': instance.title,
-      'image': instance.image,
+      'images': instance.images,
       'body': instance.body,
       'link': instance.link,
       'communityProPic': instance.communityProPic,

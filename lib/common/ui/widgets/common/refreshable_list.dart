@@ -77,6 +77,7 @@ class _RefreshableListState extends State<RefreshableList> {
       return NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification notification) {
             if (notification is ScrollUpdateNotification &&
+                notification.metrics.axis == Axis.vertical &&
                 widget.onScroll != null) {
               widget.onScroll!(notification.scrollDelta ?? 0,
                   _scrollController ?? PrimaryScrollController.of(context));

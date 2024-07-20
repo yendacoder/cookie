@@ -25,7 +25,7 @@ class Post {
       this.communityName,
       this.title,
       this.body,
-      this.image,
+      this.images,
       this.link,
       this.communityProPic,
       this.communityBannerImage,
@@ -68,7 +68,7 @@ class Post {
   String communityId;
   String communityName;
   String title;
-  Image? image;
+  List<Image>? images;
   String? body;
   Link? link;
   Image? communityProPic;

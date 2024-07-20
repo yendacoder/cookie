@@ -22,7 +22,8 @@ class PostImage extends StatelessWidget {
       this.image,
       this.link,
       this.aspectRatio,
-      this.previewOnTap = false})
+      this.previewOnTap = false,
+      this.borderRadius = kDefaultCornerRadius})
       : assert(image != null || link != null,
             'Either image or link must be provided');
 
@@ -30,6 +31,7 @@ class PostImage extends StatelessWidget {
   final Link? link;
   final double? aspectRatio;
   final bool previewOnTap;
+  final double? borderRadius;
 
   bool get _canTryInline {
     if (image != null) return true;
@@ -134,24 +136,25 @@ class PostImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final img = image ?? link!.image;
     final initial = Provider.of<InitialController>(context, listen: false);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(kDefaultCornerRadius),
-      child: Container(
-          color:
-              img?.getAverageColor() ?? Theme.of(context).colorScheme.surface,
-          width: double.infinity,
-          child: _canTryInline
-              ? !initial.inlineFullImages || previewOnTap
-                  ? TappableItem(
-                      child: Hero(
-                          tag: img!.url,
-                          child: _buildHostedImage(context, img, true)),
-                      onTap: () {
-                        context.router.push(ImagePreviewRoute(url: img.url));
-                      },
-                    )
-                  : _buildHostedImage(context, img!, true)
-              : _buildLinkImage(context)),
-    );
+    final content = Container(
+        color: img?.getAverageColor() ?? Theme.of(context).colorScheme.surface,
+        width: double.infinity,
+        child: _canTryInline
+            ? !initial.inlineFullImages || previewOnTap
+                ? TappableItem(
+                    child: Hero(
+                        tag: img!.url,
+                        child: _buildHostedImage(context, img, true)),
+                    onTap: () {
+                      context.router.push(ImagePreviewRoute(url: img.url));
+                    },
+                  )
+                : _buildHostedImage(context, img!, true)
+            : _buildLinkImage(context));
+
+    return borderRadius == null
+        ? content
+        : ClipRRect(
+            borderRadius: BorderRadius.circular(borderRadius!), child: content);
   }
 }

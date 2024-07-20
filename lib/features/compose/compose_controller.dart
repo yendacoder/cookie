@@ -21,15 +21,15 @@ class ComposeController with ChangeNotifier {
   UploadedImage? _uploadedImage;
 
   String? get uploadedImageUrl => _uploadedImage?.url ??
-      (_editPost?.type == 'image' ? _editPost?.image?.url : null);
+      (_editPost?.type == 'image' ? _editPost?.images?.last.url : null);
   double get uploadedImageRatio {
     if (_uploadedImage != null) {
       return _uploadedImage!.width.toDouble() /
           _uploadedImage!.height;
     }
     if (_editPost?.type == 'image') {
-      return _editPost!.image!.width.toDouble() /
-          _editPost!.image!.height;
+      return _editPost!.images!.last.width.toDouble() /
+          _editPost!.images!.last.height;
     }
     return kDefaultImageAspectRatio;
   }

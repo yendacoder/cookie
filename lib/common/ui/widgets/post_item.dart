@@ -15,6 +15,7 @@ import 'package:cookie/common/ui/widgets/common/tappable_item.dart';
 import 'package:cookie/common/ui/widgets/common/voting.dart';
 import 'package:cookie/common/ui/widgets/community_icon.dart';
 import 'package:cookie/common/ui/widgets/post_image.dart';
+import 'package:cookie/common/ui/widgets/post_images_carousel.dart';
 import 'package:cookie/common/ui/widgets/post_youtube_image.dart';
 import 'package:cookie/common/ui/widgets/username.dart';
 import 'package:cookie/common/util/context_util.dart';
@@ -208,8 +209,10 @@ class _PostItemState extends State<PostItem> {
               widget.post.link?.image != null)
             PostImage(link: widget.post.link)
           else if (widget.post.postType == PostType.image &&
-              widget.post.image != null)
-            PostImage(image: widget.post.image)
+              widget.post.images != null)
+            PostImagesCarousel(
+              images: widget.post.images!,
+            )
           else if (widget.post.postType == PostType.link &&
               widget.post.link != null &&
               widget.post.link?.image == null)
@@ -274,9 +277,9 @@ class _PostItemState extends State<PostItem> {
               previewOnTap: true,
             )
           else if (widget.post.postType == PostType.image &&
-              widget.post.image != null)
-            PostImage(
-              image: widget.post.image,
+              widget.post.images != null)
+            PostImagesCarousel(
+              images: widget.post.images!,
               aspectRatio: kDefaultImageAspectRatio,
               previewOnTap: true,
             )
@@ -309,12 +312,13 @@ class _PostItemState extends State<PostItem> {
                 link: widget.post.link,
                 previewOnTap: true,
               )),
-        if (widget.post.postType == PostType.image && widget.post.image != null)
+        if (widget.post.postType == PostType.image &&
+            widget.post.images != null)
           SizedBox(
               width: 100,
               height: 60,
               child: PostImage(
-                image: widget.post.image,
+                image: widget.post.images!.first,
                 previewOnTap: true,
               ))
       ]),
