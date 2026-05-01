@@ -1,252 +1,195 @@
 {
-  "sortingHot": "hot",
-  "sortingAll": "all",
-  "sortingActivity": "activity",
-  "sortingLatest": "new",
-  "sortingDay": "day",
-  "sortingWeek": "week",
-  "sortingMonth": "month",
-  "sortingYear": "year",
-  "commentOp": "OP",
-  "commentsEmpty": "No comments",
-  "communityJoin": "Join",
-  "communityLeave": "Leave",
-  "communityJoinMessage": "You joined {community}!",
-  "@communityJoinMessage": {
+  "@@locale": "en",
+
+  "appTitle": "Cookie",
+  "@appTitle": {"description": "The name of the application"},
+
+  "navHome": "Home",
+  "@navHome": {"description": "Home navigation tab label"},
+
+  "navSubscriptions": "Subscriptions",
+  "@navSubscriptions": {"description": "Subscriptions navigation tab label"},
+
+  "navCommunities": "Communities",
+  "@navCommunities": {"description": "Communities navigation tab label"},
+
+  "navLists": "Lists",
+  "@navLists": {"description": "Lists navigation tab label"},
+
+  "navProfile": "Profile",
+  "@navProfile": {"description": "Profile navigation tab label"},
+
+  "loginTitle": "Sign in",
+  "@loginTitle": {},
+
+  "loginUsernameLabel": "Username",
+  "@loginUsernameLabel": {},
+
+  "loginPasswordLabel": "Password",
+  "@loginPasswordLabel": {},
+
+  "loginButton": "Sign in",
+  "@loginButton": {},
+
+  "loginRegisterPrompt": "Don't have an account?",
+  "@loginRegisterPrompt": {},
+
+  "loginRegisterLink": "Register on the web",
+  "@loginRegisterLink": {},
+
+  "loginForgotPassword": "Forgot password?",
+  "@loginForgotPassword": {},
+
+  "loginErrorInvalid": "Invalid username or password",
+  "@loginErrorInvalid": {},
+
+  "loginErrorSuspended": "This account has been suspended",
+  "@loginErrorSuspended": {},
+
+  "errorGeneric": "Something went wrong",
+  "@errorGeneric": {},
+
+  "errorNetworkTitle": "Network error",
+  "@errorNetworkTitle": {},
+
+  "errorNetworkBody": "Unable to reach the server. Check your internet connection.",
+  "@errorNetworkBody": {},
+
+  "errorParseTitle": "Parsing error",
+  "@errorParseTitle": {},
+
+  "errorParseBody": "The server returned an unexpected response. The app may need to be updated.",
+  "@errorParseBody": {},
+
+  "errorParseField": "Field: {field}",
+  "@errorParseField": {
     "placeholders": {
-      "community": {
-        "type": "String"
-      }
+      "field": {"type": "String"}
     }
   },
-  "communityLeaveMessage": "You left {community}!",
-  "@communityLeaveMessage": {
+
+  "errorUnknownTitle": "Unexpected error",
+  "@errorUnknownTitle": {},
+
+  "errorUnknownBody": "An unexpected error occurred.",
+  "@errorUnknownBody": {},
+
+  "errorAuthRequired": "Sign in to continue",
+  "@errorAuthRequired": {},
+
+  "errorAuthRequiredBody": "You need to be signed in to view this section.",
+  "@errorAuthRequiredBody": {},
+
+  "sortHot": "Hot",
+  "@sortHot": {},
+
+  "sortNew": "New",
+  "@sortNew": {},
+
+  "sortTop": "Top",
+  "@sortTop": {},
+
+  "sortActivity": "Activity",
+  "@sortActivity": {},
+
+  "sortDay": "Today",
+  "@sortDay": {},
+
+  "sortWeek": "This week",
+  "@sortWeek": {},
+
+  "sortMonth": "This month",
+  "@sortMonth": {},
+
+  "sortYear": "This year",
+  "@sortYear": {},
+
+  "sortAll": "All time",
+  "@sortAll": {},
+
+  "loadingLabel": "Loading…",
+  "@loadingLabel": {},
+
+  "retryButton": "Try again",
+  "@retryButton": {},
+
+  "signInButton": "Sign in",
+  "@signInButton": {},
+
+  "upvote": "Upvote",
+  "@upvote": {},
+
+  "downvote": "Downvote",
+  "@downvote": {},
+
+  "commentsLabel": "{count, plural, =0{No comments} =1{1 comment} other{{count} comments}}",
+  "@commentsLabel": {
     "placeholders": {
-      "community": {
-        "type": "String"
-      }
+      "count": {"type": "int"}
     }
   },
-  "communityNoMembers": "{members,plural,=1{1 member} other{{members} members}}",
-  "@communityNoMembers": {
+
+  "pointsLabel": "{count, plural, =1{1 point} other{{count} points}}",
+  "@pointsLabel": {
     "placeholders": {
-      "members": {}
+      "count": {"type": "int"}
     }
   },
-  "communityCreated": "Created on {date}",
-  "@communityCreated": {
+
+  "membersLabel": "{count, plural, =1{1 member} other{{count} members}}",
+  "@membersLabel": {
     "placeholders": {
-      "date": {
-        "type": "String"
-      }
+      "count": {"type": "int"}
     }
   },
-  "commentHint": "Write a comment...",
-  "commentReplyHint": "Write a reply...",
-  "commentEdit": "Edit",
-  "commentDelete": "Delete",
-  "commentSend": "Send",
-  "commentDeleteConfirm": "Delete comment?",
-  "commentDeleteConfirmOk": "Delete",
-  "commentDeleteConfirmCancel": "Cancel",
-  "postDeleteConfirm": "Delete post?",
-  "postDeleteConfirmOk": "Delete",
-  "postDeleteConfirmCancel": "Cancel",
-  "postExtraLines": "~{lines,plural,=1{1 line} other{{lines} lines}}",
-  "@postExtraLines": {
+
+  "joinButton": "Join",
+  "@joinButton": {},
+
+  "leaveButton": "Leave",
+  "@leaveButton": {},
+
+  "postBy": "by {username}",
+  "@postBy": {
     "placeholders": {
-      "lines": {}
+      "username": {"type": "String"}
     }
   },
-  "composeCommunity": "In {community}",
-  "@composeCommunity": {
+
+  "inCommunity": "in {community}",
+  "@inCommunity": {
     "placeholders": {
-      "community": {
-        "type": "String"
-      }
+      "community": {"type": "String"}
     }
   },
-  "composeTitleHint": "Title",
-  "composeBodyHint": "Text or link (optional)",
-  "composeSelectImageButton": "Select image",
-  "composePostButton": "Post",
-  "composeEditButton": "Update",
-  "composeMarkdownCheatsheet": "Markdown cheatsheet:\nHeading: # heading\nBold: **bold**\nItalic: *italic*\nLink: [link](https://example.com)\nQuote: > quote\nCode: `code`",
-  "votesStats": "Upvotes: {upvotes}\nDownvotes: {downvotes}\n{percentage}% upvoted",
-  "@votesStats": {
-    "placeholders": {
-      "upvotes": {
-        "type": "int"
-      },
-      "downvotes": {
-        "type": "int"
-      },
-      "percentage": {
-        "type": "String"
-      }
-    }
-  },
-  "profile": "Profile",
-  "authUsernameHint": "Username",
-  "authPasswordHint": "Password",
-  "authLogin": "Login",
-  "authRegister": "Register on the website",
-  "authLogout": "Logout",
-  "userFeedAll": "Activity",
-  "userFeedPosts": "Posts",
-  "userFeedComments": "Comments",
-  "profilePoints": "Points: {points}",
-  "@profilePoints": {
-    "placeholders": {
-      "points": {
-        "type": "int"
-      }
-    }
-  },
-  "profilePosts": "Posts: {posts}",
-  "@profilePosts": {
-    "placeholders": {
-      "posts": {
-        "type": "int"
-      }
-    }
-  },
-  "profileComments": "Comments: {comments}",
-  "@profileComments": {
-    "placeholders": {
-      "comments": {
-        "type": "int"
-      }
-    }
-  },
-  "profileJoined": "Joined on {date}",
-  "@profileJoined": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "profileCommunities": "Communities",
-  "profileMutedCommunities": "Muted communities",
-  "profileMutedUsers": "Muted users",
-  "profileAbout": "About Cookie",
-  "profileOpenSourceLicenses": "Open source licenses",
-  "profileVersion": "Version {version}",
-  "@profileVersion": {
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsTitle": "Settings",
-  "settingsFeedViewType": "Feed view",
-  "settingsFeedViewTypeFull": "Full",
-  "settingsFeedViewTypeRegular": "Regular",
-  "settingsFeedViewTypeCompact": "Compact",
-  "settingsFeedViewTypeMicro": "Title only",
-  "settingsCompatibility": "Compatibility",
-  "settingsDisableImageCache": "Disable image cache",
-  "settingsInlineFullImages": "Inline full images",
-  "settingsInlineFullImagesDescription": "When turned on, full original images will be loaded in the feed and on the post screen. Turning it off may improve performance and save data, but some previews may appear cropped.",
-  "notificationsTitle": "Notifications",
-  "notificationsEmpty": "No notifications",
-  "notificationNewVotes": "New votes in post **{title}**",
-  "@notificationNewVotes": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "notificationNewComment": "**@{author}** commented on **{title}**",
-  "@notificationNewComment": {
-    "placeholders": {
-      "author": {
-        "type": "String"
-      },
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "notificationNewReply": "**@{author}** replied to your comment on **{title}**",
-  "@notificationNewReply": {
-    "placeholders": {
-      "author": {
-        "type": "String"
-      },
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "notificationModAdd": "**@{author}** added you as a moderator of **{community}**",
-  "@notificationModAdd": {
-    "placeholders": {
-      "author": {
-        "type": "String"
-      },
-      "community": {
-        "type": "String"
-      }
-    }
-  },
-  "notificationGenericPost": "Post: **{title}**",
-  "@notificationGenericPost": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "notificationGenericCommunity": "Community: **{community}**",
-  "@notificationGenericCommunity": {
-    "placeholders": {
-      "community": {
-        "type": "String"
-      }
-    }
-  },
-  "elapsedDays": "{days,plural,=1{1 day ago} other{{days} days ago}}",
-  "@elapsedDays": {
-    "placeholders": {
-      "days": {}
-    }
-  },
-  "elapsedHours": "{hours,plural,=1{1 hour ago} other{{hours} hours ago}}",
-  "@elapsedHours": {
-    "placeholders": {
-      "hours": {}
-    }
-  },
-  "elapsedMinutes": "{minutes,plural,=1{1 minute ago} other{{minutes} minutes ago}}",
-  "@elapsedMinutes": {
-    "placeholders": {
-      "minutes": {}
-    }
-  },
-  "elapsedDaysShort": "d",
-  "elapsedHoursShort": "h",
-  "elapsedMinutesShort": "m",
-  "errorContentTitle": "Error happened :(",
-  "errorRetry": "Retry",
-  "apiError": "Server responded: {code}",
-  "@apiError": {
-    "placeholders": {
-      "code": {
-        "type": "String"
-      }
-    }
-  },
-  "parseError": "Cannot recognize server response",
-  "serverError": "Error on the server",
-  "networkError": "Network error",
-  "mute": "Mute",
-  "unmute": "Unmute",
-  "mutedAdded": "Muted successfully",
-  "mutedRemoved": "Unmuted successfully",
-  "unknownError": "Unknown error",
-  "genericEmpty": "Nothing here"
+
+  "homeScreenTitle": "Home",
+  "@homeScreenTitle": {},
+
+  "subscriptionsScreenTitle": "Subscriptions",
+  "@subscriptionsScreenTitle": {},
+
+  "communitiesScreenTitle": "Communities",
+  "@communitiesScreenTitle": {},
+
+  "listsScreenTitle": "Lists",
+  "@listsScreenTitle": {},
+
+  "profileScreenTitle": "Profile",
+  "@profileScreenTitle": {},
+
+  "logoutButton": "Sign out",
+  "@logoutButton": {},
+
+  "logoutConfirmTitle": "Sign out?",
+  "@logoutConfirmTitle": {},
+
+  "logoutConfirmBody": "You will need to sign in again to access your account.",
+  "@logoutConfirmBody": {},
+
+  "cancelButton": "Cancel",
+  "@cancelButton": {},
+
+  "confirmButton": "Confirm",
+  "@confirmButton": {}
 }

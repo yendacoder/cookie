@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # Wrap field deserialization in checked helpers so parse failures
+          # throw CheckedFromJsonException with the offending key name,
+          # instead of a bare TypeError with no field context.
+          checked: true
