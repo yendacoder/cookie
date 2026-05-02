@@ -24,7 +24,7 @@ _Comment _$CommentFromJson(Map<String, dynamic> json) =>
         noReplies: $checkedConvert('noReplies', (v) => (v as num).toInt()),
         noDirectReplies: $checkedConvert(
           'noDirectReplies',
-          (v) => (v as num).toInt(),
+          (v) => (v as num?)?.toInt(),
         ),
         ancestors: $checkedConvert(
           'ancestors',

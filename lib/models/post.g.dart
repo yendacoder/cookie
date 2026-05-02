@@ -24,11 +24,13 @@ _Post _$PostFromJson(
     communityName: $checkedConvert('communityName', (v) => v as String),
     communityProPic: $checkedConvert(
       'communityProPic',
-      (v) => DiscuitImage.fromJson(v as Map<String, dynamic>),
+      (v) =>
+          v == null ? null : DiscuitImage.fromJson(v as Map<String, dynamic>),
     ),
     communityBannerImage: $checkedConvert(
       'communityBannerImage',
-      (v) => DiscuitImage.fromJson(v as Map<String, dynamic>),
+      (v) =>
+          v == null ? null : DiscuitImage.fromJson(v as Map<String, dynamic>),
     ),
     title: $checkedConvert('title', (v) => v as String),
     body: $checkedConvert('body', (v) => v as String?),
@@ -90,6 +92,13 @@ _Post _$PostFromJson(
       'author',
       (v) => v == null ? null : User.fromJson(v as Map<String, dynamic>),
     ),
+    comments: $checkedConvert(
+      'comments',
+      (v) => (v as List<dynamic>?)
+          ?.map((e) => Comment.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    ),
+    commentsNext: $checkedConvert('commentsNext', (v) => v as String?),
   );
   return val;
 });
@@ -137,6 +146,8 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'isCommunityMuted': instance.isCommunityMuted,
   'community': instance.community,
   'author': instance.author,
+  'comments': instance.comments,
+  'commentsNext': instance.commentsNext,
 };
 
 _PostLink _$PostLinkFromJson(Map<String, dynamic> json) => $checkedCreate(

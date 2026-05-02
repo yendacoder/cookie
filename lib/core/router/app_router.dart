@@ -5,9 +5,12 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/communities/screens/communities_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/lists/screens/lists_screen.dart';
+import '../../features/posts/screens/image_viewer_screen.dart';
+import '../../features/posts/screens/post_detail_screen.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/shell/screens/shell_screen.dart';
 import '../../features/subscriptions/screens/subscriptions_screen.dart';
+import '../../models/post.dart';
 
 part 'app_router.g.dart';
 
@@ -53,6 +56,24 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/lists',
         builder: (context, state) => const ListsScreen(),
+      ),
+      GoRoute(
+        path: '/image-viewer',
+        builder: (context, state) {
+          final args = state.extra as ImageViewerArgs;
+          return ImageViewerScreen(
+            images: args.images,
+            initialIndex: args.initialIndex,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/c/:communityName/post/:postId',
+        builder: (context, state) => PostDetailScreen(
+          communityName: state.pathParameters['communityName']!,
+          postId: state.pathParameters['postId']!,
+          initialPost: state.extra as Post?,
+        ),
       ),
       GoRoute(
         path: '/login',

@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'comment.dart';
 import 'community.dart';
 import 'discuit_image.dart';
 import 'user.dart';
@@ -22,8 +23,8 @@ abstract class Post with _$Post {
     required bool isPinnedSite,
     required String communityId,
     required String communityName,
-    required DiscuitImage communityProPic,
-    required DiscuitImage communityBannerImage,
+    DiscuitImage? communityProPic,
+    DiscuitImage? communityBannerImage,
     required String title,
     String? body,
     DiscuitImage? image,
@@ -52,6 +53,8 @@ abstract class Post with _$Post {
     required bool isCommunityMuted,
     Community? community,
     User? author,
+    List<Comment>? comments,
+    String? commentsNext,
   }) = _Post;
 
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);

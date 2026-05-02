@@ -21,7 +21,7 @@ abstract class Comment with _$Comment {
     String? parentId,
     required int depth,
     required int noReplies,
-    required int noDirectReplies,
+    int? noDirectReplies,
     List<String>? ancestors,
     required String body,
     required int upvotes,

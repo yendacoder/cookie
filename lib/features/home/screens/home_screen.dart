@@ -1,31 +1,218 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../posts/widgets/post_card.dart';
+import '../../shell/providers/nav_bar_visibility_provider.dart';
+import '../providers/home_feed_provider.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.extentAfter < 400) {
+      ref.read(homeFeedProvider.notifier).loadMore();
+    }
+
+    // Always show bars when at the very top.
+    if (_scrollController.position.pixels <= 0) {
+      ref.read(navBarVisibilityProvider.notifier).show();
+      return;
+    }
+
+    switch (_scrollController.position.userScrollDirection) {
+      case ScrollDirection.forward:
+        ref.read(navBarVisibilityProvider.notifier).show();
+      case ScrollDirection.reverse:
+        ref.read(navBarVisibilityProvider.notifier).hide();
+      case ScrollDirection.idle:
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.l10n.homeScreenTitle),
+    return authState.when(
+      loading: () => Scaffold(
+        appBar: AppBar(title: Text(context.l10n.homeScreenTitle)),
+        body: const Center(child: CircularProgressIndicator()),
       ),
-      body: authState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => ErrorView(
+      error: (error, _) => Scaffold(
+        appBar: AppBar(title: Text(context.l10n.homeScreenTitle)),
+        body: ErrorView(
           error: error,
           onRetry: () => ref.invalidate(authProvider),
         ),
-        data: (_) => const Center(
-          child: Text('Home feed — coming soon'),
+      ),
+      // The data state embeds a SliverAppBar so it collapses with the content.
+      data: (_) => Scaffold(
+        body: _FeedView(scrollController: _scrollController),
+      ),
+    );
+  }
+}
+
+// ── Feed ──────────────────────────────────────────────────────────────────────
+
+class _FeedView extends ConsumerWidget {
+  const _FeedView({required this.scrollController});
+
+  final ScrollController scrollController;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final feedState = ref.watch(homeFeedProvider);
+
+    return feedState.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, _) => ErrorView(
+        error: error,
+        onRetry: () => ref.invalidate(homeFeedProvider),
+      ),
+      data: (feed) => RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(homeFeedProvider);
+          await ref.read(homeFeedProvider.future);
+        },
+        child: CustomScrollView(
+          controller: scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              title: Text(context.l10n.homeScreenTitle),
+              floating: true,
+              snap: true,
+            ),
+            SliverToBoxAdapter(child: _SortChips()),
+            SliverList.separated(
+              itemCount: feed.posts.length + 1,
+              separatorBuilder: (_, _) => const SizedBox(height: 32),
+              itemBuilder: (context, index) {
+                if (index == feed.posts.length) {
+                  return _FeedFooter(feed: feed, ref: ref);
+                }
+                final post = feed.posts[index];
+                return PostCard(
+                  post: post,
+                  onTap: () => context.push(
+                    '/c/${post.communityName}/post/${post.publicId}',
+                    extra: post,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
+  }
+}
+
+// ── Sort chips ────────────────────────────────────────────────────────────────
+
+class _SortChips extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final current = ref.watch(homeFeedSortProvider).value ?? PostSort.hot;
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Row(
+        spacing: 8,
+        children: [
+          for (final sort in PostSort.values)
+            FilterChip(
+              label: Text(sort.label(context.l10n)),
+              selected: sort == current,
+              showCheckmark: false,
+              onSelected: (_) =>
+                  ref.read(homeFeedSortProvider.notifier).setSort(sort),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── List footer ───────────────────────────────────────────────────────────────
+
+class _FeedFooter extends StatelessWidget {
+  const _FeedFooter({required this.feed, required this.ref});
+
+  final PostFeedState feed;
+  final WidgetRef ref;
+
+  @override
+  Widget build(BuildContext context) {
+    if (feed.isLoadingMore) {
+      return const Padding(
+        padding: EdgeInsets.all(24),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (feed.loadMoreError != null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                context.l10n.feedLoadMoreError,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+              ),
+            ),
+            TextButton(
+              onPressed: () => ref.read(homeFeedProvider.notifier).loadMore(),
+              child: Text(context.l10n.retryButton),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (!feed.hasMore) {
+      return Padding(
+        padding: const EdgeInsets.all(24),
+        child: Center(
+          child: Text(
+            context.l10n.feedEndOfContent,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }

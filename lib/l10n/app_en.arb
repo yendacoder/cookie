@@ -110,6 +110,57 @@
   "loadingLabel": "Loading…",
   "@loadingLabel": {},
 
+  "timeJustNow": "just now",
+  "@timeJustNow": {},
+
+  "timeMinutesAgo": "{count, plural, =1{1 min ago} other{{count} min ago}}",
+  "@timeMinutesAgo": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+
+  "timeHoursAgo": "{count, plural, =1{1 hr ago} other{{count} hr ago}}",
+  "@timeHoursAgo": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+
+  "timeDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@timeDaysAgo": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+
+  "timeWeeksAgo": "{count, plural, =1{1 week ago} other{{count} weeks ago}}",
+  "@timeWeeksAgo": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+
+  "timeMonthsAgo": "{count, plural, =1{1 month ago} other{{count} months ago}}",
+  "@timeMonthsAgo": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+
+  "timeYearsAgo": "{count, plural, =1{1 year ago} other{{count} years ago}}",
+  "@timeYearsAgo": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+
+  "postDetailComments": "Comments",
+  "@postDetailComments": {},
+
+  "postDetailNoComments": "No comments yet",
+  "@postDetailNoComments": {},
+
+  "postDetailLoadMoreComments": "Load more comments",
+  "@postDetailLoadMoreComments": {},
+
+  "postDetailCommentDeleted": "[deleted]",
+  "@postDetailCommentDeleted": {},
+
+  "feedEndOfContent": "You're all caught up",
+  "@feedEndOfContent": {},
+
+  "feedLoadMoreError": "Couldn't load more posts",
+  "@feedLoadMoreError": {},
+
   "retryButton": "Try again",
   "@retryButton": {},
 

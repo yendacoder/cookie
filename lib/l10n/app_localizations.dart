@@ -304,6 +304,84 @@ abstract class AppLocalizations {
   /// **'Loading…'**
   String get loadingLabel;
 
+  /// No description provided for @timeJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get timeJustNow;
+
+  /// No description provided for @timeMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 min ago} other{{count} min ago}}'**
+  String timeMinutesAgo(int count);
+
+  /// No description provided for @timeHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 hr ago} other{{count} hr ago}}'**
+  String timeHoursAgo(int count);
+
+  /// No description provided for @timeDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
+  String timeDaysAgo(int count);
+
+  /// No description provided for @timeWeeksAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 week ago} other{{count} weeks ago}}'**
+  String timeWeeksAgo(int count);
+
+  /// No description provided for @timeMonthsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 month ago} other{{count} months ago}}'**
+  String timeMonthsAgo(int count);
+
+  /// No description provided for @timeYearsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 year ago} other{{count} years ago}}'**
+  String timeYearsAgo(int count);
+
+  /// No description provided for @postDetailComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get postDetailComments;
+
+  /// No description provided for @postDetailNoComments.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet'**
+  String get postDetailNoComments;
+
+  /// No description provided for @postDetailLoadMoreComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more comments'**
+  String get postDetailLoadMoreComments;
+
+  /// No description provided for @postDetailCommentDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'[deleted]'**
+  String get postDetailCommentDeleted;
+
+  /// No description provided for @feedEndOfContent.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all caught up'**
+  String get feedEndOfContent;
+
+  /// No description provided for @feedLoadMoreError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load more posts'**
+  String get feedLoadMoreError;
+
   /// No description provided for @retryButton.
   ///
   /// In en, this message translates to:
