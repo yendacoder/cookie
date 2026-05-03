@@ -360,4 +360,164 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commentSubmitError => 'Failed to post comment';
+
+  @override
+  String get mutedUsersScreenTitle => 'Muted Users';
+
+  @override
+  String get mutedCommunitiesScreenTitle => 'Muted Communities';
+
+  @override
+  String get mutedUsersEmpty => 'No muted users';
+
+  @override
+  String get mutedCommunitiesEmpty => 'No muted communities';
+
+  @override
+  String get notificationsScreenTitle => 'Notifications';
+
+  @override
+  String get notificationsEmpty => 'No notifications yet';
+
+  @override
+  String notifNewComment(String author) {
+    return '$author commented on your post';
+  }
+
+  @override
+  String notifNewCommentMultiple(String author, int others) {
+    return '$author and $others others commented on your post';
+  }
+
+  @override
+  String notifCommentReply(String author) {
+    return '$author replied to your comment';
+  }
+
+  @override
+  String notifNewVotesSingle(String targetType) {
+    return '1 new upvote on your $targetType';
+  }
+
+  @override
+  String notifNewVotesMultiple(int count, String targetType) {
+    return '$count new upvotes on your $targetType';
+  }
+
+  @override
+  String get notifDeletedPost => 'Your post was removed by moderators';
+
+  @override
+  String notifModAdd(String community) {
+    return 'You were added as a moderator in $community';
+  }
+
+  @override
+  String get notifNewBadge => 'You earned a new badge';
+
+  @override
+  String get communitiesTabAll => 'All';
+
+  @override
+  String get communitiesTabJoined => 'Joined';
+
+  @override
+  String get communitiesSearchHint => 'Search';
+
+  @override
+  String get communitiesEmpty => 'No communities found';
+
+  @override
+  String get communitiesJoinedEmpty =>
+      'You haven\'t joined any communities yet';
+
+  @override
+  String get communitiesSelectTitle => 'Select Community';
+
+  @override
+  String get listsEmpty => 'You haven\'t created any lists yet';
+
+  @override
+  String get listsCreateTitle => 'New list';
+
+  @override
+  String get listsEditTitle => 'Edit list';
+
+  @override
+  String get listsDisplayNameLabel => 'Name';
+
+  @override
+  String get listsDisplayNameRequired => 'Name is required';
+
+  @override
+  String get listsDescriptionLabel => 'Description (optional)';
+
+  @override
+  String get listsPublicToggle => 'Public';
+
+  @override
+  String get listsDeleteTooltip => 'Delete list';
+
+  @override
+  String get listsDeleteConfirmTitle => 'Delete list?';
+
+  @override
+  String get listsDeleteConfirmBody =>
+      'All saved items will be permanently lost.';
+
+  @override
+  String listItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+      zero: 'Empty',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get listItemsEmpty => 'No saved items';
+
+  @override
+  String get listItemRemove => 'Remove';
+
+  @override
+  String get saveButton => 'Save';
+
+  @override
+  String get postMenuSaveToList => 'Save to list';
+
+  @override
+  String get postMenuHide => 'Hide post';
+
+  @override
+  String get postHiddenLabel => 'Post hidden';
+
+  @override
+  String get undoButton => 'Undo';
+
+  @override
+  String postSavedToList(String name) {
+    return 'Saved to \"$name\"';
+  }
+
+  @override
+  String get editProfileTitle => 'Edit Profile';
+
+  @override
+  String get editProfilePictureLabel => 'Change photo';
+
+  @override
+  String get editProfileDescriptionLabel => 'About me';
+
+  @override
+  String get editProfileDescriptionHint => 'Tell people about yourself';
+
+  @override
+  String get profileSaved => 'Profile saved';
+
+  @override
+  String get viewMyProfile => 'My profile';
 }

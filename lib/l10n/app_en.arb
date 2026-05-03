@@ -305,5 +305,162 @@
   "@commentReplyButton": {},
 
   "commentSubmitError": "Failed to post comment",
-  "@commentSubmitError": {}
+  "@commentSubmitError": {},
+
+  "mutedUsersScreenTitle": "Muted Users",
+  "@mutedUsersScreenTitle": {},
+
+  "mutedCommunitiesScreenTitle": "Muted Communities",
+  "@mutedCommunitiesScreenTitle": {},
+
+  "mutedUsersEmpty": "No muted users",
+  "@mutedUsersEmpty": {},
+
+  "mutedCommunitiesEmpty": "No muted communities",
+  "@mutedCommunitiesEmpty": {},
+
+  "notificationsScreenTitle": "Notifications",
+  "@notificationsScreenTitle": {},
+
+  "notificationsEmpty": "No notifications yet",
+  "@notificationsEmpty": {},
+
+  "notifNewComment": "{author} commented on your post",
+  "@notifNewComment": {
+    "placeholders": {"author": {"type": "String"}}
+  },
+
+  "notifNewCommentMultiple": "{author} and {others} others commented on your post",
+  "@notifNewCommentMultiple": {
+    "placeholders": {
+      "author": {"type": "String"},
+      "others": {"type": "int"}
+    }
+  },
+
+  "notifCommentReply": "{author} replied to your comment",
+  "@notifCommentReply": {
+    "placeholders": {"author": {"type": "String"}}
+  },
+
+  "notifNewVotesSingle": "1 new upvote on your {targetType}",
+  "@notifNewVotesSingle": {
+    "placeholders": {"targetType": {"type": "String"}}
+  },
+
+  "notifNewVotesMultiple": "{count} new upvotes on your {targetType}",
+  "@notifNewVotesMultiple": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "targetType": {"type": "String"}
+    }
+  },
+
+  "notifDeletedPost": "Your post was removed by moderators",
+  "@notifDeletedPost": {},
+
+  "notifModAdd": "You were added as a moderator in {community}",
+  "@notifModAdd": {
+    "placeholders": {"community": {"type": "String"}}
+  },
+
+  "notifNewBadge": "You earned a new badge",
+  "@notifNewBadge": {},
+
+  "communitiesTabAll": "All",
+  "@communitiesTabAll": {},
+
+  "communitiesTabJoined": "Joined",
+  "@communitiesTabJoined": {},
+
+  "communitiesSearchHint": "Search",
+  "@communitiesSearchHint": {},
+
+  "communitiesEmpty": "No communities found",
+  "@communitiesEmpty": {},
+
+  "communitiesJoinedEmpty": "You haven't joined any communities yet",
+  "@communitiesJoinedEmpty": {},
+
+  "communitiesSelectTitle": "Select Community",
+  "@communitiesSelectTitle": {},
+
+  "listsEmpty": "You haven't created any lists yet",
+  "@listsEmpty": {},
+
+  "listsCreateTitle": "New list",
+  "@listsCreateTitle": {},
+
+  "listsEditTitle": "Edit list",
+  "@listsEditTitle": {},
+
+  "listsDisplayNameLabel": "Name",
+  "@listsDisplayNameLabel": {},
+
+  "listsDisplayNameRequired": "Name is required",
+  "@listsDisplayNameRequired": {},
+
+  "listsDescriptionLabel": "Description (optional)",
+  "@listsDescriptionLabel": {},
+
+  "listsPublicToggle": "Public",
+  "@listsPublicToggle": {},
+
+  "listsDeleteTooltip": "Delete list",
+  "@listsDeleteTooltip": {},
+
+  "listsDeleteConfirmTitle": "Delete list?",
+  "@listsDeleteConfirmTitle": {},
+
+  "listsDeleteConfirmBody": "All saved items will be permanently lost.",
+  "@listsDeleteConfirmBody": {},
+
+  "listItemCount": "{count, plural, =0{Empty} =1{1 item} other{{count} items}}",
+  "@listItemCount": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+
+  "listItemsEmpty": "No saved items",
+  "@listItemsEmpty": {},
+
+  "listItemRemove": "Remove",
+  "@listItemRemove": {},
+
+  "saveButton": "Save",
+  "@saveButton": {},
+
+  "postMenuSaveToList": "Save to list",
+  "@postMenuSaveToList": {},
+
+  "postMenuHide": "Hide post",
+  "@postMenuHide": {},
+
+  "postHiddenLabel": "Post hidden",
+  "@postHiddenLabel": {},
+
+  "undoButton": "Undo",
+  "@undoButton": {},
+
+  "postSavedToList": "Saved to \"{name}\"",
+  "@postSavedToList": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+
+  "editProfileTitle": "Edit Profile",
+  "@editProfileTitle": {},
+
+  "editProfilePictureLabel": "Change photo",
+  "@editProfilePictureLabel": {},
+
+  "editProfileDescriptionLabel": "About me",
+  "@editProfileDescriptionLabel": {},
+
+  "editProfileDescriptionHint": "Tell people about yourself",
+  "@editProfileDescriptionHint": {},
+
+  "profileSaved": "Profile saved",
+  "@profileSaved": {},
+
+  "viewMyProfile": "My profile",
+  "@viewMyProfile": {}
 }

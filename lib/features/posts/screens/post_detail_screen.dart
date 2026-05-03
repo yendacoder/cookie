@@ -8,14 +8,17 @@ import '../../voting/providers/voting_provider.dart';
 import '../../../core/extensions/build_context_ext.dart';
 import '../../../core/utils/relative_time.dart';
 import '../../../core/widgets/error_view.dart';
+import '../../../core/widgets/markdown_text.dart';
 import '../../../models/comment.dart';
 import '../../../models/discuit_image.dart';
 import '../../../models/post.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../providers/hidden_posts_provider.dart';
 import '../providers/post_detail_provider.dart';
 import '../widgets/post_card.dart';
 import '../widgets/post_card_skeleton.dart';
 import '../widgets/post_image_carousel.dart';
+import '../widgets/post_save_to_list_sheet.dart';
 import 'image_viewer_screen.dart';
 
 class PostDetailScreen extends ConsumerStatefulWidget {
@@ -145,7 +148,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
 
 // ── App bar ───────────────────────────────────────────────────────────────────
 
-class _PostAppBar extends StatelessWidget implements PreferredSizeWidget {
+class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const _PostAppBar({required this.post});
 
   final Post post;
@@ -154,7 +157,10 @@ class _PostAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isAuthenticated =
+        ref.watch(authProvider.select((s) => s.value != null));
+
     return AppBar(
       titleSpacing: 0,
       title: Row(
@@ -176,9 +182,39 @@ class _PostAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
+      actions: [
+        if (isAuthenticated)
+          PopupMenuButton<_PostMenuAction>(
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: _PostMenuAction.saveToList,
+                child: Text(context.l10n.postMenuSaveToList),
+              ),
+              PopupMenuItem(
+                value: _PostMenuAction.hide,
+                child: Text(context.l10n.postMenuHide),
+              ),
+            ],
+            onSelected: (action) {
+              switch (action) {
+                case _PostMenuAction.saveToList:
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (_) => PostSaveToListSheet(post: post),
+                  );
+                case _PostMenuAction.hide:
+                  ref.read(hiddenPostsProvider.notifier).hide(post.id);
+                  context.pop();
+              }
+            },
+          ),
+      ],
     );
   }
 }
+
+enum _PostMenuAction { saveToList, hide }
 
 // ── Post body ─────────────────────────────────────────────────────────────────
 
@@ -277,7 +313,7 @@ class _PostDetailContent extends StatelessWidget {
   }
 }
 
-class _DetailImage extends StatelessWidget {
+class _DetailImage extends StatefulWidget {
   const _DetailImage({required this.post});
 
   final Post post;
@@ -287,17 +323,25 @@ class _DetailImage extends StatelessWidget {
       .reduce((a, b) => a < b ? a : b);
 
   @override
+  State<_DetailImage> createState() => _DetailImageState();
+}
+
+class _DetailImageState extends State<_DetailImage> {
+  int _currentPage = 0;
+
+  @override
   Widget build(BuildContext context) {
-    final images = post.images.isNotEmpty
-        ? post.images
-        : (post.image != null ? [post.image!] : null);
+    final images = widget.post.images.isNotEmpty
+        ? widget.post.images
+        : (widget.post.image != null ? [widget.post.image!] : null);
     if (images == null) return const SizedBox.shrink();
 
-    Widget content = AspectRatio(
-      aspectRatio: _containerRatio(images),
+    Widget carousel = AspectRatio(
+      aspectRatio: _DetailImage._containerRatio(images),
       child: PostImageCarousel(
         images: images,
         fit: BoxFit.contain,
+        onPageChanged: (i) => setState(() => _currentPage = i),
         onTap: (index) => context.push(
           '/image-viewer',
           extra: ImageViewerArgs(images: images, initialIndex: index),
@@ -306,10 +350,26 @@ class _DetailImage extends StatelessWidget {
     );
 
     if (images.length == 1) {
-      content = Hero(tag: PostCard.heroTag(post.id), child: content);
+      carousel = Hero(tag: PostCard.heroTag(widget.post.id), child: carousel);
     }
 
-    return content;
+    final caption = images[_currentPage].caption;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        carousel,
+        if (caption != null && caption.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text(
+            caption,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
+        ],
+      ],
+    );
   }
 }
 
@@ -383,10 +443,7 @@ class _DetailText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SelectableText(
-      body,
-      style: Theme.of(context).textTheme.bodyMedium,
-    );
+    return MarkdownText(body, selectable: true);
   }
 }
 
@@ -734,9 +791,9 @@ class _CommentCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final depth = comment.depth.clamp(0, 6);
-    final indent = depth * 12.0;
-    final lineColor = _depthLineColors[depth % _depthLineColors.length];
+    final depth = comment.depth.clamp(0, 4);
+    final indent = depth * 8.0;
+    final lineColor = _depthLineColors[comment.depth % _depthLineColors.length];
     final colorScheme = Theme.of(context).colorScheme;
     final muted = colorScheme.onSurfaceVariant;
     final labelStyle =
@@ -806,9 +863,11 @@ class _CommentCard extends ConsumerWidget {
                                   fontStyle: FontStyle.italic,
                                 ),
                           )
-                        : SelectableText(
+                        : MarkdownText(
                             comment.body,
-                            style: Theme.of(context).textTheme.bodySmall,
+                            selectable: true,
+                            baseStyle:
+                                Theme.of(context).textTheme.bodySmall,
                           ),
                     const SizedBox(height: 6),
                     Row(

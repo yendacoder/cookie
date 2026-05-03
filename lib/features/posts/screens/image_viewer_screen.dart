@@ -94,14 +94,39 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
               },
             ),
           ),
-          // Page indicator at the bottom for multi-image posts.
-          if (count > 1)
-            Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom + 24,
-              left: 0,
-              right: 0,
-              child: _PageIndicator(current: _currentPage, count: count),
-            ),
+          // Caption and/or page indicator at the bottom.
+          Builder(builder: (context) {
+            final caption = widget.images[_currentPage].caption;
+            final hasCaption = caption != null && caption.isNotEmpty;
+            if (!hasCaption && count <= 1) return const SizedBox.shrink();
+            return Positioned(
+              bottom: MediaQuery.paddingOf(context).bottom + 16,
+              left: 24,
+              right: 24,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (hasCaption)
+                    Text(
+                      caption,
+                      textAlign: TextAlign.center,
+                      maxLines: 4,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        height: 1.4,
+                        shadows: [
+                          Shadow(color: Colors.black87, blurRadius: 8),
+                        ],
+                      ),
+                    ),
+                  if (hasCaption && count > 1) const SizedBox(height: 10),
+                  if (count > 1) _PageIndicator(current: _currentPage, count: count),
+                ],
+              ),
+            );
+          }),
         ],
       ),
     );

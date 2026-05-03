@@ -1,0 +1,98 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/extensions/build_context_ext.dart';
+import '../../../models/discuit_image.dart';
+import '../providers/muted_users_list_provider.dart';
+import '../providers/user_mutes_provider.dart';
+
+class MutedUsersScreen extends ConsumerWidget {
+  const MutedUsersScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mutes = ref.watch(mutedUsersListProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.l10n.mutedUsersScreenTitle),
+      ),
+      body: mutes.isEmpty
+          ? Center(
+              child: Text(
+                context.l10n.mutedUsersEmpty,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            )
+          : ListView.separated(
+              itemCount: mutes.length,
+              separatorBuilder: (_, _) => const Divider(height: 1),
+              itemBuilder: (context, index) {
+                final mute = mutes[index];
+                final user = mute.mutedUser;
+                return _MutedUserTile(
+                  userId: mute.mutedUserId,
+                  username: user?.username,
+                  proPicUrl: user?.proPic?.fullUrl,
+                  onUnmute: () {
+                    ref
+                        .read(mutedUsersListProvider.notifier)
+                        .remove(mute.mutedUserId);
+                    ref
+                        .read(userMutesProvider.notifier)
+                        .unmute(mute.mutedUserId);
+                  },
+                );
+              },
+            ),
+    );
+  }
+}
+
+class _MutedUserTile extends StatelessWidget {
+  const _MutedUserTile({
+    required this.userId,
+    required this.username,
+    required this.proPicUrl,
+    required this.onUnmute,
+  });
+
+  final String userId;
+  final String? username;
+  final String? proPicUrl;
+  final VoidCallback onUnmute;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: colorScheme.primaryContainer,
+        child: proPicUrl != null
+            ? ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: proPicUrl!,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                ),
+              )
+            : Text(
+                username != null && username!.isNotEmpty
+                    ? username![0].toUpperCase()
+                    : '?',
+                style: TextStyle(color: colorScheme.onPrimaryContainer),
+              ),
+      ),
+      title: Text(username != null ? '@$username' : userId),
+      trailing: TextButton(
+        onPressed: onUnmute,
+        child: Text(context.l10n.userUnmute),
+      ),
+    );
+  }
+}

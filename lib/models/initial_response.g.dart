@@ -12,6 +12,10 @@ _InitialCommunityMute _$InitialCommunityMuteFromJson(
   final val = _InitialCommunityMute(
     id: $checkedConvert('id', (v) => v as String),
     mutedCommunityId: $checkedConvert('mutedCommunityId', (v) => v as String),
+    mutedCommunity: $checkedConvert(
+      'mutedCommunity',
+      (v) => v == null ? null : Community.fromJson(v as Map<String, dynamic>),
+    ),
   );
   return val;
 });
@@ -21,6 +25,7 @@ Map<String, dynamic> _$InitialCommunityMuteToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'mutedCommunityId': instance.mutedCommunityId,
+  'mutedCommunity': instance.mutedCommunity,
 };
 
 _InitialUserMute _$InitialUserMuteFromJson(Map<String, dynamic> json) =>
@@ -28,12 +33,21 @@ _InitialUserMute _$InitialUserMuteFromJson(Map<String, dynamic> json) =>
       final val = _InitialUserMute(
         id: $checkedConvert('id', (v) => v as String),
         mutedUserId: $checkedConvert('mutedUserId', (v) => v as String),
+        mutedUser: $checkedConvert(
+          'mutedUser',
+          (v) =>
+              v == null ? null : PublicUser.fromJson(v as Map<String, dynamic>),
+        ),
       );
       return val;
     });
 
 Map<String, dynamic> _$InitialUserMuteToJson(_InitialUserMute instance) =>
-    <String, dynamic>{'id': instance.id, 'mutedUserId': instance.mutedUserId};
+    <String, dynamic>{
+      'id': instance.id,
+      'mutedUserId': instance.mutedUserId,
+      'mutedUser': instance.mutedUser,
+    };
 
 _InitialMutes _$InitialMutesFromJson(
   Map<String, dynamic> json,

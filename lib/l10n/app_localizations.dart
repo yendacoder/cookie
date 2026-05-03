@@ -609,6 +609,276 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to post comment'**
   String get commentSubmitError;
+
+  /// No description provided for @mutedUsersScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Muted Users'**
+  String get mutedUsersScreenTitle;
+
+  /// No description provided for @mutedCommunitiesScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Muted Communities'**
+  String get mutedCommunitiesScreenTitle;
+
+  /// No description provided for @mutedUsersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No muted users'**
+  String get mutedUsersEmpty;
+
+  /// No description provided for @mutedCommunitiesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No muted communities'**
+  String get mutedCommunitiesEmpty;
+
+  /// No description provided for @notificationsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notificationsScreenTitle;
+
+  /// No description provided for @notificationsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get notificationsEmpty;
+
+  /// No description provided for @notifNewComment.
+  ///
+  /// In en, this message translates to:
+  /// **'{author} commented on your post'**
+  String notifNewComment(String author);
+
+  /// No description provided for @notifNewCommentMultiple.
+  ///
+  /// In en, this message translates to:
+  /// **'{author} and {others} others commented on your post'**
+  String notifNewCommentMultiple(String author, int others);
+
+  /// No description provided for @notifCommentReply.
+  ///
+  /// In en, this message translates to:
+  /// **'{author} replied to your comment'**
+  String notifCommentReply(String author);
+
+  /// No description provided for @notifNewVotesSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'1 new upvote on your {targetType}'**
+  String notifNewVotesSingle(String targetType);
+
+  /// No description provided for @notifNewVotesMultiple.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} new upvotes on your {targetType}'**
+  String notifNewVotesMultiple(int count, String targetType);
+
+  /// No description provided for @notifDeletedPost.
+  ///
+  /// In en, this message translates to:
+  /// **'Your post was removed by moderators'**
+  String get notifDeletedPost;
+
+  /// No description provided for @notifModAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'You were added as a moderator in {community}'**
+  String notifModAdd(String community);
+
+  /// No description provided for @notifNewBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'You earned a new badge'**
+  String get notifNewBadge;
+
+  /// No description provided for @communitiesTabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get communitiesTabAll;
+
+  /// No description provided for @communitiesTabJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined'**
+  String get communitiesTabJoined;
+
+  /// No description provided for @communitiesSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get communitiesSearchHint;
+
+  /// No description provided for @communitiesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No communities found'**
+  String get communitiesEmpty;
+
+  /// No description provided for @communitiesJoinedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t joined any communities yet'**
+  String get communitiesJoinedEmpty;
+
+  /// No description provided for @communitiesSelectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Community'**
+  String get communitiesSelectTitle;
+
+  /// No description provided for @listsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t created any lists yet'**
+  String get listsEmpty;
+
+  /// No description provided for @listsCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New list'**
+  String get listsCreateTitle;
+
+  /// No description provided for @listsEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit list'**
+  String get listsEditTitle;
+
+  /// No description provided for @listsDisplayNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get listsDisplayNameLabel;
+
+  /// No description provided for @listsDisplayNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get listsDisplayNameRequired;
+
+  /// No description provided for @listsDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get listsDescriptionLabel;
+
+  /// No description provided for @listsPublicToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get listsPublicToggle;
+
+  /// No description provided for @listsDeleteTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete list'**
+  String get listsDeleteTooltip;
+
+  /// No description provided for @listsDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete list?'**
+  String get listsDeleteConfirmTitle;
+
+  /// No description provided for @listsDeleteConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'All saved items will be permanently lost.'**
+  String get listsDeleteConfirmBody;
+
+  /// No description provided for @listItemCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Empty} =1{1 item} other{{count} items}}'**
+  String listItemCount(int count);
+
+  /// No description provided for @listItemsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved items'**
+  String get listItemsEmpty;
+
+  /// No description provided for @listItemRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get listItemRemove;
+
+  /// No description provided for @saveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveButton;
+
+  /// No description provided for @postMenuSaveToList.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to list'**
+  String get postMenuSaveToList;
+
+  /// No description provided for @postMenuHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide post'**
+  String get postMenuHide;
+
+  /// No description provided for @postHiddenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Post hidden'**
+  String get postHiddenLabel;
+
+  /// No description provided for @undoButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undoButton;
+
+  /// No description provided for @postSavedToList.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to \"{name}\"'**
+  String postSavedToList(String name);
+
+  /// No description provided for @editProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get editProfileTitle;
+
+  /// No description provided for @editProfilePictureLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get editProfilePictureLabel;
+
+  /// No description provided for @editProfileDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'About me'**
+  String get editProfileDescriptionLabel;
+
+  /// No description provided for @editProfileDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell people about yourself'**
+  String get editProfileDescriptionHint;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get profileSaved;
+
+  /// No description provided for @viewMyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'My profile'**
+  String get viewMyProfile;
 }
 
 class _AppLocalizationsDelegate

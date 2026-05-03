@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DiscuitImage {
 
- String get id; String get format; String get mimetype; int get width; int get height; int get size; String? get averageColor; String get url; List<ImageCopy> get copies;
+ String get id; String get format; String get mimetype; int get width; int get height; int get size; String? get averageColor; String get url; List<ImageCopy> get copies; String? get caption;
 /// Create a copy of DiscuitImage
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $DiscuitImageCopyWith<DiscuitImage> get copyWith => _$DiscuitImageCopyWithImpl<D
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DiscuitImage&&(identical(other.id, id) || other.id == id)&&(identical(other.format, format) || other.format == format)&&(identical(other.mimetype, mimetype) || other.mimetype == mimetype)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.size, size) || other.size == size)&&(identical(other.averageColor, averageColor) || other.averageColor == averageColor)&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other.copies, copies));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DiscuitImage&&(identical(other.id, id) || other.id == id)&&(identical(other.format, format) || other.format == format)&&(identical(other.mimetype, mimetype) || other.mimetype == mimetype)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.size, size) || other.size == size)&&(identical(other.averageColor, averageColor) || other.averageColor == averageColor)&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other.copies, copies)&&(identical(other.caption, caption) || other.caption == caption));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,format,mimetype,width,height,size,averageColor,url,const DeepCollectionEquality().hash(copies));
+int get hashCode => Object.hash(runtimeType,id,format,mimetype,width,height,size,averageColor,url,const DeepCollectionEquality().hash(copies),caption);
 
 @override
 String toString() {
-  return 'DiscuitImage(id: $id, format: $format, mimetype: $mimetype, width: $width, height: $height, size: $size, averageColor: $averageColor, url: $url, copies: $copies)';
+  return 'DiscuitImage(id: $id, format: $format, mimetype: $mimetype, width: $width, height: $height, size: $size, averageColor: $averageColor, url: $url, copies: $copies, caption: $caption)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $DiscuitImageCopyWith<$Res>  {
   factory $DiscuitImageCopyWith(DiscuitImage value, $Res Function(DiscuitImage) _then) = _$DiscuitImageCopyWithImpl;
 @useResult
 $Res call({
- String id, String format, String mimetype, int width, int height, int size, String? averageColor, String url, List<ImageCopy> copies
+ String id, String format, String mimetype, int width, int height, int size, String? averageColor, String url, List<ImageCopy> copies, String? caption
 });
 
 
@@ -65,7 +65,7 @@ class _$DiscuitImageCopyWithImpl<$Res>
 
 /// Create a copy of DiscuitImage
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? format = null,Object? mimetype = null,Object? width = null,Object? height = null,Object? size = null,Object? averageColor = freezed,Object? url = null,Object? copies = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? format = null,Object? mimetype = null,Object? width = null,Object? height = null,Object? size = null,Object? averageColor = freezed,Object? url = null,Object? copies = null,Object? caption = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,format: null == format ? _self.format : format // ignore: cast_nullable_to_non_nullable
@@ -76,7 +76,8 @@ as int,size: null == size ? _self.size : size // ignore: cast_nullable_to_non_nu
 as int,averageColor: freezed == averageColor ? _self.averageColor : averageColor // ignore: cast_nullable_to_non_nullable
 as String?,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,copies: null == copies ? _self.copies : copies // ignore: cast_nullable_to_non_nullable
-as List<ImageCopy>,
+as List<ImageCopy>,caption: freezed == caption ? _self.caption : caption // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -161,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String format,  String mimetype,  int width,  int height,  int size,  String? averageColor,  String url,  List<ImageCopy> copies)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String format,  String mimetype,  int width,  int height,  int size,  String? averageColor,  String url,  List<ImageCopy> copies,  String? caption)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DiscuitImage() when $default != null:
-return $default(_that.id,_that.format,_that.mimetype,_that.width,_that.height,_that.size,_that.averageColor,_that.url,_that.copies);case _:
+return $default(_that.id,_that.format,_that.mimetype,_that.width,_that.height,_that.size,_that.averageColor,_that.url,_that.copies,_that.caption);case _:
   return orElse();
 
 }
@@ -182,10 +183,10 @@ return $default(_that.id,_that.format,_that.mimetype,_that.width,_that.height,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String format,  String mimetype,  int width,  int height,  int size,  String? averageColor,  String url,  List<ImageCopy> copies)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String format,  String mimetype,  int width,  int height,  int size,  String? averageColor,  String url,  List<ImageCopy> copies,  String? caption)  $default,) {final _that = this;
 switch (_that) {
 case _DiscuitImage():
-return $default(_that.id,_that.format,_that.mimetype,_that.width,_that.height,_that.size,_that.averageColor,_that.url,_that.copies);case _:
+return $default(_that.id,_that.format,_that.mimetype,_that.width,_that.height,_that.size,_that.averageColor,_that.url,_that.copies,_that.caption);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +203,10 @@ return $default(_that.id,_that.format,_that.mimetype,_that.width,_that.height,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String format,  String mimetype,  int width,  int height,  int size,  String? averageColor,  String url,  List<ImageCopy> copies)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String format,  String mimetype,  int width,  int height,  int size,  String? averageColor,  String url,  List<ImageCopy> copies,  String? caption)?  $default,) {final _that = this;
 switch (_that) {
 case _DiscuitImage() when $default != null:
-return $default(_that.id,_that.format,_that.mimetype,_that.width,_that.height,_that.size,_that.averageColor,_that.url,_that.copies);case _:
+return $default(_that.id,_that.format,_that.mimetype,_that.width,_that.height,_that.size,_that.averageColor,_that.url,_that.copies,_that.caption);case _:
   return null;
 
 }
@@ -217,7 +218,7 @@ return $default(_that.id,_that.format,_that.mimetype,_that.width,_that.height,_t
 @JsonSerializable()
 
 class _DiscuitImage implements DiscuitImage {
-  const _DiscuitImage({required this.id, required this.format, required this.mimetype, required this.width, required this.height, required this.size, this.averageColor, required this.url, final  List<ImageCopy> copies = const []}): _copies = copies;
+  const _DiscuitImage({required this.id, required this.format, required this.mimetype, required this.width, required this.height, required this.size, this.averageColor, required this.url, final  List<ImageCopy> copies = const [], this.caption}): _copies = copies;
   factory _DiscuitImage.fromJson(Map<String, dynamic> json) => _$DiscuitImageFromJson(json);
 
 @override final  String id;
@@ -235,6 +236,7 @@ class _DiscuitImage implements DiscuitImage {
   return EqualUnmodifiableListView(_copies);
 }
 
+@override final  String? caption;
 
 /// Create a copy of DiscuitImage
 /// with the given fields replaced by the non-null parameter values.
@@ -249,16 +251,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DiscuitImage&&(identical(other.id, id) || other.id == id)&&(identical(other.format, format) || other.format == format)&&(identical(other.mimetype, mimetype) || other.mimetype == mimetype)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.size, size) || other.size == size)&&(identical(other.averageColor, averageColor) || other.averageColor == averageColor)&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other._copies, _copies));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DiscuitImage&&(identical(other.id, id) || other.id == id)&&(identical(other.format, format) || other.format == format)&&(identical(other.mimetype, mimetype) || other.mimetype == mimetype)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.size, size) || other.size == size)&&(identical(other.averageColor, averageColor) || other.averageColor == averageColor)&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other._copies, _copies)&&(identical(other.caption, caption) || other.caption == caption));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,format,mimetype,width,height,size,averageColor,url,const DeepCollectionEquality().hash(_copies));
+int get hashCode => Object.hash(runtimeType,id,format,mimetype,width,height,size,averageColor,url,const DeepCollectionEquality().hash(_copies),caption);
 
 @override
 String toString() {
-  return 'DiscuitImage(id: $id, format: $format, mimetype: $mimetype, width: $width, height: $height, size: $size, averageColor: $averageColor, url: $url, copies: $copies)';
+  return 'DiscuitImage(id: $id, format: $format, mimetype: $mimetype, width: $width, height: $height, size: $size, averageColor: $averageColor, url: $url, copies: $copies, caption: $caption)';
 }
 
 
@@ -269,7 +271,7 @@ abstract mixin class _$DiscuitImageCopyWith<$Res> implements $DiscuitImageCopyWi
   factory _$DiscuitImageCopyWith(_DiscuitImage value, $Res Function(_DiscuitImage) _then) = __$DiscuitImageCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String format, String mimetype, int width, int height, int size, String? averageColor, String url, List<ImageCopy> copies
+ String id, String format, String mimetype, int width, int height, int size, String? averageColor, String url, List<ImageCopy> copies, String? caption
 });
 
 
@@ -286,7 +288,7 @@ class __$DiscuitImageCopyWithImpl<$Res>
 
 /// Create a copy of DiscuitImage
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? format = null,Object? mimetype = null,Object? width = null,Object? height = null,Object? size = null,Object? averageColor = freezed,Object? url = null,Object? copies = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? format = null,Object? mimetype = null,Object? width = null,Object? height = null,Object? size = null,Object? averageColor = freezed,Object? url = null,Object? copies = null,Object? caption = freezed,}) {
   return _then(_DiscuitImage(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,format: null == format ? _self.format : format // ignore: cast_nullable_to_non_nullable
@@ -297,7 +299,8 @@ as int,size: null == size ? _self.size : size // ignore: cast_nullable_to_non_nu
 as int,averageColor: freezed == averageColor ? _self.averageColor : averageColor // ignore: cast_nullable_to_non_nullable
 as String?,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,copies: null == copies ? _self._copies : copies // ignore: cast_nullable_to_non_nullable
-as List<ImageCopy>,
+as List<ImageCopy>,caption: freezed == caption ? _self.caption : caption // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

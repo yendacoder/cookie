@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'community.dart';
+import 'public_user.dart';
 import 'user.dart';
 
 part 'initial_response.freezed.dart';
@@ -11,6 +12,7 @@ abstract class InitialCommunityMute with _$InitialCommunityMute {
   const factory InitialCommunityMute({
     required String id,
     required String mutedCommunityId,
+    Community? mutedCommunity,
   }) = _InitialCommunityMute;
 
   factory InitialCommunityMute.fromJson(Map<String, dynamic> json) =>
@@ -22,6 +24,7 @@ abstract class InitialUserMute with _$InitialUserMute {
   const factory InitialUserMute({
     required String id,
     required String mutedUserId,
+    PublicUser? mutedUser,
   }) = _InitialUserMute;
 
   factory InitialUserMute.fromJson(Map<String, dynamic> json) =>

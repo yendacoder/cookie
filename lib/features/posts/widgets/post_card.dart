@@ -7,11 +7,16 @@ import '../../../core/extensions/build_context_ext.dart';
 import '../../../core/utils/relative_time.dart';
 import '../../../models/discuit_image.dart';
 import '../../../models/post.dart';
+import '../../auth/providers/auth_provider.dart';
 import '../../voting/providers/voting_provider.dart';
+import '../providers/hidden_posts_provider.dart';
 import '../screens/image_viewer_screen.dart';
 import 'post_image_carousel.dart';
+import 'post_save_to_list_sheet.dart';
 
-class PostCard extends StatelessWidget {
+enum _PostMenuAction { saveToList, hide }
+
+class PostCard extends ConsumerWidget {
   const PostCard({
     super.key,
     required this.post,
@@ -29,7 +34,10 @@ class PostCard extends StatelessWidget {
   static String heroTag(String postId) => 'post-image-$postId';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isHidden = ref.watch(hiddenPostsProvider).contains(post.id);
+    if (isHidden) return _HiddenPlaceholder(post: post);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -354,6 +362,7 @@ class _PostFooter extends ConsumerWidget {
             ),
           ),
         ),
+        _PostMenuButton(post: post, muted: muted),
       ],
     );
   }
@@ -468,6 +477,81 @@ class _ImagePlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ColoredBox(
       color: color ?? Theme.of(context).colorScheme.surfaceContainerHighest,
+    );
+  }
+}
+
+// ── Hidden placeholder ────────────────────────────────────────────────────────
+
+class _HiddenPlaceholder extends ConsumerWidget {
+  const _HiddenPlaceholder({required this.post});
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Row(
+        children: [
+          Text(
+            context.l10n.postHiddenLabel,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
+          const Spacer(),
+          TextButton(
+            onPressed: () =>
+                ref.read(hiddenPostsProvider.notifier).unhide(post.id),
+            child: Text(context.l10n.undoButton),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Post menu button ──────────────────────────────────────────────────────────
+
+class _PostMenuButton extends ConsumerWidget {
+  const _PostMenuButton({required this.post, required this.muted});
+
+  final Post post;
+  final Color muted;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isAuthenticated =
+        ref.watch(authProvider.select((s) => s.value != null));
+    if (!isAuthenticated) return const SizedBox.shrink();
+
+    return PopupMenuButton<_PostMenuAction>(
+      iconSize: 16,
+      icon: Icon(Icons.more_horiz, size: 16, color: muted),
+      padding: EdgeInsets.zero,
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          value: _PostMenuAction.saveToList,
+          child: Text(context.l10n.postMenuSaveToList),
+        ),
+        PopupMenuItem(
+          value: _PostMenuAction.hide,
+          child: Text(context.l10n.postMenuHide),
+        ),
+      ],
+      onSelected: (action) {
+        switch (action) {
+          case _PostMenuAction.saveToList:
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (_) => PostSaveToListSheet(post: post),
+            );
+          case _PostMenuAction.hide:
+            ref.read(hiddenPostsProvider.notifier).hide(post.id);
+        }
+      },
     );
   }
 }

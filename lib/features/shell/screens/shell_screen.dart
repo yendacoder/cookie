@@ -17,6 +17,9 @@ class ShellScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isAuthLoading = ref.watch(authProvider).isLoading;
     final isNavBarVisible = ref.watch(navBarVisibilityProvider);
+    final hasUnread = ref.watch(
+      authProvider.select((s) => (s.value?.notificationsNewCount ?? 0) > 0),
+    );
 
     return Scaffold(
       body: navigationShell,
@@ -51,8 +54,14 @@ class ShellScreen extends ConsumerWidget {
                         label: context.l10n.navSubscriptions,
                       ),
                       NavigationDestination(
-                        icon: const Icon(Icons.person_outline),
-                        selectedIcon: const Icon(Icons.person),
+                        icon: Badge(
+                          isLabelVisible: hasUnread,
+                          child: const Icon(Icons.person_outline),
+                        ),
+                        selectedIcon: Badge(
+                          isLabelVisible: hasUnread,
+                          child: const Icon(Icons.person),
+                        ),
                         label: context.l10n.navProfile,
                       ),
                     ],

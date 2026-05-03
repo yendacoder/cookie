@@ -9,6 +9,7 @@ class PostImageCarousel extends StatefulWidget {
     required this.images,
     this.fit = BoxFit.cover,
     this.onTap,
+    this.onPageChanged,
   });
 
   final List<DiscuitImage> images;
@@ -17,6 +18,9 @@ class PostImageCarousel extends StatefulWidget {
   /// Called with the visible page index when the user taps the image area.
   /// The inner GestureDetector intercepts the tap before any outer InkWell.
   final void Function(int currentIndex)? onTap;
+
+  /// Called whenever the visible page changes (0-based index into [images]).
+  final ValueChanged<int>? onPageChanged;
 
   @override
   State<PostImageCarousel> createState() => _PostImageCarouselState();
@@ -57,7 +61,11 @@ class _PostImageCarouselState extends State<PostImageCarousel> {
             controller: _controller,
             // null = infinite scroll; 1 = no swiping for a single image.
             itemCount: count > 1 ? null : 1,
-            onPageChanged: (i) => setState(() => _page = i % count),
+            onPageChanged: (i) {
+              final page = i % count;
+              setState(() => _page = page);
+              widget.onPageChanged?.call(page);
+            },
             itemBuilder: (context, i) {
               final image = widget.images[i % count];
               final bg = image.averageColorValue ??

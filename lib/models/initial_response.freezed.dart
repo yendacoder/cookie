@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$InitialCommunityMute {
 
- String get id; String get mutedCommunityId;
+ String get id; String get mutedCommunityId; Community? get mutedCommunity;
 /// Create a copy of InitialCommunityMute
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $InitialCommunityMuteCopyWith<InitialCommunityMute> get copyWith => _$InitialCom
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InitialCommunityMute&&(identical(other.id, id) || other.id == id)&&(identical(other.mutedCommunityId, mutedCommunityId) || other.mutedCommunityId == mutedCommunityId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InitialCommunityMute&&(identical(other.id, id) || other.id == id)&&(identical(other.mutedCommunityId, mutedCommunityId) || other.mutedCommunityId == mutedCommunityId)&&(identical(other.mutedCommunity, mutedCommunity) || other.mutedCommunity == mutedCommunity));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,mutedCommunityId);
+int get hashCode => Object.hash(runtimeType,id,mutedCommunityId,mutedCommunity);
 
 @override
 String toString() {
-  return 'InitialCommunityMute(id: $id, mutedCommunityId: $mutedCommunityId)';
+  return 'InitialCommunityMute(id: $id, mutedCommunityId: $mutedCommunityId, mutedCommunity: $mutedCommunity)';
 }
 
 
@@ -48,11 +48,11 @@ abstract mixin class $InitialCommunityMuteCopyWith<$Res>  {
   factory $InitialCommunityMuteCopyWith(InitialCommunityMute value, $Res Function(InitialCommunityMute) _then) = _$InitialCommunityMuteCopyWithImpl;
 @useResult
 $Res call({
- String id, String mutedCommunityId
+ String id, String mutedCommunityId, Community? mutedCommunity
 });
 
 
-
+$CommunityCopyWith<$Res>? get mutedCommunity;
 
 }
 /// @nodoc
@@ -65,14 +65,27 @@ class _$InitialCommunityMuteCopyWithImpl<$Res>
 
 /// Create a copy of InitialCommunityMute
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? mutedCommunityId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? mutedCommunityId = null,Object? mutedCommunity = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,mutedCommunityId: null == mutedCommunityId ? _self.mutedCommunityId : mutedCommunityId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,mutedCommunity: freezed == mutedCommunity ? _self.mutedCommunity : mutedCommunity // ignore: cast_nullable_to_non_nullable
+as Community?,
   ));
 }
+/// Create a copy of InitialCommunityMute
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CommunityCopyWith<$Res>? get mutedCommunity {
+    if (_self.mutedCommunity == null) {
+    return null;
+  }
 
+  return $CommunityCopyWith<$Res>(_self.mutedCommunity!, (value) {
+    return _then(_self.copyWith(mutedCommunity: value));
+  });
+}
 }
 
 
@@ -154,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String mutedCommunityId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String mutedCommunityId,  Community? mutedCommunity)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _InitialCommunityMute() when $default != null:
-return $default(_that.id,_that.mutedCommunityId);case _:
+return $default(_that.id,_that.mutedCommunityId,_that.mutedCommunity);case _:
   return orElse();
 
 }
@@ -175,10 +188,10 @@ return $default(_that.id,_that.mutedCommunityId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String mutedCommunityId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String mutedCommunityId,  Community? mutedCommunity)  $default,) {final _that = this;
 switch (_that) {
 case _InitialCommunityMute():
-return $default(_that.id,_that.mutedCommunityId);case _:
+return $default(_that.id,_that.mutedCommunityId,_that.mutedCommunity);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +208,10 @@ return $default(_that.id,_that.mutedCommunityId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String mutedCommunityId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String mutedCommunityId,  Community? mutedCommunity)?  $default,) {final _that = this;
 switch (_that) {
 case _InitialCommunityMute() when $default != null:
-return $default(_that.id,_that.mutedCommunityId);case _:
+return $default(_that.id,_that.mutedCommunityId,_that.mutedCommunity);case _:
   return null;
 
 }
@@ -210,11 +223,12 @@ return $default(_that.id,_that.mutedCommunityId);case _:
 @JsonSerializable()
 
 class _InitialCommunityMute implements InitialCommunityMute {
-  const _InitialCommunityMute({required this.id, required this.mutedCommunityId});
+  const _InitialCommunityMute({required this.id, required this.mutedCommunityId, this.mutedCommunity});
   factory _InitialCommunityMute.fromJson(Map<String, dynamic> json) => _$InitialCommunityMuteFromJson(json);
 
 @override final  String id;
 @override final  String mutedCommunityId;
+@override final  Community? mutedCommunity;
 
 /// Create a copy of InitialCommunityMute
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InitialCommunityMute&&(identical(other.id, id) || other.id == id)&&(identical(other.mutedCommunityId, mutedCommunityId) || other.mutedCommunityId == mutedCommunityId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InitialCommunityMute&&(identical(other.id, id) || other.id == id)&&(identical(other.mutedCommunityId, mutedCommunityId) || other.mutedCommunityId == mutedCommunityId)&&(identical(other.mutedCommunity, mutedCommunity) || other.mutedCommunity == mutedCommunity));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,mutedCommunityId);
+int get hashCode => Object.hash(runtimeType,id,mutedCommunityId,mutedCommunity);
 
 @override
 String toString() {
-  return 'InitialCommunityMute(id: $id, mutedCommunityId: $mutedCommunityId)';
+  return 'InitialCommunityMute(id: $id, mutedCommunityId: $mutedCommunityId, mutedCommunity: $mutedCommunity)';
 }
 
 
@@ -249,11 +263,11 @@ abstract mixin class _$InitialCommunityMuteCopyWith<$Res> implements $InitialCom
   factory _$InitialCommunityMuteCopyWith(_InitialCommunityMute value, $Res Function(_InitialCommunityMute) _then) = __$InitialCommunityMuteCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String mutedCommunityId
+ String id, String mutedCommunityId, Community? mutedCommunity
 });
 
 
-
+@override $CommunityCopyWith<$Res>? get mutedCommunity;
 
 }
 /// @nodoc
@@ -266,22 +280,35 @@ class __$InitialCommunityMuteCopyWithImpl<$Res>
 
 /// Create a copy of InitialCommunityMute
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? mutedCommunityId = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? mutedCommunityId = null,Object? mutedCommunity = freezed,}) {
   return _then(_InitialCommunityMute(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,mutedCommunityId: null == mutedCommunityId ? _self.mutedCommunityId : mutedCommunityId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,mutedCommunity: freezed == mutedCommunity ? _self.mutedCommunity : mutedCommunity // ignore: cast_nullable_to_non_nullable
+as Community?,
   ));
 }
 
+/// Create a copy of InitialCommunityMute
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CommunityCopyWith<$Res>? get mutedCommunity {
+    if (_self.mutedCommunity == null) {
+    return null;
+  }
 
+  return $CommunityCopyWith<$Res>(_self.mutedCommunity!, (value) {
+    return _then(_self.copyWith(mutedCommunity: value));
+  });
+}
 }
 
 
 /// @nodoc
 mixin _$InitialUserMute {
 
- String get id; String get mutedUserId;
+ String get id; String get mutedUserId; PublicUser? get mutedUser;
 /// Create a copy of InitialUserMute
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -294,16 +321,16 @@ $InitialUserMuteCopyWith<InitialUserMute> get copyWith => _$InitialUserMuteCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InitialUserMute&&(identical(other.id, id) || other.id == id)&&(identical(other.mutedUserId, mutedUserId) || other.mutedUserId == mutedUserId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InitialUserMute&&(identical(other.id, id) || other.id == id)&&(identical(other.mutedUserId, mutedUserId) || other.mutedUserId == mutedUserId)&&(identical(other.mutedUser, mutedUser) || other.mutedUser == mutedUser));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,mutedUserId);
+int get hashCode => Object.hash(runtimeType,id,mutedUserId,mutedUser);
 
 @override
 String toString() {
-  return 'InitialUserMute(id: $id, mutedUserId: $mutedUserId)';
+  return 'InitialUserMute(id: $id, mutedUserId: $mutedUserId, mutedUser: $mutedUser)';
 }
 
 
@@ -314,11 +341,11 @@ abstract mixin class $InitialUserMuteCopyWith<$Res>  {
   factory $InitialUserMuteCopyWith(InitialUserMute value, $Res Function(InitialUserMute) _then) = _$InitialUserMuteCopyWithImpl;
 @useResult
 $Res call({
- String id, String mutedUserId
+ String id, String mutedUserId, PublicUser? mutedUser
 });
 
 
-
+$PublicUserCopyWith<$Res>? get mutedUser;
 
 }
 /// @nodoc
@@ -331,14 +358,27 @@ class _$InitialUserMuteCopyWithImpl<$Res>
 
 /// Create a copy of InitialUserMute
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? mutedUserId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? mutedUserId = null,Object? mutedUser = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,mutedUserId: null == mutedUserId ? _self.mutedUserId : mutedUserId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,mutedUser: freezed == mutedUser ? _self.mutedUser : mutedUser // ignore: cast_nullable_to_non_nullable
+as PublicUser?,
   ));
 }
+/// Create a copy of InitialUserMute
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PublicUserCopyWith<$Res>? get mutedUser {
+    if (_self.mutedUser == null) {
+    return null;
+  }
 
+  return $PublicUserCopyWith<$Res>(_self.mutedUser!, (value) {
+    return _then(_self.copyWith(mutedUser: value));
+  });
+}
 }
 
 
@@ -420,10 +460,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String mutedUserId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String mutedUserId,  PublicUser? mutedUser)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _InitialUserMute() when $default != null:
-return $default(_that.id,_that.mutedUserId);case _:
+return $default(_that.id,_that.mutedUserId,_that.mutedUser);case _:
   return orElse();
 
 }
@@ -441,10 +481,10 @@ return $default(_that.id,_that.mutedUserId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String mutedUserId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String mutedUserId,  PublicUser? mutedUser)  $default,) {final _that = this;
 switch (_that) {
 case _InitialUserMute():
-return $default(_that.id,_that.mutedUserId);case _:
+return $default(_that.id,_that.mutedUserId,_that.mutedUser);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -461,10 +501,10 @@ return $default(_that.id,_that.mutedUserId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String mutedUserId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String mutedUserId,  PublicUser? mutedUser)?  $default,) {final _that = this;
 switch (_that) {
 case _InitialUserMute() when $default != null:
-return $default(_that.id,_that.mutedUserId);case _:
+return $default(_that.id,_that.mutedUserId,_that.mutedUser);case _:
   return null;
 
 }
@@ -476,11 +516,12 @@ return $default(_that.id,_that.mutedUserId);case _:
 @JsonSerializable()
 
 class _InitialUserMute implements InitialUserMute {
-  const _InitialUserMute({required this.id, required this.mutedUserId});
+  const _InitialUserMute({required this.id, required this.mutedUserId, this.mutedUser});
   factory _InitialUserMute.fromJson(Map<String, dynamic> json) => _$InitialUserMuteFromJson(json);
 
 @override final  String id;
 @override final  String mutedUserId;
+@override final  PublicUser? mutedUser;
 
 /// Create a copy of InitialUserMute
 /// with the given fields replaced by the non-null parameter values.
@@ -495,16 +536,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InitialUserMute&&(identical(other.id, id) || other.id == id)&&(identical(other.mutedUserId, mutedUserId) || other.mutedUserId == mutedUserId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InitialUserMute&&(identical(other.id, id) || other.id == id)&&(identical(other.mutedUserId, mutedUserId) || other.mutedUserId == mutedUserId)&&(identical(other.mutedUser, mutedUser) || other.mutedUser == mutedUser));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,mutedUserId);
+int get hashCode => Object.hash(runtimeType,id,mutedUserId,mutedUser);
 
 @override
 String toString() {
-  return 'InitialUserMute(id: $id, mutedUserId: $mutedUserId)';
+  return 'InitialUserMute(id: $id, mutedUserId: $mutedUserId, mutedUser: $mutedUser)';
 }
 
 
@@ -515,11 +556,11 @@ abstract mixin class _$InitialUserMuteCopyWith<$Res> implements $InitialUserMute
   factory _$InitialUserMuteCopyWith(_InitialUserMute value, $Res Function(_InitialUserMute) _then) = __$InitialUserMuteCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String mutedUserId
+ String id, String mutedUserId, PublicUser? mutedUser
 });
 
 
-
+@override $PublicUserCopyWith<$Res>? get mutedUser;
 
 }
 /// @nodoc
@@ -532,15 +573,28 @@ class __$InitialUserMuteCopyWithImpl<$Res>
 
 /// Create a copy of InitialUserMute
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? mutedUserId = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? mutedUserId = null,Object? mutedUser = freezed,}) {
   return _then(_InitialUserMute(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,mutedUserId: null == mutedUserId ? _self.mutedUserId : mutedUserId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,mutedUser: freezed == mutedUser ? _self.mutedUser : mutedUser // ignore: cast_nullable_to_non_nullable
+as PublicUser?,
   ));
 }
 
+/// Create a copy of InitialUserMute
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PublicUserCopyWith<$Res>? get mutedUser {
+    if (_self.mutedUser == null) {
+    return null;
+  }
 
+  return $PublicUserCopyWith<$Res>(_self.mutedUser!, (value) {
+    return _then(_self.copyWith(mutedUser: value));
+  });
+}
 }
 
 

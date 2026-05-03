@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
 import '../../../core/utils/relative_time.dart';
+import '../../../core/widgets/markdown_text.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../models/comment.dart';
 import '../../../models/discuit_image.dart';
@@ -150,7 +151,9 @@ class _UserHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isAuthenticated = ref.watch(authProvider).value != null;
+    final currentUser = ref.watch(authProvider).value;
+    final isAuthenticated = currentUser != null;
+    final isOwnProfile = currentUser?.username == user.username;
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final muted = colorScheme.onSurfaceVariant;
@@ -233,7 +236,7 @@ class _UserHeader extends ConsumerWidget {
                 Text(about, style: textTheme.bodyMedium),
               ],
               const SizedBox(height: 12),
-              if (isAuthenticated)
+              if (isAuthenticated && !isOwnProfile)
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -475,14 +478,16 @@ class _UserCommentCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 6),
-            Text(
-              comment.deleted ? '[deleted]' : comment.body,
-              style: textTheme.bodySmall?.copyWith(
-                fontStyle: comment.deleted ? FontStyle.italic : null,
-              ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
+            comment.deleted
+                ? Text(
+                    '[deleted]',
+                    style: textTheme.bodySmall
+                        ?.copyWith(fontStyle: FontStyle.italic),
+                  )
+                : MarkdownText(
+                    comment.body,
+                    baseStyle: textTheme.bodySmall,
+                  ),
             if (comment.postTitle case final String title when title.isNotEmpty)
               ...[
               const SizedBox(height: 4),

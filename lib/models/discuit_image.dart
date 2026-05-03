@@ -16,6 +16,7 @@ abstract class DiscuitImage with _$DiscuitImage {
     String? averageColor,
     required String url,
     @Default([]) List<ImageCopy> copies,
+    String? caption,
   }) = _DiscuitImage;
 
   factory DiscuitImage.fromJson(Map<String, dynamic> json) =>
