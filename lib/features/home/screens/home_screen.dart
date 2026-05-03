@@ -71,8 +71,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ),
       // The data state embeds a SliverAppBar so it collapses with the content.
-      data: (_) => Scaffold(
+      data: (user) => Scaffold(
         body: _FeedView(scrollController: _scrollController),
+        floatingActionButton: user != null
+            ? FloatingActionButton(
+                onPressed: () => context.push('/compose'),
+                child: const Icon(Icons.edit_outlined),
+              )
+            : null,
       ),
     );
   }

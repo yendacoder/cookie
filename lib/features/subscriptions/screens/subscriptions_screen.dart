@@ -72,10 +72,16 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
           onRetry: () => ref.invalidate(authProvider),
         ),
       ),
-      data: (_) => Scaffold(
+      data: (user) => Scaffold(
         body: AuthGate(
           child: _FeedView(scrollController: _scrollController),
         ),
+        floatingActionButton: user != null
+            ? FloatingActionButton(
+                onPressed: () => context.push('/compose'),
+                child: const Icon(Icons.edit_outlined),
+              )
+            : null,
       ),
     );
   }

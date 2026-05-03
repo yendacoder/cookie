@@ -490,6 +490,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get postMenuSaveToList => 'Save to list';
 
   @override
+  String get postMenuRemoveFromList => 'Remove from list';
+
+  @override
   String get postMenuHide => 'Hide post';
 
   @override
@@ -520,4 +523,133 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewMyProfile => 'My profile';
+
+  @override
+  String get composeScreenTitle => 'New post';
+
+  @override
+  String get composeCommunityHint => 'Select a community';
+
+  @override
+  String get composeTitleHint => 'Title';
+
+  @override
+  String get composeTypeText => 'Text';
+
+  @override
+  String get composeTypeImage => 'Image';
+
+  @override
+  String get composeBodyHint => 'Add text (optional)';
+
+  @override
+  String get composeUrlDetected => 'Will be posted as a link';
+
+  @override
+  String get composeAddImage => 'Add image';
+
+  @override
+  String get composeAltTextHint => 'Alt text (optional)';
+
+  @override
+  String get composeSubmitButton => 'Post';
+
+  @override
+  String get composePreviewTitle => 'Preview';
+
+  @override
+  String get composePreviewEmpty => 'Nothing to preview yet';
+
+  @override
+  String get composeMarkdownGuideTitle => 'Markdown guide';
+
+  @override
+  String get deleteButton => 'Delete';
+
+  @override
+  String get communityModTools => 'Mod tools';
+
+  @override
+  String get modToolsScreenTitle => 'Mod tools';
+
+  @override
+  String get modToolsTabSettings => 'Settings';
+
+  @override
+  String get modToolsTabRules => 'Rules';
+
+  @override
+  String get modToolsDescriptionLabel => 'Description';
+
+  @override
+  String get modToolsDescriptionHint =>
+      'Community description (supports markdown)';
+
+  @override
+  String get modToolsNsfwLabel => 'NSFW community';
+
+  @override
+  String get modToolsPostingRestrictedLabel => 'Restrict posting to moderators';
+
+  @override
+  String get modToolsSaved => 'Settings saved';
+
+  @override
+  String get modToolsAddRule => 'Add rule';
+
+  @override
+  String get modToolsRuleLabel => 'Rule';
+
+  @override
+  String get modToolsRuleRequired => 'Rule text is required';
+
+  @override
+  String get modToolsRuleDescriptionLabel => 'Description (optional)';
+
+  @override
+  String get modToolsNewRuleTitle => 'New rule';
+
+  @override
+  String get modToolsEditRuleTitle => 'Edit rule';
+
+  @override
+  String get modToolsNoRules => 'No rules yet';
+
+  @override
+  String get modToolsDeleteRuleTitle => 'Delete rule';
+
+  @override
+  String get modToolsDeleteRuleConfirm =>
+      'This rule will be permanently deleted.';
+
+  @override
+  String get postMenuEdit => 'Edit post';
+
+  @override
+  String get postMenuDelete => 'Delete post';
+
+  @override
+  String get postDeleteTitle => 'Delete post';
+
+  @override
+  String get postDeleteConfirm => 'This will permanently delete your post.';
+
+  @override
+  String get composeEditTitle => 'Edit post';
+
+  @override
+  String get commentMenuEdit => 'Edit comment';
+
+  @override
+  String get commentMenuDelete => 'Delete comment';
+
+  @override
+  String get commentDeleteTitle => 'Delete comment';
+
+  @override
+  String get commentDeleteConfirm =>
+      'This will permanently delete your comment.';
+
+  @override
+  String get commentEditTitle => 'Edit comment';
 }

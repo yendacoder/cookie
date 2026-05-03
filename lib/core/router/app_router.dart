@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/communities/screens/communities_screen.dart';
+import '../../features/communities/screens/mod_tools_screen.dart';
+import '../../features/posts/screens/compose_screen.dart';
 import '../../features/communities/screens/community_screen.dart';
 import '../../features/communities/screens/muted_communities_screen.dart';
 import '../../features/home/screens/home_screen.dart';
@@ -19,6 +22,7 @@ import '../../features/shell/screens/shell_screen.dart';
 import '../../features/user/screens/muted_users_screen.dart';
 import '../../features/user/screens/user_screen.dart';
 import '../../features/subscriptions/screens/subscriptions_screen.dart';
+import '../../models/community.dart';
 import '../../models/post.dart';
 
 part 'app_router.g.dart';
@@ -97,6 +101,12 @@ GoRouter router(Ref ref) {
         ),
       ),
       GoRoute(
+        path: '/c/:communityName/mod-tools',
+        builder: (context, state) => ModToolsScreen(
+          communityName: state.pathParameters['communityName']!,
+        ),
+      ),
+      GoRoute(
         path: '/c/:communityName/post/:postId',
         builder: (context, state) => PostDetailScreen(
           communityName: state.pathParameters['communityName']!,
@@ -129,6 +139,18 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/compose',
+        pageBuilder: (context, state) {
+          final extra = state.extra;
+          return MaterialPage(
+            fullscreenDialog: true,
+            child: extra is Post
+                ? ComposeScreen(editingPost: extra)
+                : ComposeScreen(community: extra as Community?),
+          );
+        },
       ),
     ],
   );

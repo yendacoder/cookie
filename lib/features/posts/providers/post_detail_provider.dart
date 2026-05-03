@@ -17,6 +17,35 @@ class PostDetailNotifier extends _$PostDetailNotifier {
     return Post.fromJson(response.data as Map<String, dynamic>);
   }
 
+  Future<void> editComment(String commentId, String body) async {
+    final post = state.value;
+    if (post == null) return;
+    final response = await ref.read(apiClientProvider).put(
+      'posts/${post.publicId}/comments/$commentId',
+      data: {'body': body},
+    );
+    final updated = Comment.fromJson(response.data as Map<String, dynamic>);
+    state = AsyncData(post.copyWith(
+      comments: post.comments?.map(
+        (c) => c.id == commentId ? updated : c,
+      ).toList(),
+    ));
+  }
+
+  Future<void> deleteComment(String commentId) async {
+    final post = state.value;
+    if (post == null) return;
+    await ref
+        .read(apiClientProvider)
+        .delete('posts/${post.publicId}/comments/$commentId');
+    state = AsyncData(post.copyWith(
+      comments: post.comments?.map(
+        (c) => c.id == commentId ? c.copyWith(deleted: true, body: '') : c,
+      ).toList(),
+      noComments: post.noComments - 1,
+    ));
+  }
+
   Future<void> addComment(String body, {String? parentCommentId}) async {
     final post = state.value;
     if (post == null) return;

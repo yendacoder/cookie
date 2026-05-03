@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/utils/markdown_utils.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../models/community.dart';
 import '../../../models/discuit_image.dart';
@@ -234,7 +235,13 @@ class _CommunityTile extends StatelessWidget {
               ),
       ),
       title: Text(community.name),
-      subtitle: Text(context.l10n.membersLabel(community.noMembers)),
+      subtitle: (community.about?.isNotEmpty ?? false)
+          ? Text(
+              markdownToPlainText(community.about!),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            )
+          : Text(context.l10n.membersLabel(community.noMembers)),
       trailing: selectMode ? null : const Icon(Icons.chevron_right),
       onTap: () {
         if (selectMode) {

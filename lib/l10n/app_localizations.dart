@@ -820,6 +820,12 @@ abstract class AppLocalizations {
   /// **'Save to list'**
   String get postMenuSaveToList;
 
+  /// No description provided for @postMenuRemoveFromList.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from list'**
+  String get postMenuRemoveFromList;
+
   /// No description provided for @postMenuHide.
   ///
   /// In en, this message translates to:
@@ -879,6 +885,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'My profile'**
   String get viewMyProfile;
+
+  /// No description provided for @composeScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New post'**
+  String get composeScreenTitle;
+
+  /// No description provided for @composeCommunityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a community'**
+  String get composeCommunityHint;
+
+  /// No description provided for @composeTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get composeTitleHint;
+
+  /// No description provided for @composeTypeText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get composeTypeText;
+
+  /// No description provided for @composeTypeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get composeTypeImage;
+
+  /// No description provided for @composeBodyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add text (optional)'**
+  String get composeBodyHint;
+
+  /// No description provided for @composeUrlDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Will be posted as a link'**
+  String get composeUrlDetected;
+
+  /// No description provided for @composeAddImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add image'**
+  String get composeAddImage;
+
+  /// No description provided for @composeAltTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Alt text (optional)'**
+  String get composeAltTextHint;
+
+  /// No description provided for @composeSubmitButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Post'**
+  String get composeSubmitButton;
+
+  /// No description provided for @composePreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get composePreviewTitle;
+
+  /// No description provided for @composePreviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to preview yet'**
+  String get composePreviewEmpty;
+
+  /// No description provided for @composeMarkdownGuideTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Markdown guide'**
+  String get composeMarkdownGuideTitle;
+
+  /// No description provided for @deleteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteButton;
+
+  /// No description provided for @communityModTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Mod tools'**
+  String get communityModTools;
+
+  /// No description provided for @modToolsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mod tools'**
+  String get modToolsScreenTitle;
+
+  /// No description provided for @modToolsTabSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get modToolsTabSettings;
+
+  /// No description provided for @modToolsTabRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get modToolsTabRules;
+
+  /// No description provided for @modToolsDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get modToolsDescriptionLabel;
+
+  /// No description provided for @modToolsDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Community description (supports markdown)'**
+  String get modToolsDescriptionHint;
+
+  /// No description provided for @modToolsNsfwLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'NSFW community'**
+  String get modToolsNsfwLabel;
+
+  /// No description provided for @modToolsPostingRestrictedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrict posting to moderators'**
+  String get modToolsPostingRestrictedLabel;
+
+  /// No description provided for @modToolsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings saved'**
+  String get modToolsSaved;
+
+  /// No description provided for @modToolsAddRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add rule'**
+  String get modToolsAddRule;
+
+  /// No description provided for @modToolsRuleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule'**
+  String get modToolsRuleLabel;
+
+  /// No description provided for @modToolsRuleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule text is required'**
+  String get modToolsRuleRequired;
+
+  /// No description provided for @modToolsRuleDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get modToolsRuleDescriptionLabel;
+
+  /// No description provided for @modToolsNewRuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New rule'**
+  String get modToolsNewRuleTitle;
+
+  /// No description provided for @modToolsEditRuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit rule'**
+  String get modToolsEditRuleTitle;
+
+  /// No description provided for @modToolsNoRules.
+  ///
+  /// In en, this message translates to:
+  /// **'No rules yet'**
+  String get modToolsNoRules;
+
+  /// No description provided for @modToolsDeleteRuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete rule'**
+  String get modToolsDeleteRuleTitle;
+
+  /// No description provided for @modToolsDeleteRuleConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This rule will be permanently deleted.'**
+  String get modToolsDeleteRuleConfirm;
+
+  /// No description provided for @postMenuEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit post'**
+  String get postMenuEdit;
+
+  /// No description provided for @postMenuDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete post'**
+  String get postMenuDelete;
+
+  /// No description provided for @postDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete post'**
+  String get postDeleteTitle;
+
+  /// No description provided for @postDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete your post.'**
+  String get postDeleteConfirm;
+
+  /// No description provided for @composeEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit post'**
+  String get composeEditTitle;
+
+  /// No description provided for @commentMenuEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit comment'**
+  String get commentMenuEdit;
+
+  /// No description provided for @commentMenuDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete comment'**
+  String get commentMenuDelete;
+
+  /// No description provided for @commentDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete comment'**
+  String get commentDeleteTitle;
+
+  /// No description provided for @commentDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete your comment.'**
+  String get commentDeleteConfirm;
+
+  /// No description provided for @commentEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit comment'**
+  String get commentEditTitle;
 }
 
 class _AppLocalizationsDelegate

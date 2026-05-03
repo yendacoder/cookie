@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../voting/providers/voting_provider.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../core/api/api_client.dart';
 import '../../../core/extensions/build_context_ext.dart';
 import '../../../core/utils/relative_time.dart';
 import '../../../core/widgets/error_view.dart';
@@ -158,8 +161,10 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isAuthenticated =
-        ref.watch(authProvider.select((s) => s.value != null));
+    final currentUser = ref.watch(authProvider).value;
+    final isAuthenticated = currentUser != null;
+    final isAuthor = currentUser?.username == post.username;
+    final l10n = context.l10n;
 
     return AppBar(
       titleSpacing: 0,
@@ -188,14 +193,29 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
             itemBuilder: (_) => [
               PopupMenuItem(
                 value: _PostMenuAction.saveToList,
-                child: Text(context.l10n.postMenuSaveToList),
+                child: Text(l10n.postMenuSaveToList),
               ),
+              if (isAuthor) ...[
+                PopupMenuItem(
+                  value: _PostMenuAction.editPost,
+                  child: Text(l10n.postMenuEdit),
+                ),
+                PopupMenuItem(
+                  value: _PostMenuAction.deletePost,
+                  child: Text(
+                    l10n.postMenuDelete,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ),
+              ],
               PopupMenuItem(
                 value: _PostMenuAction.hide,
-                child: Text(context.l10n.postMenuHide),
+                child: Text(l10n.postMenuHide),
               ),
             ],
-            onSelected: (action) {
+            onSelected: (action) async {
               switch (action) {
                 case _PostMenuAction.saveToList:
                   showModalBottomSheet(
@@ -203,6 +223,46 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     isScrollControlled: true,
                     builder: (_) => PostSaveToListSheet(post: post),
                   );
+                case _PostMenuAction.editPost:
+                  await context.push('/compose', extra: post);
+                  if (context.mounted) {
+                    ref.invalidate(postDetailProvider(post.publicId));
+                  }
+                case _PostMenuAction.deletePost:
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text(l10n.postDeleteTitle),
+                      content: Text(l10n.postDeleteConfirm),
+                      actions: [
+                        TextButton(
+                          onPressed: () => ctx.pop(false),
+                          child: Text(l10n.cancelButton),
+                        ),
+                        TextButton(
+                          onPressed: () => ctx.pop(true),
+                          style: TextButton.styleFrom(
+                            foregroundColor:
+                                Theme.of(context).colorScheme.error,
+                          ),
+                          child: Text(l10n.deleteButton),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirmed != true || !context.mounted) return;
+                  try {
+                    await ref
+                        .read(apiClientProvider)
+                        .delete('posts/${post.publicId}');
+                    if (context.mounted) context.pop();
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(e.toString())),
+                      );
+                    }
+                  }
                 case _PostMenuAction.hide:
                   ref.read(hiddenPostsProvider.notifier).hide(post.id);
                   context.pop();
@@ -214,7 +274,7 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
   }
 }
 
-enum _PostMenuAction { saveToList, hide }
+enum _PostMenuAction { saveToList, editPost, deletePost, hide }
 
 // ── Post body ─────────────────────────────────────────────────────────────────
 
@@ -408,27 +468,34 @@ class _DetailLink extends StatelessWidget {
               ),
             ),
           ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(6),
+        InkWell(
+          borderRadius: BorderRadius.circular(6),
+          onTap: () => launchUrl(
+            Uri.parse(link.url),
+            mode: LaunchMode.externalApplication,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.link_rounded, size: 14, color: colorScheme.primary),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  link.url,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: colorScheme.primary,
-                      ),
-                  overflow: TextOverflow.ellipsis,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.link_rounded, size: 14, color: colorScheme.primary),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    link.url,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.primary,
+                        ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -762,6 +829,7 @@ class _CommentsSectionSliver extends StatelessWidget {
               final comment = comments[index];
               return _CommentCard(
                 comment: comment,
+                postPublicId: post.publicId,
                 onReply: onReplyTap != null
                     ? () => onReplyTap!(comment)
                     : null,
@@ -784,9 +852,14 @@ const _depthLineColors = [
 ];
 
 class _CommentCard extends ConsumerWidget {
-  const _CommentCard({required this.comment, this.onReply});
+  const _CommentCard({
+    required this.comment,
+    required this.postPublicId,
+    this.onReply,
+  });
 
   final Comment comment;
+  final String postPublicId;
   final VoidCallback? onReply;
 
   @override
@@ -925,6 +998,12 @@ class _CommentCard extends ConsumerWidget {
                             ),
                           ),
                         ],
+                        if (!isDeleted)
+                          _CommentMenuButton(
+                            comment: comment,
+                            postPublicId: postPublicId,
+                            muted: muted,
+                          ),
                       ],
                     ),
                   ],
@@ -937,6 +1016,207 @@ class _CommentCard extends ConsumerWidget {
     );
   }
 }
+
+// ── Comment menu button ───────────────────────────────────────────────────────
+
+enum _CommentMenuAction { edit, delete }
+
+class _CommentMenuButton extends ConsumerWidget {
+  const _CommentMenuButton({
+    required this.comment,
+    required this.postPublicId,
+    required this.muted,
+  });
+
+  final Comment comment;
+  final String postPublicId;
+  final Color muted;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(authProvider).value;
+    if (currentUser == null || currentUser.username != comment.username) {
+      return const SizedBox.shrink();
+    }
+
+    final l10n = context.l10n;
+
+    return PopupMenuButton<_CommentMenuAction>(
+      iconSize: 14,
+      icon: Icon(Icons.more_horiz, size: 14, color: muted),
+      padding: EdgeInsets.zero,
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          value: _CommentMenuAction.edit,
+          child: Text(l10n.commentMenuEdit),
+        ),
+        PopupMenuItem(
+          value: _CommentMenuAction.delete,
+          child: Text(
+            l10n.commentMenuDelete,
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+      ],
+      onSelected: (action) async {
+        switch (action) {
+          case _CommentMenuAction.edit:
+            showModalBottomSheet<void>(
+              context: context,
+              isScrollControlled: true,
+              builder: (_) => _CommentEditSheet(
+                comment: comment,
+                postPublicId: postPublicId,
+              ),
+            );
+          case _CommentMenuAction.delete:
+            final confirmed = await showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text(l10n.commentDeleteTitle),
+                content: Text(l10n.commentDeleteConfirm),
+                actions: [
+                  TextButton(
+                    onPressed: () => ctx.pop(false),
+                    child: Text(l10n.cancelButton),
+                  ),
+                  TextButton(
+                    onPressed: () => ctx.pop(true),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.error,
+                    ),
+                    child: Text(l10n.deleteButton),
+                  ),
+                ],
+              ),
+            );
+            if (confirmed != true || !context.mounted) return;
+            try {
+              await ref
+                  .read(postDetailProvider(postPublicId).notifier)
+                  .deleteComment(comment.id);
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(e.toString())),
+                );
+              }
+            }
+        }
+      },
+    );
+  }
+}
+
+// ── Comment edit sheet ────────────────────────────────────────────────────────
+
+class _CommentEditSheet extends ConsumerStatefulWidget {
+  const _CommentEditSheet({
+    required this.comment,
+    required this.postPublicId,
+  });
+
+  final Comment comment;
+  final String postPublicId;
+
+  @override
+  ConsumerState<_CommentEditSheet> createState() => _CommentEditSheetState();
+}
+
+class _CommentEditSheetState extends ConsumerState<_CommentEditSheet> {
+  late final TextEditingController _ctrl;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = TextEditingController(text: widget.comment.body);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final body = _ctrl.text.trim();
+    if (body.isEmpty || body == widget.comment.body) {
+      Navigator.of(context).pop();
+      return;
+    }
+    setState(() => _saving = true);
+    try {
+      await ref
+          .read(postDetailProvider(widget.postPublicId).notifier)
+          .editComment(widget.comment.id, body);
+      if (mounted) Navigator.of(context).pop();
+    } catch (e) {
+      if (mounted) {
+        setState(() => _saving = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.viewInsetsOf(context).bottom,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text(
+              l10n.commentEditTitle,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: _ctrl,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                  ),
+                  maxLines: 6,
+                  minLines: 3,
+                  autofocus: true,
+                  textCapitalization: TextCapitalization.sentences,
+                ),
+                const SizedBox(height: 16),
+                FilledButton(
+                  onPressed: _saving ? null : _submit,
+                  child: _saving
+                      ? const SizedBox.square(
+                          dimension: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(l10n.saveButton),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Comment vote button ───────────────────────────────────────────────────────
 
 class _CommentVoteButton extends StatelessWidget {
   const _CommentVoteButton({

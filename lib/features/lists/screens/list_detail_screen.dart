@@ -234,11 +234,11 @@ class _ItemTile extends ConsumerWidget {
       ),
       onDismissed: (_) =>
           ref.read(listItemsProvider(listId).notifier).removeItem(item.id),
-      child: _itemContent(context),
+      child: _itemContent(context, ref),
     );
   }
 
-  Widget _itemContent(BuildContext context) {
+  Widget _itemContent(BuildContext context, WidgetRef ref) {
     if (item.targetType == 'post' && item.targetItem != null) {
       final post = Post.fromJson(item.targetItem!);
       return PostCard(
@@ -248,6 +248,8 @@ class _ItemTile extends ConsumerWidget {
           '/c/${post.communityName}/post/${post.publicId}',
           extra: post,
         ),
+        onRemoveFromList: () =>
+            ref.read(listItemsProvider(listId).notifier).removeItem(item.id),
       );
     }
     if (item.targetType == 'comment' && item.targetItem != null) {

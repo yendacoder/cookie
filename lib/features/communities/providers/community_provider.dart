@@ -21,6 +21,10 @@ class CommunityDetail extends _$CommunityDetail {
     return Community.fromJson(response.data as Map<String, dynamic>);
   }
 
+  /// Directly replaces the community state — used by mod tools after mutations
+  /// to avoid a network round-trip and prevent loading flicker.
+  void replace(Community community) => state = AsyncData(community);
+
   /// Toggles the current user's membership of the community.
   Future<void> toggleJoin() async {
     final community = state.value;

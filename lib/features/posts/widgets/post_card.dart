@@ -2,8 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/api/api_client.dart';
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/utils/markdown_utils.dart';
 import '../../../core/utils/relative_time.dart';
 import '../../../models/discuit_image.dart';
 import '../../../models/post.dart';
@@ -14,7 +17,7 @@ import '../screens/image_viewer_screen.dart';
 import 'post_image_carousel.dart';
 import 'post_save_to_list_sheet.dart';
 
-enum _PostMenuAction { saveToList, hide }
+enum _PostMenuAction { saveToList, removeFromList, editPost, deletePost, hide }
 
 class PostCard extends ConsumerWidget {
   const PostCard({
@@ -22,6 +25,7 @@ class PostCard extends ConsumerWidget {
     required this.post,
     required this.onTap,
     this.showCommunity = true,
+    this.onRemoveFromList,
   });
 
   final Post post;
@@ -30,6 +34,9 @@ class PostCard extends ConsumerWidget {
   /// When false the community name and icon are hidden in the post header.
   /// Set to false when displaying posts inside a community screen.
   final bool showCommunity;
+
+  /// When set, the menu shows "Remove from list" instead of "Save to list".
+  final VoidCallback? onRemoveFromList;
 
   static String heroTag(String postId) => 'post-image-$postId';
 
@@ -65,7 +72,11 @@ class PostCard extends ConsumerWidget {
         // Footer sits outside InkWell — no gesture conflict with vote taps.
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-          child: _PostFooter(post: post, onDetailTap: onTap),
+          child: _PostFooter(
+            post: post,
+            onDetailTap: onTap,
+            onRemoveFromList: onRemoveFromList,
+          ),
         ),
       ],
     );
@@ -214,7 +225,13 @@ class _LinkContent extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: Row(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => launchUrl(
+          Uri.parse(link.url),
+          mode: LaunchMode.externalApplication,
+        ),
+        child: Row(
         crossAxisAlignment: .start,
         children: [
           Expanded(
@@ -262,6 +279,7 @@ class _LinkContent extends StatelessWidget {
             ),
           ],
         ],
+        ),
       ),
     );
   }
@@ -277,12 +295,12 @@ class _TextContent extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 6),
       child: Text(
-        body,
+        markdownToPlainText(body),
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
           color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
         maxLines: 3,
-        overflow: .ellipsis,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
@@ -291,10 +309,15 @@ class _TextContent extends StatelessWidget {
 // ── Footer ────────────────────────────────────────────────────────────────────
 
 class _PostFooter extends ConsumerWidget {
-  const _PostFooter({required this.post, required this.onDetailTap});
+  const _PostFooter({
+    required this.post,
+    required this.onDetailTap,
+    this.onRemoveFromList,
+  });
 
   final Post post;
   final VoidCallback onDetailTap;
+  final VoidCallback? onRemoveFromList;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -362,7 +385,7 @@ class _PostFooter extends ConsumerWidget {
             ),
           ),
         ),
-        _PostMenuButton(post: post, muted: muted),
+        _PostMenuButton(post: post, muted: muted, onRemoveFromList: onRemoveFromList),
       ],
     );
   }
@@ -515,32 +538,58 @@ class _HiddenPlaceholder extends ConsumerWidget {
 // ── Post menu button ──────────────────────────────────────────────────────────
 
 class _PostMenuButton extends ConsumerWidget {
-  const _PostMenuButton({required this.post, required this.muted});
+  const _PostMenuButton({
+    required this.post,
+    required this.muted,
+    this.onRemoveFromList,
+  });
 
   final Post post;
   final Color muted;
+  final VoidCallback? onRemoveFromList;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isAuthenticated =
-        ref.watch(authProvider.select((s) => s.value != null));
-    if (!isAuthenticated) return const SizedBox.shrink();
+    final currentUser = ref.watch(authProvider).value;
+    if (currentUser == null) return const SizedBox.shrink();
+
+    final isAuthor = currentUser.username == post.username;
+    final l10n = context.l10n;
 
     return PopupMenuButton<_PostMenuAction>(
       iconSize: 16,
       icon: Icon(Icons.more_horiz, size: 16, color: muted),
       padding: EdgeInsets.zero,
       itemBuilder: (_) => [
-        PopupMenuItem(
-          value: _PostMenuAction.saveToList,
-          child: Text(context.l10n.postMenuSaveToList),
-        ),
+        if (onRemoveFromList != null)
+          PopupMenuItem(
+            value: _PostMenuAction.removeFromList,
+            child: Text(l10n.postMenuRemoveFromList),
+          )
+        else
+          PopupMenuItem(
+            value: _PostMenuAction.saveToList,
+            child: Text(l10n.postMenuSaveToList),
+          ),
+        if (isAuthor) ...[
+          PopupMenuItem(
+            value: _PostMenuAction.editPost,
+            child: Text(l10n.postMenuEdit),
+          ),
+          PopupMenuItem(
+            value: _PostMenuAction.deletePost,
+            child: Text(
+              l10n.postMenuDelete,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
+        ],
         PopupMenuItem(
           value: _PostMenuAction.hide,
-          child: Text(context.l10n.postMenuHide),
+          child: Text(l10n.postMenuHide),
         ),
       ],
-      onSelected: (action) {
+      onSelected: (action) async {
         switch (action) {
           case _PostMenuAction.saveToList:
             showModalBottomSheet(
@@ -548,6 +597,47 @@ class _PostMenuButton extends ConsumerWidget {
               isScrollControlled: true,
               builder: (_) => PostSaveToListSheet(post: post),
             );
+          case _PostMenuAction.removeFromList:
+            onRemoveFromList?.call();
+          case _PostMenuAction.editPost:
+            context.push('/compose', extra: post);
+          case _PostMenuAction.deletePost:
+            final confirmed = await showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text(l10n.postDeleteTitle),
+                content: Text(l10n.postDeleteConfirm),
+                actions: [
+                  TextButton(
+                    onPressed: () => ctx.pop(false),
+                    child: Text(l10n.cancelButton),
+                  ),
+                  TextButton(
+                    onPressed: () => ctx.pop(true),
+                    style: TextButton.styleFrom(
+                      foregroundColor:
+                          Theme.of(context).colorScheme.error,
+                    ),
+                    child: Text(l10n.deleteButton),
+                  ),
+                ],
+              ),
+            );
+            if (confirmed != true || !context.mounted) return;
+            try {
+              await ref
+                  .read(apiClientProvider)
+                  .delete('posts/${post.publicId}');
+              if (context.mounted) {
+                ref.read(hiddenPostsProvider.notifier).hide(post.id);
+              }
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(e.toString())),
+                );
+              }
+            }
           case _PostMenuAction.hide:
             ref.read(hiddenPostsProvider.notifier).hide(post.id);
         }

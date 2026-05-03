@@ -233,7 +233,7 @@ class _UserHeader extends ConsumerWidget {
               if (user.aboutMe case final String about when about.isNotEmpty)
                 ...[
                 const SizedBox(height: 12),
-                Text(about, style: textTheme.bodyMedium),
+                MarkdownText(about, baseStyle: textTheme.bodyMedium),
               ],
               const SizedBox(height: 12),
               if (isAuthenticated && !isOwnProfile)

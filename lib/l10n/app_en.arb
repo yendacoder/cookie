@@ -432,6 +432,9 @@
   "postMenuSaveToList": "Save to list",
   "@postMenuSaveToList": {},
 
+  "postMenuRemoveFromList": "Remove from list",
+  "@postMenuRemoveFromList": {},
+
   "postMenuHide": "Hide post",
   "@postMenuHide": {},
 
@@ -462,5 +465,134 @@
   "@profileSaved": {},
 
   "viewMyProfile": "My profile",
-  "@viewMyProfile": {}
+  "@viewMyProfile": {},
+
+  "composeScreenTitle": "New post",
+  "@composeScreenTitle": {},
+
+  "composeCommunityHint": "Select a community",
+  "@composeCommunityHint": {},
+
+  "composeTitleHint": "Title",
+  "@composeTitleHint": {},
+
+  "composeTypeText": "Text",
+  "@composeTypeText": {},
+
+  "composeTypeImage": "Image",
+  "@composeTypeImage": {},
+
+  "composeBodyHint": "Add text (optional)",
+  "@composeBodyHint": {},
+
+  "composeUrlDetected": "Will be posted as a link",
+  "@composeUrlDetected": {},
+
+  "composeAddImage": "Add image",
+  "@composeAddImage": {},
+
+  "composeAltTextHint": "Alt text (optional)",
+  "@composeAltTextHint": {},
+
+  "composeSubmitButton": "Post",
+  "@composeSubmitButton": {},
+
+  "composePreviewTitle": "Preview",
+  "@composePreviewTitle": {},
+
+  "composePreviewEmpty": "Nothing to preview yet",
+  "@composePreviewEmpty": {},
+
+  "composeMarkdownGuideTitle": "Markdown guide",
+  "@composeMarkdownGuideTitle": {},
+
+  "cancelButton": "Cancel",
+  "@cancelButton": {},
+
+  "deleteButton": "Delete",
+  "@deleteButton": {},
+
+  "communityModTools": "Mod tools",
+  "@communityModTools": {},
+
+  "modToolsScreenTitle": "Mod tools",
+  "@modToolsScreenTitle": {},
+
+  "modToolsTabSettings": "Settings",
+  "@modToolsTabSettings": {},
+
+  "modToolsTabRules": "Rules",
+  "@modToolsTabRules": {},
+
+  "modToolsDescriptionLabel": "Description",
+  "@modToolsDescriptionLabel": {},
+
+  "modToolsDescriptionHint": "Community description (supports markdown)",
+  "@modToolsDescriptionHint": {},
+
+  "modToolsNsfwLabel": "NSFW community",
+  "@modToolsNsfwLabel": {},
+
+  "modToolsPostingRestrictedLabel": "Restrict posting to moderators",
+  "@modToolsPostingRestrictedLabel": {},
+
+  "modToolsSaved": "Settings saved",
+  "@modToolsSaved": {},
+
+  "modToolsAddRule": "Add rule",
+  "@modToolsAddRule": {},
+
+  "modToolsRuleLabel": "Rule",
+  "@modToolsRuleLabel": {},
+
+  "modToolsRuleRequired": "Rule text is required",
+  "@modToolsRuleRequired": {},
+
+  "modToolsRuleDescriptionLabel": "Description (optional)",
+  "@modToolsRuleDescriptionLabel": {},
+
+  "modToolsNewRuleTitle": "New rule",
+  "@modToolsNewRuleTitle": {},
+
+  "modToolsEditRuleTitle": "Edit rule",
+  "@modToolsEditRuleTitle": {},
+
+  "modToolsNoRules": "No rules yet",
+  "@modToolsNoRules": {},
+
+  "modToolsDeleteRuleTitle": "Delete rule",
+  "@modToolsDeleteRuleTitle": {},
+
+  "modToolsDeleteRuleConfirm": "This rule will be permanently deleted.",
+  "@modToolsDeleteRuleConfirm": {},
+
+  "postMenuEdit": "Edit post",
+  "@postMenuEdit": {},
+
+  "postMenuDelete": "Delete post",
+  "@postMenuDelete": {},
+
+  "postDeleteTitle": "Delete post",
+  "@postDeleteTitle": {},
+
+  "postDeleteConfirm": "This will permanently delete your post.",
+  "@postDeleteConfirm": {},
+
+  "composeEditTitle": "Edit post",
+  "@composeEditTitle": {},
+
+  "commentMenuEdit": "Edit comment",
+  "@commentMenuEdit": {},
+
+  "commentMenuDelete": "Delete comment",
+  "@commentMenuDelete": {},
+
+  "commentDeleteTitle": "Delete comment",
+  "@commentDeleteTitle": {},
+
+  "commentDeleteConfirm": "This will permanently delete your comment.",
+  "@commentDeleteConfirm": {},
+
+  "commentEditTitle": "Edit comment",
+  "@commentEditTitle": {}
 }

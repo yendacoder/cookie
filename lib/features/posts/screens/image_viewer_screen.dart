@@ -42,13 +42,11 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
     _pageController = PageController(
       initialPage: count > 1 ? count * 100 + widget.initialIndex : 0,
     );
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   }
 
   @override
   void dispose() {
     _pageController.dispose();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
   }
 
@@ -62,13 +60,6 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
       appBar: AppBar(
         backgroundColor: Colors.black54,
         foregroundColor: Colors.white,
-        // Show "current / total" counter when there are multiple images.
-        title: count > 1
-            ? Text(
-                '${_currentPage + 1} / $count',
-                style: const TextStyle(color: Colors.white),
-              )
-            : null,
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),

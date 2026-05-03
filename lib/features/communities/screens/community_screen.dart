@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
 import '../../../core/widgets/error_view.dart';
+import '../../../core/widgets/markdown_text.dart';
 import '../../../models/community.dart';
 import '../../../models/discuit_image.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -244,7 +245,10 @@ class _CommunityHeader extends ConsumerWidget {
               if (community.about case final String about
                   when about.isNotEmpty) ...[
                 const SizedBox(height: 12),
-                Text(about, style: Theme.of(context).textTheme.bodyMedium),
+                MarkdownText(
+                  about,
+                  baseStyle: Theme.of(context).textTheme.bodyMedium,
+                ),
               ],
               const SizedBox(height: 16),
               Wrap(
@@ -253,9 +257,8 @@ class _CommunityHeader extends ConsumerWidget {
                 children: [
                   if (user != null)
                     FilledButton.icon(
-                      onPressed: () {
-                        // TODO: navigate to post creation screen
-                      },
+                      onPressed: () =>
+                          context.push('/compose', extra: community),
                       icon: const Icon(Icons.edit_outlined, size: 18),
                       label: Text(context.l10n.communityCreatePost),
                     ),
@@ -272,6 +275,17 @@ class _CommunityHeader extends ConsumerWidget {
                           _showModsDialog(context, community.mods),
                       icon: const Icon(Icons.shield_outlined, size: 18),
                       label: Text(context.l10n.communityModeratorsTitle),
+                    ),
+                  if (community.userMod == true)
+                    OutlinedButton.icon(
+                      onPressed: () => context.push(
+                        '/c/${community.name}/mod-tools',
+                      ),
+                      icon: const Icon(
+                        Icons.admin_panel_settings_outlined,
+                        size: 18,
+                      ),
+                      label: Text(context.l10n.communityModTools),
                     ),
                   if (user != null)
                     _MuteButton(community: community),
@@ -548,6 +562,16 @@ class _FeedFooter extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!feed.isLoadingMore && feed.hasMore && feed.loadMoreError == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          ref
+              .read(communityFeedProvider(communityName, communityId).notifier)
+              .loadMore();
+        }
+      });
+    }
+
     if (feed.isLoadingMore) {
       return const Padding(
         padding: EdgeInsets.all(24),
