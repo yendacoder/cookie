@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../voting/providers/voting_provider.dart';
 
@@ -10,14 +11,14 @@ import '../../../core/widgets/error_view.dart';
 import '../../../models/comment.dart';
 import '../../../models/discuit_image.dart';
 import '../../../models/post.dart';
-import 'package:go_router/go_router.dart';
-
+import '../../auth/providers/auth_provider.dart';
 import '../providers/post_detail_provider.dart';
 import '../widgets/post_card.dart';
+import '../widgets/post_card_skeleton.dart';
 import '../widgets/post_image_carousel.dart';
 import 'image_viewer_screen.dart';
 
-class PostDetailScreen extends ConsumerWidget {
+class PostDetailScreen extends ConsumerStatefulWidget {
   const PostDetailScreen({
     super.key,
     required this.communityName,
@@ -29,46 +30,113 @@ class PostDetailScreen extends ConsumerWidget {
   final String postId;
 
   /// Pre-loaded post passed from the feed. When present, post content is shown
-  /// immediately (enabling the hero transition) while the full detail — which
-  /// includes comments — loads in the background.
+  /// immediately (enabling the hero transition) while the full detail loads.
   final Post? initialPost;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(postDetailProvider(postId));
+  ConsumerState<PostDetailScreen> createState() => _PostDetailScreenState();
+}
 
-    // Prefer the fully-loaded post; fall back to the initial post while loading.
-    final post = detailState.value ?? initialPost;
+class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
+  final _controller = TextEditingController();
+  final _focusNode = FocusNode();
+  Comment? _replyToComment;
+  bool _isSubmitting = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final body = _controller.text.trim();
+    if (body.isEmpty) return;
+    setState(() => _isSubmitting = true);
+    try {
+      await ref
+          .read(postDetailProvider(widget.postId).notifier)
+          .addComment(body, parentCommentId: _replyToComment?.id);
+      if (!mounted) return;
+      _controller.clear();
+      setState(() {
+        _replyToComment = null;
+        _isSubmitting = false;
+      });
+      _focusNode.unfocus();
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isSubmitting = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.commentSubmitError)),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final detailState = ref.watch(postDetailProvider(widget.postId));
+    final post = detailState.value ?? widget.initialPost;
+    final isAuthenticated = ref.watch(authProvider).value != null;
 
     if (post == null) {
-      // Deep-link / notification path: no initial data available.
       return Scaffold(
         appBar: AppBar(),
         body: detailState.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => SingleChildScrollView(
+            child: Column(
+              children: const [
+                PostFeedSkeleton(count: 1, showCommunity: false),
+                Divider(),
+                CommentListSkeleton(count: 4),
+              ],
+            ),
+          ),
           error: (error, _) => ErrorView(
             error: error,
-            onRetry: () => ref.invalidate(postDetailProvider(postId)),
+            onRetry: () => ref.invalidate(postDetailProvider(widget.postId)),
           ),
-          data: (_) => const SizedBox.shrink(), // unreachable — post != null
+          data: (_) => const SizedBox.shrink(),
         ),
       );
     }
 
     return Scaffold(
       appBar: _PostAppBar(post: post),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: _PostDetailBody(post: post),
+      body: Column(
+        children: [
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: _PostDetailBody(post: post),
+                ),
+                _CommentsSectionSliver(
+                  post: post,
+                  detailState: detailState,
+                  onRetry: () =>
+                      ref.invalidate(postDetailProvider(widget.postId)),
+                  onReplyTap: isAuthenticated
+                      ? (comment) {
+                          setState(() => _replyToComment = comment);
+                          _focusNode.requestFocus();
+                        }
+                      : null,
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 32)),
+              ],
+            ),
           ),
-          _CommentsSectionSliver(
-            post: post,
-            detailState: detailState,
-            onRetry: () => ref.invalidate(postDetailProvider(postId)),
-          ),
-          // Bottom padding for system nav bar.
-          const SliverToBoxAdapter(child: SizedBox(height: 32)),
+          if (isAuthenticated)
+            _CommentComposer(
+              controller: _controller,
+              focusNode: _focusNode,
+              replyToComment: _replyToComment,
+              isSubmitting: _isSubmitting,
+              onCancelReply: () => setState(() => _replyToComment = null),
+              onSubmit: _submit,
+            ),
         ],
       ),
     );
@@ -122,7 +190,7 @@ class _PostDetailBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -136,7 +204,7 @@ class _PostDetailBody extends StatelessWidget {
           _PostDetailContent(post: post),
           const SizedBox(height: 16),
           _PostDetailFooter(post: post),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           const Divider(),
         ],
       ),
@@ -152,7 +220,8 @@ class _PostMeta extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
-    final style = Theme.of(context).textTheme.labelSmall?.copyWith(color: muted);
+    final style =
+        Theme.of(context).textTheme.labelSmall?.copyWith(color: muted);
 
     return Row(
       children: [
@@ -169,8 +238,7 @@ class _PostMeta extends StatelessWidget {
             padding: const EdgeInsets.only(right: 6),
             child: CircleAvatar(
               radius: 12,
-              backgroundColor:
-                  Theme.of(context).colorScheme.primaryContainer,
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
               child: Text(
                 post.username[0].toUpperCase(),
                 style: TextStyle(
@@ -180,7 +248,10 @@ class _PostMeta extends StatelessWidget {
               ),
             ),
           ),
-        Text(post.username, style: style),
+        GestureDetector(
+          onTap: () => context.push('/u/${post.username}'),
+          child: Text(post.username, style: style),
+        ),
         Text('  ·  ', style: style),
         Text(post.createdAt.toRelativeString(context.l10n), style: style),
       ],
@@ -211,12 +282,6 @@ class _DetailImage extends StatelessWidget {
 
   final Post post;
 
-  /// Returns the aspect ratio (width / height) that accommodates all images
-  /// without cropping any of them.
-  ///
-  /// We pick the most portrait (smallest ratio) image so the container is
-  /// tall enough for every image in the set; landscape images will show with
-  /// the average-color background filling the remaining space on the sides.
   static double _containerRatio(List<DiscuitImage> images) => images
       .map((img) => img.width / img.height)
       .reduce((a, b) => a < b ? a : b);
@@ -342,12 +407,14 @@ class _PostDetailFooter extends ConsumerWidget {
 
     final colorScheme = Theme.of(context).colorScheme;
     final muted = colorScheme.onSurfaceVariant;
-    final style = Theme.of(context).textTheme.labelMedium?.copyWith(color: muted);
+    final style =
+        Theme.of(context).textTheme.labelMedium?.copyWith(color: muted);
 
     final votedUp = userVoted == true && userVotedUp == true;
     final votedDown = userVoted == true && userVotedUp == false;
     final showUpSpinner = vs?.isLoading == true && vs?.pendingVoteUp == true;
-    final showDownSpinner = vs?.isLoading == true && vs?.pendingVoteUp == false;
+    final showDownSpinner =
+        vs?.isLoading == true && vs?.pendingVoteUp == false;
 
     final score = upvotes - downvotes;
     final scoreColor = votedUp
@@ -425,6 +492,154 @@ class _DetailVoteButton extends StatelessWidget {
   }
 }
 
+// ── Comment composer ──────────────────────────────────────────────────────────
+
+class _CommentComposer extends StatelessWidget {
+  const _CommentComposer({
+    required this.controller,
+    required this.focusNode,
+    required this.replyToComment,
+    required this.isSubmitting,
+    required this.onCancelReply,
+    required this.onSubmit,
+  });
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final Comment? replyToComment;
+  final bool isSubmitting;
+  final VoidCallback onCancelReply;
+  final VoidCallback onSubmit;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        final canSend = controller.text.trim().isNotEmpty && !isSubmitting;
+
+        return Material(
+          color: colorScheme.surface,
+          elevation: 4,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: colorScheme.surfaceTint,
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Divider(height: 1),
+                if (replyToComment != null)
+                  _ReplyChip(
+                    username: replyToComment!.username,
+                    onCancel: onCancelReply,
+                  ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          decoration: InputDecoration(
+                            hintText: context.l10n.commentHint,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: BorderSide(
+                                color: colorScheme.outline,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            isDense: true,
+                          ),
+                          minLines: 1,
+                          maxLines: 5,
+                          textCapitalization: TextCapitalization.sentences,
+                          textInputAction: TextInputAction.newline,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      IconButton(
+                        icon: isSubmitting
+                            ? SizedBox.square(
+                                dimension: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: colorScheme.primary,
+                                ),
+                              )
+                            : Icon(
+                                Icons.send_rounded,
+                                color: canSend
+                                    ? colorScheme.primary
+                                    : colorScheme.onSurface.withValues(
+                                        alpha: 0.38,
+                                      ),
+                              ),
+                        onPressed: canSend ? onSubmit : null,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ReplyChip extends StatelessWidget {
+  const _ReplyChip({required this.username, required this.onCancel});
+
+  final String username;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final muted = colorScheme.onSurfaceVariant;
+
+    return ColoredBox(
+      color: colorScheme.surfaceContainerHighest,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
+        child: Row(
+          children: [
+            Icon(Icons.reply_rounded, size: 14, color: muted),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                context.l10n.commentReplyingTo(username),
+                style:
+                    Theme.of(context).textTheme.labelSmall?.copyWith(color: muted),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            IconButton(
+              onPressed: onCancel,
+              icon: Icon(Icons.close_rounded, size: 16, color: muted),
+              visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // ── Comments ──────────────────────────────────────────────────────────────────
 
 class _CommentsSectionSliver extends StatelessWidget {
@@ -432,11 +647,13 @@ class _CommentsSectionSliver extends StatelessWidget {
     required this.post,
     required this.detailState,
     required this.onRetry,
+    this.onReplyTap,
   });
 
   final Post post;
   final AsyncValue<Post> detailState;
   final VoidCallback onRetry;
+  final ValueChanged<Comment>? onReplyTap;
 
   @override
   Widget build(BuildContext context) {
@@ -448,22 +665,8 @@ class _CommentsSectionSliver extends StatelessWidget {
 
     return SliverMainAxisGroup(
       slivers: [
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: Text(
-              context.l10n.postDetailComments,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-          ),
-        ),
         if (isLoading)
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(32),
-              child: Center(child: CircularProgressIndicator()),
-            ),
-          )
+          const SliverToBoxAdapter(child: CommentListSkeleton())
         else if (hasError)
           SliverToBoxAdapter(
             child: ErrorView(error: detailState.error!, onRetry: onRetry),
@@ -476,8 +679,7 @@ class _CommentsSectionSliver extends StatelessWidget {
                 child: Text(
                   context.l10n.postDetailNoComments,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                 ),
               ),
@@ -495,13 +697,18 @@ class _CommentsSectionSliver extends StatelessWidget {
                   child: Center(
                     child: OutlinedButton(
                       onPressed: onRetry,
-                      child:
-                          Text(context.l10n.postDetailLoadMoreComments),
+                      child: Text(context.l10n.postDetailLoadMoreComments),
                     ),
                   ),
                 );
               }
-              return _CommentCard(comment: comments[index]);
+              final comment = comments[index];
+              return _CommentCard(
+                comment: comment,
+                onReply: onReplyTap != null
+                    ? () => onReplyTap!(comment)
+                    : null,
+              );
             },
           ),
       ],
@@ -511,19 +718,19 @@ class _CommentsSectionSliver extends StatelessWidget {
 
 // ── Comment card ──────────────────────────────────────────────────────────────
 
-// A set of rotating colours for the depth guide lines.
 const _depthLineColors = [
-  Color(0xFF4A90D9), // blue
-  Color(0xFF50C878), // green
-  Color(0xFFE67E22), // orange
-  Color(0xFF9B59B6), // purple
-  Color(0xFFE74C3C), // red
+  Color(0xFF4A90D9),
+  Color(0xFF50C878),
+  Color(0xFFE67E22),
+  Color(0xFF9B59B6),
+  Color(0xFFE74C3C),
 ];
 
 class _CommentCard extends ConsumerWidget {
-  const _CommentCard({required this.comment});
+  const _CommentCard({required this.comment, this.onReply});
 
   final Comment comment;
+  final VoidCallback? onReply;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -544,7 +751,8 @@ class _CommentCard extends ConsumerWidget {
     final votedUp = userVoted == true && userVotedUp == true;
     final votedDown = userVoted == true && userVotedUp == false;
     final showUpSpinner = vs?.isLoading == true && vs?.pendingVoteUp == true;
-    final showDownSpinner = vs?.isLoading == true && vs?.pendingVoteUp == false;
+    final showDownSpinner =
+        vs?.isLoading == true && vs?.pendingVoteUp == false;
 
     return Padding(
       padding: EdgeInsets.only(left: indent),
@@ -569,10 +777,15 @@ class _CommentCard extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        Text(
-                          comment.username,
-                          style: labelStyle?.copyWith(
-                              fontWeight: FontWeight.w600),
+                        GestureDetector(
+                          onTap: () =>
+                              context.push('/u/${comment.username}'),
+                          child: Text(
+                            comment.username,
+                            style: labelStyle?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                         const SizedBox(width: 6),
                         Text(
@@ -634,10 +847,24 @@ class _CommentCard extends ConsumerWidget {
                         ),
                         if (comment.noReplies > 0) ...[
                           const SizedBox(width: 8),
-                          Icon(Icons.subdirectory_arrow_right_rounded,
-                              size: 12, color: muted),
+                          Icon(
+                            Icons.subdirectory_arrow_right_rounded,
+                            size: 12,
+                            color: muted,
+                          ),
                           const SizedBox(width: 2),
                           Text('${comment.noReplies}', style: labelStyle),
+                        ],
+                        if (onReply != null && !isDeleted) ...[
+                          const SizedBox(width: 12),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: onReply,
+                            child: Text(
+                              context.l10n.commentReplyButton,
+                              style: labelStyle,
+                            ),
+                          ),
                         ],
                       ],
                     ),
@@ -713,15 +940,11 @@ List<Comment> _orderComments(List<Comment> comments) {
       result.addAll(levelComments);
     } else {
       for (final comment in levelComments) {
-        // ancestors is non-null for depth > 0; last entry is the direct parent.
         final ancestor = comment.ancestors?.last;
         if (ancestor == null) {
           result.add(comment);
           continue;
         }
-
-        // Insert right after the last comment that is either the parent itself
-        // or a sibling that shares the same immediate ancestor.
         final insertAfter = result.lastIndexWhere(
           (c) => c.id == ancestor || c.ancestors?.last == ancestor,
         );

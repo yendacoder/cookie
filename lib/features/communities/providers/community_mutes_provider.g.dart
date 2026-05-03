@@ -1,0 +1,62 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'community_mutes_provider.dart';
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(CommunityMutes)
+final communityMutesProvider = CommunityMutesProvider._();
+
+final class CommunityMutesProvider
+    extends $NotifierProvider<CommunityMutes, Set<String>> {
+  CommunityMutesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'communityMutesProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$communityMutesHash();
+
+  @$internal
+  @override
+  CommunityMutes create() => CommunityMutes();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Set<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Set<String>>(value),
+    );
+  }
+}
+
+String _$communityMutesHash() => r'22bef97b4337aee7b0f5c2709fe5066bc1a9e100';
+
+abstract class _$CommunityMutes extends $Notifier<Set<String>> {
+  Set<String> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<Set<String>, Set<String>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Set<String>, Set<String>>,
+              Set<String>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}

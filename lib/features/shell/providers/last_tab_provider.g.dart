@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth_provider.dart';
+part of 'last_tab_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,43 +9,50 @@ part of 'auth_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(AuthNotifier)
-final authProvider = AuthNotifierProvider._();
+@ProviderFor(LastTab)
+final lastTabProvider = LastTabProvider._();
 
-final class AuthNotifierProvider
-    extends $AsyncNotifierProvider<AuthNotifier, User?> {
-  AuthNotifierProvider._()
+final class LastTabProvider extends $NotifierProvider<LastTab, int> {
+  LastTabProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'authProvider',
+        name: r'lastTabProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$authNotifierHash();
+  String debugGetCreateSourceHash() => _$lastTabHash();
 
   @$internal
   @override
-  AuthNotifier create() => AuthNotifier();
+  LastTab create() => LastTab();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
 }
 
-String _$authNotifierHash() => r'db3cfa1fbba7189e56f4d781992735fffe43c82f';
+String _$lastTabHash() => r'f33ea35e8c99c2ba3bc21b3b6d49ac168436683a';
 
-abstract class _$AuthNotifier extends $AsyncNotifier<User?> {
-  FutureOr<User?> build();
+abstract class _$LastTab extends $Notifier<int> {
+  int build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<User?>, User?>;
+    final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<User?>, User?>,
-              AsyncValue<User?>,
+              AnyNotifier<int, int>,
+              int,
               Object?,
               Object?
             >;

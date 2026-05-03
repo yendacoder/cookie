@@ -188,9 +188,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get postDetailComments => 'Comments';
-
-  @override
   String get postDetailNoComments => 'No comments yet';
 
   @override
@@ -258,6 +255,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get leaveButton => 'Leave';
 
   @override
+  String get communityRulesTitle => 'Rules';
+
+  @override
+  String get communityNoRules => 'This community has no rules.';
+
+  @override
+  String get communityModeratorsTitle => 'Moderators';
+
+  @override
+  String get communityNoModerators => 'No moderators listed.';
+
+  @override
+  String get communityCreatePost => 'New post';
+
+  @override
   String postBy(String username) {
     return 'by $username';
   }
@@ -297,4 +309,55 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmButton => 'Confirm';
+
+  @override
+  String get communityMute => 'Mute';
+
+  @override
+  String get communityUnmute => 'Unmute';
+
+  @override
+  String get userTabAll => 'All';
+
+  @override
+  String get userTabPosts => 'Posts';
+
+  @override
+  String get userTabComments => 'Comments';
+
+  @override
+  String get userMute => 'Mute';
+
+  @override
+  String get userUnmute => 'Unmute';
+
+  @override
+  String userJoined(String date) {
+    return 'Joined $date';
+  }
+
+  @override
+  String postsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count posts',
+      one: '1 post',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get commentHint => 'Add a comment…';
+
+  @override
+  String commentReplyingTo(String username) {
+    return 'Replying to @$username';
+  }
+
+  @override
+  String get commentReplyButton => 'Reply';
+
+  @override
+  String get commentSubmitError => 'Failed to post comment';
 }

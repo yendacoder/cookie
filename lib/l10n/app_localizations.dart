@@ -346,12 +346,6 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 year ago} other{{count} years ago}}'**
   String timeYearsAgo(int count);
 
-  /// No description provided for @postDetailComments.
-  ///
-  /// In en, this message translates to:
-  /// **'Comments'**
-  String get postDetailComments;
-
   /// No description provided for @postDetailNoComments.
   ///
   /// In en, this message translates to:
@@ -436,6 +430,36 @@ abstract class AppLocalizations {
   /// **'Leave'**
   String get leaveButton;
 
+  /// No description provided for @communityRulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get communityRulesTitle;
+
+  /// No description provided for @communityNoRules.
+  ///
+  /// In en, this message translates to:
+  /// **'This community has no rules.'**
+  String get communityNoRules;
+
+  /// No description provided for @communityModeratorsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderators'**
+  String get communityModeratorsTitle;
+
+  /// No description provided for @communityNoModerators.
+  ///
+  /// In en, this message translates to:
+  /// **'No moderators listed.'**
+  String get communityNoModerators;
+
+  /// No description provided for @communityCreatePost.
+  ///
+  /// In en, this message translates to:
+  /// **'New post'**
+  String get communityCreatePost;
+
   /// No description provided for @postBy.
   ///
   /// In en, this message translates to:
@@ -507,6 +531,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm'**
   String get confirmButton;
+
+  /// No description provided for @communityMute.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute'**
+  String get communityMute;
+
+  /// No description provided for @communityUnmute.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute'**
+  String get communityUnmute;
+
+  /// No description provided for @userTabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get userTabAll;
+
+  /// No description provided for @userTabPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Posts'**
+  String get userTabPosts;
+
+  /// No description provided for @userTabComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get userTabComments;
+
+  /// No description provided for @userMute.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute'**
+  String get userMute;
+
+  /// No description provided for @userUnmute.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute'**
+  String get userUnmute;
+
+  /// No description provided for @userJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined {date}'**
+  String userJoined(String date);
+
+  /// No description provided for @postsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 post} other{{count} posts}}'**
+  String postsLabel(int count);
+
+  /// No description provided for @commentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a comment…'**
+  String get commentHint;
+
+  /// No description provided for @commentReplyingTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Replying to @{username}'**
+  String commentReplyingTo(String username);
+
+  /// No description provided for @commentReplyButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get commentReplyButton;
+
+  /// No description provided for @commentSubmitError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to post comment'**
+  String get commentSubmitError;
 }
 
 class _AppLocalizationsDelegate

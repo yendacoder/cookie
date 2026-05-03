@@ -143,9 +143,6 @@
     "placeholders": {"count": {"type": "int"}}
   },
 
-  "postDetailComments": "Comments",
-  "@postDetailComments": {},
-
   "postDetailNoComments": "No comments yet",
   "@postDetailNoComments": {},
 
@@ -200,6 +197,21 @@
   "leaveButton": "Leave",
   "@leaveButton": {},
 
+  "communityRulesTitle": "Rules",
+  "@communityRulesTitle": {},
+
+  "communityNoRules": "This community has no rules.",
+  "@communityNoRules": {},
+
+  "communityModeratorsTitle": "Moderators",
+  "@communityModeratorsTitle": {},
+
+  "communityNoModerators": "No moderators listed.",
+  "@communityNoModerators": {},
+
+  "communityCreatePost": "New post",
+  "@communityCreatePost": {},
+
   "postBy": "by {username}",
   "@postBy": {
     "placeholders": {
@@ -242,5 +254,56 @@
   "@cancelButton": {},
 
   "confirmButton": "Confirm",
-  "@confirmButton": {}
+  "@confirmButton": {},
+
+  "communityMute": "Mute",
+  "@communityMute": {},
+
+  "communityUnmute": "Unmute",
+  "@communityUnmute": {},
+
+  "userTabAll": "All",
+  "@userTabAll": {},
+
+  "userTabPosts": "Posts",
+  "@userTabPosts": {},
+
+  "userTabComments": "Comments",
+  "@userTabComments": {},
+
+  "userMute": "Mute",
+  "@userMute": {},
+
+  "userUnmute": "Unmute",
+  "@userUnmute": {},
+
+  "userJoined": "Joined {date}",
+  "@userJoined": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+
+  "postsLabel": "{count, plural, =1{1 post} other{{count} posts}}",
+  "@postsLabel": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "commentHint": "Add a comment…",
+  "@commentHint": {},
+
+  "commentReplyingTo": "Replying to @{username}",
+  "@commentReplyingTo": {
+    "placeholders": {
+      "username": {"type": "String"}
+    }
+  },
+
+  "commentReplyButton": "Reply",
+  "@commentReplyButton": {},
+
+  "commentSubmitError": "Failed to post comment",
+  "@commentSubmitError": {}
 }

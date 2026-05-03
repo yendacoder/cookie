@@ -7,6 +7,7 @@ import '../../../core/extensions/build_context_ext.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../posts/widgets/post_card.dart';
+import '../../posts/widgets/post_card_skeleton.dart';
 import '../../shell/providers/nav_bar_visibility_provider.dart';
 import '../providers/home_feed_provider.dart';
 
@@ -88,46 +89,54 @@ class _FeedView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final feedState = ref.watch(homeFeedProvider);
 
-    return feedState.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => ErrorView(
-        error: error,
-        onRetry: () => ref.invalidate(homeFeedProvider),
-      ),
-      data: (feed) => RefreshIndicator(
-        onRefresh: () async {
-          ref.invalidate(homeFeedProvider);
-          await ref.read(homeFeedProvider.future);
-        },
-        child: CustomScrollView(
-          controller: scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            SliverAppBar(
-              title: Text(context.l10n.homeScreenTitle),
-              floating: true,
-              snap: true,
+    return RefreshIndicator(
+      onRefresh: () async {
+        ref.invalidate(homeFeedProvider);
+        await ref.read(homeFeedProvider.future);
+      },
+      child: CustomScrollView(
+        controller: scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            title: Text(context.l10n.homeScreenTitle),
+            floating: true,
+            snap: true,
+          ),
+          SliverToBoxAdapter(child: _SortChips()),
+          feedState.when(
+            loading: () => const SliverToBoxAdapter(
+              child: PostFeedSkeleton(),
             ),
-            SliverToBoxAdapter(child: _SortChips()),
-            SliverList.separated(
-              itemCount: feed.posts.length + 1,
-              separatorBuilder: (_, _) => const SizedBox(height: 32),
-              itemBuilder: (context, index) {
-                if (index == feed.posts.length) {
-                  return _FeedFooter(feed: feed, ref: ref);
-                }
-                final post = feed.posts[index];
-                return PostCard(
-                  post: post,
-                  onTap: () => context.push(
-                    '/c/${post.communityName}/post/${post.publicId}',
-                    extra: post,
-                  ),
-                );
-              },
+            error: (error, _) => SliverFillRemaining(
+              child: ErrorView(
+                error: error,
+                onRetry: () => ref.invalidate(homeFeedProvider),
+              ),
             ),
-          ],
-        ),
+            data: (feed) => SliverMainAxisGroup(
+              slivers: [
+                SliverList.separated(
+                  itemCount: feed.posts.length + 1,
+                  separatorBuilder: (_, _) => const SizedBox(height: 32),
+                  itemBuilder: (context, index) {
+                    if (index == feed.posts.length) {
+                      return _FeedFooter(feed: feed, ref: ref);
+                    }
+                    final post = feed.posts[index];
+                    return PostCard(
+                      post: post,
+                      onTap: () => context.push(
+                        '/c/${post.communityName}/post/${post.publicId}',
+                        extra: post,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

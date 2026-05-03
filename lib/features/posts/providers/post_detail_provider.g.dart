@@ -9,14 +9,13 @@ part of 'post_detail_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(postDetail)
-final postDetailProvider = PostDetailFamily._();
+@ProviderFor(PostDetailNotifier)
+final postDetailProvider = PostDetailNotifierFamily._();
 
-final class PostDetailProvider
-    extends $FunctionalProvider<AsyncValue<Post>, Post, FutureOr<Post>>
-    with $FutureModifier<Post>, $FutureProvider<Post> {
-  PostDetailProvider._({
-    required PostDetailFamily super.from,
+final class PostDetailNotifierProvider
+    extends $AsyncNotifierProvider<PostDetailNotifier, Post> {
+  PostDetailNotifierProvider._({
+    required PostDetailNotifierFamily super.from,
     required String super.argument,
   }) : super(
          retry: null,
@@ -27,7 +26,7 @@ final class PostDetailProvider
        );
 
   @override
-  String debugGetCreateSourceHash() => _$postDetailHash();
+  String debugGetCreateSourceHash() => _$postDetailNotifierHash();
 
   @override
   String toString() {
@@ -38,18 +37,11 @@ final class PostDetailProvider
 
   @$internal
   @override
-  $FutureProviderElement<Post> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<Post> create(Ref ref) {
-    final argument = this.argument as String;
-    return postDetail(ref, argument);
-  }
+  PostDetailNotifier create() => PostDetailNotifier();
 
   @override
   bool operator ==(Object other) {
-    return other is PostDetailProvider && other.argument == argument;
+    return other is PostDetailNotifierProvider && other.argument == argument;
   }
 
   @override
@@ -58,11 +50,19 @@ final class PostDetailProvider
   }
 }
 
-String _$postDetailHash() => r'7288ecb0f259a3b675ea9f79a2df0f2beddd40d7';
+String _$postDetailNotifierHash() =>
+    r'fc32635cb48d6cfc101acedafa9e1d666e8ebf82';
 
-final class PostDetailFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<Post>, String> {
-  PostDetailFamily._()
+final class PostDetailNotifierFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          PostDetailNotifier,
+          AsyncValue<Post>,
+          Post,
+          FutureOr<Post>,
+          String
+        > {
+  PostDetailNotifierFamily._()
     : super(
         retry: null,
         name: r'postDetailProvider',
@@ -71,9 +71,30 @@ final class PostDetailFamily extends $Family
         isAutoDispose: true,
       );
 
-  PostDetailProvider call(String publicId) =>
-      PostDetailProvider._(argument: publicId, from: this);
+  PostDetailNotifierProvider call(String publicId) =>
+      PostDetailNotifierProvider._(argument: publicId, from: this);
 
   @override
   String toString() => r'postDetailProvider';
+}
+
+abstract class _$PostDetailNotifier extends $AsyncNotifier<Post> {
+  late final _$args = ref.$arg as String;
+  String get publicId => _$args;
+
+  FutureOr<Post> build(String publicId);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<Post>, Post>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<Post>, Post>,
+              AsyncValue<Post>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
 }

@@ -4,6 +4,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/api/api_client.dart';
 import '../../../models/initial_response.dart';
 import '../../../models/user.dart';
+import '../../communities/providers/community_mutes_provider.dart';
+import '../../user/providers/user_mutes_provider.dart';
 
 part 'auth_provider.g.dart';
 
@@ -16,6 +18,7 @@ class AuthNotifier extends _$AuthNotifier {
       final data = InitialResponse.fromJson(
         response.data as Map<String, dynamic>,
       );
+      _seedMutes(data);
       return data.user;
     } on DioException {
       // Network / timeout failure — treat as unauthenticated so the home
@@ -26,13 +29,30 @@ class AuthNotifier extends _$AuthNotifier {
     // so the home screen's error view is shown with a retry button.
   }
 
+  void _seedMutes(InitialResponse data) {
+    final communityIds = data.mutes.communityMutes
+        .map((m) => m.mutedCommunityId)
+        .toSet();
+    ref.read(communityMutesProvider.notifier).initialize(communityIds);
+
+    final userIds = data.mutes.userMutes
+        .map((m) => m.mutedUserId)
+        .toSet();
+    ref.read(userMutesProvider.notifier).initialize(userIds);
+  }
+
   Future<void> login(String username, String password) async {
-    final response = await ref.read(apiClientProvider).post(
+    await ref.read(apiClientProvider).post(
       '_login',
       data: {'username': username, 'password': password},
     );
-    final user = User.fromJson(response.data as Map<String, dynamic>);
-    state = AsyncValue.data(user);
+    // Re-fetch _initial to get fresh session data including mutes.
+    final response = await ref.read(apiClientProvider).get('_initial');
+    final data = InitialResponse.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+    _seedMutes(data);
+    state = AsyncValue.data(data.user);
   }
 
   Future<void> logout() async {
@@ -42,6 +62,8 @@ class AuthNotifier extends _$AuthNotifier {
         queryParameters: {'action': 'logout'},
       );
     } finally {
+      ref.read(communityMutesProvider.notifier).clear();
+      ref.read(userMutesProvider.notifier).clear();
       state = const AsyncValue.data(null);
     }
   }

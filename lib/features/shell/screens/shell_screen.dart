@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../providers/last_tab_provider.dart';
 import '../providers/nav_bar_visibility_provider.dart';
 
 class ShellScreen extends ConsumerWidget {
@@ -29,12 +31,13 @@ class ShellScreen extends ConsumerWidget {
                     selectedIndex: navigationShell.currentIndex,
                     labelBehavior: .alwaysHide,
                     onDestinationSelected: (index) {
-                      // Always show the nav bar when the user taps a tab.
                       ref.read(navBarVisibilityProvider.notifier).show();
                       navigationShell.goBranch(
                         index,
                         initialLocation: index == navigationShell.currentIndex,
                       );
+                      ref.read(lastTabProvider.notifier).set(index);
+                      SharedPreferencesAsync().setInt('last_tab', index);
                     },
                     destinations: [
                       NavigationDestination(

@@ -12,10 +12,19 @@ import '../screens/image_viewer_screen.dart';
 import 'post_image_carousel.dart';
 
 class PostCard extends StatelessWidget {
-  const PostCard({super.key, required this.post, required this.onTap});
+  const PostCard({
+    super.key,
+    required this.post,
+    required this.onTap,
+    this.showCommunity = true,
+  });
 
   final Post post;
   final VoidCallback onTap;
+
+  /// When false the community name and icon are hidden in the post header.
+  /// Set to false when displaying posts inside a community screen.
+  final bool showCommunity;
 
   static String heroTag(String postId) => 'post-image-$postId';
 
@@ -32,7 +41,7 @@ class PostCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _PostHeader(post: post),
+                _PostHeader(post: post, showCommunity: showCommunity),
                 const SizedBox(height: 8),
                 Text(
                   post.title,
@@ -47,8 +56,8 @@ class PostCard extends StatelessWidget {
         ),
         // Footer sits outside InkWell — no gesture conflict with vote taps.
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-          child: _PostFooter(post: post),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: _PostFooter(post: post, onDetailTap: onTap),
         ),
       ],
     );
@@ -58,9 +67,10 @@ class PostCard extends StatelessWidget {
 // ── Header ────────────────────────────────────────────────────────────────────
 
 class _PostHeader extends StatelessWidget {
-  const _PostHeader({required this.post});
+  const _PostHeader({required this.post, required this.showCommunity});
 
   final Post post;
+  final bool showCommunity;
 
   @override
   Widget build(BuildContext context) {
@@ -68,33 +78,58 @@ class _PostHeader extends StatelessWidget {
 
     return Row(
       children: [
-        _Avatar(
-          imageUrl: post.author?.proPic?.fullUrl,
-          fallback: post.username,
-          radius: 10,
-        ),
-        const SizedBox(width: 6),
-        Expanded(
-          child: Text(
-            post.username,
-            style: Theme.of(
-              context,
-            ).textTheme.labelSmall?.copyWith(color: muted),
-            overflow: .ellipsis,
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => context.push('/u/${post.username}'),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _Avatar(
+                imageUrl: post.author?.proPic?.fullUrl,
+                fallback: post.username,
+                radius: 10,
+              ),
+              const SizedBox(width: 6),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 120),
+                child: Text(
+                  post.username,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: muted),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
         ),
-        const SizedBox(width: 8),
-        Text(
-          post.communityName,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: muted),
-          overflow: .ellipsis,
-        ),
-        const SizedBox(width: 6),
-        _Avatar(
-          imageUrl: post.communityProPic?.fullUrl,
-          fallback: post.communityName,
-          radius: 10,
-        ),
+        const Spacer(),
+        if (showCommunity) ...[
+          const SizedBox(width: 8),
+          GestureDetector(
+            // Intercepts before the outer InkWell so this tap opens the
+            // community screen rather than the post detail.
+            behavior: HitTestBehavior.opaque,
+            onTap: () => context.push('/c/${post.communityName}'),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  post.communityName,
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelSmall
+                      ?.copyWith(color: muted),
+                  overflow: .ellipsis,
+                ),
+                const SizedBox(width: 6),
+                _Avatar(
+                  imageUrl: post.communityProPic?.fullUrl,
+                  fallback: post.communityName,
+                  radius: 10,
+                ),
+              ],
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -248,9 +283,10 @@ class _TextContent extends StatelessWidget {
 // ── Footer ────────────────────────────────────────────────────────────────────
 
 class _PostFooter extends ConsumerWidget {
-  const _PostFooter({required this.post});
+  const _PostFooter({required this.post, required this.onDetailTap});
 
   final Post post;
+  final VoidCallback onDetailTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -299,12 +335,25 @@ class _PostFooter extends ConsumerWidget {
           muted: muted,
           onTap: () => ref.read(postVotesProvider.notifier).vote(post, false),
         ),
-        const SizedBox(width: 12),
-        Icon(Icons.mode_comment_outlined, size: 14, color: muted),
-        const SizedBox(width: 2),
-        Text('${post.noComments}', style: base),
-        const Spacer(),
-        Text(post.createdAt.toRelativeString(context.l10n), style: base),
+        Expanded(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onDetailTap,
+            child: Row(
+              children: [
+                const SizedBox(width: 12),
+                Icon(Icons.mode_comment_outlined, size: 14, color: muted),
+                const SizedBox(width: 2),
+                Text('${post.noComments}', style: base),
+                const Spacer(),
+                Text(
+                  post.createdAt.toRelativeString(context.l10n),
+                  style: base,
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
