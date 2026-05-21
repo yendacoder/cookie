@@ -58,8 +58,8 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.black54,
         foregroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
@@ -87,7 +87,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
           ),
           // Caption and/or page indicator at the bottom.
           Builder(builder: (context) {
-            final caption = widget.images[_currentPage].caption;
+            final caption = widget.images[_currentPage].altText;
             final hasCaption = caption != null && caption.isNotEmpty;
             if (!hasCaption && count <= 1) return const SizedBox.shrink();
             return Positioned(
@@ -101,8 +101,6 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
                     Text(
                       caption,
                       textAlign: TextAlign.center,
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 13,

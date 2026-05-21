@@ -106,29 +106,30 @@ class _MetaTabState extends ConsumerState<_MetaTab> {
     setState(() => _saving = true);
     try {
       final about = _aboutCtrl.text.trim();
-      final res = await ref.read(apiClientProvider).put(
-        'communities/${widget.community.id}',
-        queryParameters: {'byName': 'true'},
-        data: {
-          'nsfw': _nsfw,
-          'about': about.isEmpty ? null : about,
-          'postingRestricted': _postingRestricted,
-        },
-      );
+      final res = await ref
+          .read(apiClientProvider)
+          .put(
+            'communities/${widget.community.id}',
+            data: {
+              'nsfw': _nsfw,
+              'about': about.isEmpty ? null : about,
+              'postingRestricted': _postingRestricted,
+            },
+          );
       final updated = Community.fromJson(res.data as Map<String, dynamic>);
       ref
           .read(communityDetailProvider(widget.communityName).notifier)
           .replace(updated);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.modToolsSaved)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.modToolsSaved)));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -249,9 +250,9 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
       // Revert to the pre-reorder order.
       if (mounted) {
         setState(() => _rules = _sorted(widget.community.rules));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     } finally {
       if (mounted) setState(() => _reordering = false);
@@ -283,17 +284,17 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
     if (confirmed != true || !mounted) return;
 
     try {
-      await ref.read(apiClientProvider).delete(
-        'communities/${widget.community.id}/rules/${rule.id}',
-      );
+      await ref
+          .read(apiClientProvider)
+          .delete('communities/${widget.community.id}/rules/${rule.id}');
       final updated = _rules.where((r) => r.id != rule.id).toList();
       setState(() => _rules = updated);
       _pushRules(updated);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     }
   }
@@ -305,12 +306,11 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
       builder: (_) => _RuleSheet(
         communityId: widget.community.id,
         existing: existing,
-        onSaved: (rule) {
-          final updated = existing != null
-              ? _rules.map((r) => r.id == rule.id ? rule : r).toList()
-              : _sorted([..._rules, rule]);
-          setState(() => _rules = updated);
-          _pushRules(updated);
+        onSaved: () {
+          ref.invalidate(
+            communityDetailProvider(widget.community.name),
+            asReload: true,
+          );
         },
       ),
     );
@@ -329,8 +329,8 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
             Text(
               l10n.modToolsNoRules,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 16),
             FilledButton.icon(
@@ -358,11 +358,11 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
                   ? Text(
                       rule.description!,
                       maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                      overflow: .ellipsis,
                     )
                   : null,
               trailing: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: .min,
                 children: [
                   IconButton(
                     icon: const Icon(Icons.edit_outlined),
@@ -403,7 +403,7 @@ class _RuleSheet extends ConsumerStatefulWidget {
 
   final String communityId;
   final CommunityRule? existing;
-  final void Function(CommunityRule rule) onSaved;
+  final void Function() onSaved;
 
   @override
   ConsumerState<_RuleSheet> createState() => _RuleSheetState();
@@ -438,24 +438,25 @@ class _RuleSheetState extends ConsumerState<_RuleSheet> {
         'rule': _ruleCtrl.text.trim(),
         'description': _descCtrl.text.trim(),
       };
-      final res = widget.existing != null
-          ? await api.put(
-              'communities/${widget.communityId}/rules/${widget.existing!.id}',
-              data: body,
-            )
-          : await api.post(
-              'communities/${widget.communityId}/rules',
-              data: body,
-            );
-      final rule = CommunityRule.fromJson(res.data as Map<String, dynamic>);
-      widget.onSaved(rule);
+      if (widget.existing != null) {
+        await api.put(
+          'communities/${widget.communityId}/rules/${widget.existing!.id}',
+          data: body,
+        );
+      } else {
+        await api.post('communities/${widget.communityId}/rules', data: body);
+      }
+      // there's no point in parsing response from API since update
+      // returns a single rule, but create returns a list.
+      // will refresh the list on the caller side
+      widget.onSaved();
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
       if (mounted) {
         setState(() => _saving = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     }
   }
@@ -465,9 +466,7 @@ class _RuleSheetState extends ConsumerState<_RuleSheet> {
     final l10n = context.l10n;
 
     return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.viewInsetsOf(context).bottom,
-      ),
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -497,16 +496,16 @@ class _RuleSheetState extends ConsumerState<_RuleSheet> {
                     ),
                     textCapitalization: TextCapitalization.sentences,
                     autofocus: true,
-                    validator: (v) =>
-                        (v == null || v.trim().isEmpty)
-                            ? l10n.modToolsRuleRequired
-                            : null,
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? l10n.modToolsRuleRequired
+                        : null,
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _descCtrl,
                     decoration: InputDecoration(
                       labelText: l10n.modToolsRuleDescriptionLabel,
+                      alignLabelWithHint: true,
                       border: const OutlineInputBorder(),
                     ),
                     maxLines: 3,

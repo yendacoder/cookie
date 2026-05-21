@@ -40,7 +40,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
           .cast<Map<String, dynamic>>()
           .map(AppNotification.fromJson)
           .toList(),
-      nextCursor: data['next'] as String?,
+      nextCursor: data['next']?.toString(),
     );
   }
 

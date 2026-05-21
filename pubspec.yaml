@@ -23,6 +23,7 @@ dependencies:
   dio: ^5.7.0
   cookie_jar: ^4.0.8
   dio_cookie_manager: ^3.1.1
+  http: ^1.6.0
 
   # Data models
   freezed_annotation: ^3.0.0
@@ -36,9 +37,15 @@ dependencies:
   image_picker: ^1.2.2
   flutter_markdown_plus: ^1.0.7
   markdown: ^7.3.1
+  youtube_player_iframe: ^6.0.0
+  gif_view: ^1.0.3
 
   # Localization
   intl: ^0.20.2
+
+  # Misc
+  html: ^0.15.6
+  package_info_plus: ^9.0.1
 
 dev_dependencies:
   flutter_test:
@@ -49,7 +56,16 @@ dev_dependencies:
   json_serializable: ^6.13.0
   riverpod_generator: ^4.0.3
   riverpod_lint: ^3.1.3
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   generate: true
   uses-material-design: true
+
+flutter_launcher_icons:
+  image_path: "icon_fg.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "icon_fg.png"
+  ios: true
+  android: true
+  remove_alpha_ios: true

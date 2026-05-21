@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,73 +12,33 @@ import '../../auth/providers/auth_provider.dart';
 import '../../home/providers/home_feed_provider.dart';
 import '../../posts/widgets/post_card.dart';
 import '../../posts/widgets/post_card_skeleton.dart';
-import '../../shell/providers/nav_bar_visibility_provider.dart';
 import '../../home/providers/home_feed_provider.dart'
     show PostFeedState, PostSort;
 import '../providers/community_mutes_provider.dart';
 import '../providers/community_provider.dart';
 
-class CommunityScreen extends ConsumerStatefulWidget {
+class CommunityScreen extends ConsumerWidget {
   const CommunityScreen({super.key, required this.communityName});
 
   final String communityName;
 
   @override
-  ConsumerState<CommunityScreen> createState() => _CommunityScreenState();
-}
-
-class _CommunityScreenState extends ConsumerState<CommunityScreen> {
-  final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels <= 0) {
-      ref.read(navBarVisibilityProvider.notifier).show();
-      return;
-    }
-    switch (_scrollController.position.userScrollDirection) {
-      case ScrollDirection.forward:
-        ref.read(navBarVisibilityProvider.notifier).show();
-      case ScrollDirection.reverse:
-        ref.read(navBarVisibilityProvider.notifier).hide();
-      case ScrollDirection.idle:
-        break;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final communityState =
-        ref.watch(communityDetailProvider(widget.communityName));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final communityState = ref.watch(communityDetailProvider(communityName));
 
     return communityState.when(
       loading: () => Scaffold(
-        appBar: AppBar(title: Text(widget.communityName)),
+        appBar: AppBar(title: Text(communityName)),
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, _) => Scaffold(
-        appBar: AppBar(title: Text(widget.communityName)),
+        appBar: AppBar(title: Text(communityName)),
         body: ErrorView(
           error: error,
-          onRetry: () =>
-              ref.invalidate(communityDetailProvider(widget.communityName)),
+          onRetry: () => ref.invalidate(communityDetailProvider(communityName)),
         ),
       ),
-      data: (community) => _CommunityLoaded(
-        community: community,
-        scrollController: _scrollController,
-      ),
+      data: (community) => _CommunityLoaded(community: community),
     );
   }
 }
@@ -87,46 +46,33 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 // ── Loaded state ──────────────────────────────────────────────────────────────
 
 class _CommunityLoaded extends ConsumerWidget {
-  const _CommunityLoaded({
-    required this.community,
-    required this.scrollController,
-  });
+  const _CommunityLoaded({required this.community});
 
   final Community community;
-  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final feedState =
-        ref.watch(communityFeedProvider(community.name, community.id));
+    final feedState = ref.watch(
+      communityFeedProvider(community.name, community.id),
+    );
 
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
           ref.invalidate(communityDetailProvider(community.name));
           ref.invalidate(communityFeedProvider(community.name, community.id));
-          await ref
-              .read(communityDetailProvider(community.name).future);
+          await ref.read(communityDetailProvider(community.name).future);
         },
         child: CustomScrollView(
-          controller: scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             // Pinned app bar shows the community name once header scrolls away.
-            SliverAppBar(
-              pinned: true,
-              title: Text(community.name),
-            ),
-            SliverToBoxAdapter(
-              child: _CommunityHeader(community: community),
-            ),
+            SliverAppBar(pinned: true, title: Text(community.name)),
+            SliverToBoxAdapter(child: _CommunityHeader(community: community)),
             SliverToBoxAdapter(
               child: _SortChips(communityName: community.name),
             ),
-            _FeedSliver(
-              community: community,
-              feedState: feedState,
-            ),
+            _FeedSliver(community: community, feedState: feedState),
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
         ),
@@ -166,9 +112,7 @@ class _CommunityHeader extends ConsumerWidget {
                           color: colorScheme.surfaceContainerHighest,
                         ),
                       )
-                    : ColoredBox(
-                        color: colorScheme.surfaceContainerHighest,
-                      ),
+                    : ColoredBox(color: colorScheme.surfaceContainerHighest),
               ),
               // Community avatar overlapping the bottom of the banner
               Positioned(
@@ -177,10 +121,7 @@ class _CommunityHeader extends ConsumerWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: colorScheme.surface,
-                      width: 3,
-                    ),
+                    border: Border.all(color: colorScheme.surface, width: 3),
                   ),
                   child: CircleAvatar(
                     radius: 32,
@@ -196,9 +137,7 @@ class _CommunityHeader extends ConsumerWidget {
                           )
                         : Text(
                             community.name[0].toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
+                            style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(
                                   color: colorScheme.onPrimaryContainer,
                                 ),
@@ -228,10 +167,8 @@ class _CommunityHeader extends ConsumerWidget {
                         const SizedBox(height: 2),
                         Text(
                           context.l10n.membersLabel(community.noMembers),
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.onSurfaceVariant,
-                                  ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: colorScheme.onSurfaceVariant),
                         ),
                       ],
                     ),
@@ -271,24 +208,21 @@ class _CommunityHeader extends ConsumerWidget {
                     ),
                   if (community.mods.isNotEmpty)
                     OutlinedButton.icon(
-                      onPressed: () =>
-                          _showModsDialog(context, community.mods),
+                      onPressed: () => _showModsDialog(context, community.mods),
                       icon: const Icon(Icons.shield_outlined, size: 18),
                       label: Text(context.l10n.communityModeratorsTitle),
                     ),
                   if (community.userMod == true)
                     OutlinedButton.icon(
-                      onPressed: () => context.push(
-                        '/c/${community.name}/mod-tools',
-                      ),
+                      onPressed: () =>
+                          context.push('/c/${community.name}/mod-tools'),
                       icon: const Icon(
                         Icons.admin_panel_settings_outlined,
                         size: 18,
                       ),
                       label: Text(context.l10n.communityModTools),
                     ),
-                  if (user != null)
-                    _MuteButton(community: community),
+                  if (user != null) _MuteButton(community: community),
                 ],
               ),
             ],
@@ -299,10 +233,7 @@ class _CommunityHeader extends ConsumerWidget {
     );
   }
 
-  void _showRulesDialog(
-    BuildContext context,
-    List<CommunityRule> rules,
-  ) {
+  void _showRulesDialog(BuildContext context, List<CommunityRule> rules) {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -325,10 +256,7 @@ class _CommunityHeader extends ConsumerWidget {
                   if (rule.description case final String desc
                       when desc.isNotEmpty) ...[
                     const SizedBox(height: 4),
-                    Text(
-                      desc,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
+                    Text(desc, style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ],
               );
@@ -361,8 +289,9 @@ class _CommunityHeader extends ConsumerWidget {
                 contentPadding: EdgeInsets.zero,
                 leading: CircleAvatar(
                   radius: 18,
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer,
                   child: mod.proPic != null
                       ? ClipOval(
                           child: CachedNetworkImage(
@@ -374,13 +303,11 @@ class _CommunityHeader extends ConsumerWidget {
                         )
                       : Text(
                           (mod.username as String)[0].toUpperCase(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelMedium
+                          style: Theme.of(context).textTheme.labelMedium
                               ?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onPrimaryContainer,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
                               ),
                         ),
                 ),
@@ -472,7 +399,7 @@ class _SortChips extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final current =
         ref.watch(communityFeedSortProvider(communityName)).value ??
-            PostSort.hot;
+        PostSort.hot;
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -588,14 +515,15 @@ class _FeedFooter extends ConsumerWidget {
               child: Text(
                 context.l10n.feedLoadMoreError,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+                  color: Theme.of(context).colorScheme.error,
+                ),
               ),
             ),
             TextButton(
               onPressed: () => ref
-                  .read(communityFeedProvider(communityName, communityId)
-                      .notifier)
+                  .read(
+                    communityFeedProvider(communityName, communityId).notifier,
+                  )
                   .loadMore(),
               child: Text(context.l10n.retryButton),
             ),
@@ -611,8 +539,8 @@ class _FeedFooter extends ConsumerWidget {
           child: Text(
             context.l10n.feedEndOfContent,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       );

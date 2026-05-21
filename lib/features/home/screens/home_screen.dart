@@ -3,7 +3,9 @@ import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/consts.dart';
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/widgets/default_app_bar.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../posts/widgets/post_card.dart';
@@ -20,6 +22,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _scrollController = ScrollController();
+  double _anchorOffset = 0;
+  ScrollDirection _lastDirection = ScrollDirection.idle;
 
   @override
   void initState() {
@@ -44,11 +48,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       return;
     }
 
+    final pos = _scrollController.position;
+    final direction = pos.userScrollDirection;
+    if (direction != ScrollDirection.idle && direction != _lastDirection) {
+      _anchorOffset = pos.pixels;
+      _lastDirection = direction;
+    }
+
+    final delta = (pos.pixels - _anchorOffset).abs();
+
     switch (_scrollController.position.userScrollDirection) {
       case ScrollDirection.forward:
-        ref.read(navBarVisibilityProvider.notifier).show();
+        if (delta >= kScrollNavigationShowThreshold) {
+          ref.read(navBarVisibilityProvider.notifier).show();
+        }
       case ScrollDirection.reverse:
-        ref.read(navBarVisibilityProvider.notifier).hide();
+        if (delta >= kScrollNavigationHideThreshold) {
+          ref.read(navBarVisibilityProvider.notifier).hide();
+        }
       case ScrollDirection.idle:
         break;
     }
@@ -60,26 +77,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return authState.when(
       loading: () => Scaffold(
-        appBar: AppBar(title: Text(context.l10n.homeScreenTitle)),
+        appBar: DefaultAppBar(title: context.l10n.homeScreenTitle),
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, _) => Scaffold(
-        appBar: AppBar(title: Text(context.l10n.homeScreenTitle)),
+        appBar: DefaultAppBar(title: context.l10n.homeScreenTitle),
         body: ErrorView(
           error: error,
           onRetry: () => ref.invalidate(authProvider),
         ),
       ),
       // The data state embeds a SliverAppBar so it collapses with the content.
-      data: (user) => Scaffold(
-        body: _FeedView(scrollController: _scrollController),
-        floatingActionButton: user != null
-            ? FloatingActionButton(
-                onPressed: () => context.push('/compose'),
-                child: const Icon(Icons.edit_outlined),
-              )
-            : null,
-      ),
+      data: (user) =>
+          Scaffold(body: _FeedView(scrollController: _scrollController)),
     );
   }
 }
@@ -94,7 +104,15 @@ class _FeedView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final feedState = ref.watch(homeFeedProvider);
-
+    ref.listen(homeFeedProvider, (previous, next) {
+      if (previous?.hasValue == true && next.isLoading) {
+        scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
     return RefreshIndicator(
       onRefresh: () async {
         ref.invalidate(homeFeedProvider);
@@ -104,16 +122,10 @@ class _FeedView extends ConsumerWidget {
         controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
-          SliverAppBar(
-            title: Text(context.l10n.homeScreenTitle),
-            floating: true,
-            snap: true,
-          ),
+          DefaultSliverAppBar(title: context.l10n.homeScreenTitle),
           SliverToBoxAdapter(child: _SortChips()),
           feedState.when(
-            loading: () => const SliverToBoxAdapter(
-              child: PostFeedSkeleton(),
-            ),
+            loading: () => const SliverToBoxAdapter(child: PostFeedSkeleton()),
             error: (error, _) => SliverFillRemaining(
               child: ErrorView(
                 error: error,
@@ -201,8 +213,8 @@ class _FeedFooter extends StatelessWidget {
               child: Text(
                 context.l10n.feedLoadMoreError,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+                  color: Theme.of(context).colorScheme.error,
+                ),
               ),
             ),
             TextButton(
@@ -221,8 +233,8 @@ class _FeedFooter extends StatelessWidget {
           child: Text(
             context.l10n.feedEndOfContent,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       );

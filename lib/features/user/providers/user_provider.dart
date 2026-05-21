@@ -90,7 +90,7 @@ class UserActivityNotifier extends _$UserActivityNotifier {
 
     return UserActivityState(
       items: items,
-      nextCursor: data['next'] as String?,
+      nextCursor: data['next']?.toString(),
     );
   }
 

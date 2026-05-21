@@ -7,6 +7,7 @@ import '../../../core/extensions/build_context_ext.dart';
 import '../../../models/discuit_image.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../communities/providers/muted_communities_list_provider.dart';
+import '../../shell/providers/package_info_provider.dart';
 import '../../user/providers/muted_users_list_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -16,6 +17,7 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final user = authState.value;
+    final packageInfo = ref.watch(packageInfoProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -35,75 +37,93 @@ class ProfileScreen extends ConsumerWidget {
           ],
         ],
       ),
-      body: ListView(
+      body: Column(
+        crossAxisAlignment: .stretch,
         children: [
-          // Auth section
-          authState.when(
-            loading: () => const Padding(
-              padding: EdgeInsets.all(32),
-              child: Center(child: CircularProgressIndicator()),
+          Expanded(
+            child: ListView(
+              children: [
+                // Auth section
+                authState.when(
+                  loading: () => const Padding(
+                    padding: EdgeInsets.all(32),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                  error: (_, _) =>
+                      _SignInTile(message: context.l10n.errorGeneric),
+                  data: (u) => u != null
+                      ? _UserTile(
+                          username: u.username,
+                          points: u.points,
+                          proPic: u.proPic,
+                          onTap: () => context.push('/u/${u.username}'),
+                        )
+                      : _SignInTile(
+                          message: context.l10n.errorAuthRequiredBody,
+                        ),
+                ),
+                const Divider(height: 1),
+                // Navigation
+                ListTile(
+                  leading: const Icon(Icons.explore_outlined),
+                  title: Text(context.l10n.communitiesScreenTitle),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push('/communities'),
+                ),
+                if (user != null) ...[
+                  ListTile(
+                    leading: const Icon(Icons.bookmark_outline),
+                    title: Text(context.l10n.listsScreenTitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push('/lists'),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.person_outline),
+                    title: Text(context.l10n.viewMyProfile),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push('/u/${user.username}'),
+                  ),
+                  ListTile(
+                    leading: Badge(
+                      isLabelVisible: user.notificationsNewCount > 0,
+                      child: const Icon(Icons.notifications_outlined),
+                    ),
+                    title: Text(
+                      user.notificationsNewCount > 0
+                          ? '${context.l10n.notificationsScreenTitle} [${user.notificationsNewCount}]'
+                          : context.l10n.notificationsScreenTitle,
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push('/notifications'),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.voice_over_off_outlined),
+                    title: Text(
+                      '${context.l10n.mutedUsersScreenTitle} [${ref.watch(mutedUsersListProvider).length}]',
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push('/muted-users'),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.comments_disabled_outlined),
+                    title: Text(
+                      '${context.l10n.mutedCommunitiesScreenTitle} [${ref.watch(mutedCommunitiesListProvider).length}]',
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push('/muted-communities'),
+                  ),
+                ],
+              ],
             ),
-            error: (_, _) => _SignInTile(message: context.l10n.errorGeneric),
-            data: (u) => u != null
-                ? _UserTile(
-                    username: u.username,
-                    points: u.points,
-                    proPic: u.proPic,
-                    onTap: () => context.push('/u/${u.username}'),
-                  )
-                : _SignInTile(message: context.l10n.errorAuthRequiredBody),
           ),
-          const Divider(height: 1),
-          // Navigation
-          ListTile(
-            leading: const Icon(Icons.explore_outlined),
-            title: Text(context.l10n.communitiesScreenTitle),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/communities'),
+          Container(
+            alignment: .bottomRight,
+            padding: EdgeInsets.all(16),
+            child: Text(
+              context.l10n.appNameVersion(packageInfo.version),
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
           ),
-          ListTile(
-            leading: const Icon(Icons.bookmark_outline),
-            title: Text(context.l10n.listsScreenTitle),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/lists'),
-          ),
-          if (user != null) ...[
-            ListTile(
-              leading: const Icon(Icons.person_outline),
-              title: Text(context.l10n.viewMyProfile),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push('/u/${user.username}'),
-            ),
-            ListTile(
-              leading: Badge(
-                isLabelVisible: user.notificationsNewCount > 0,
-                child: const Icon(Icons.notifications_outlined),
-              ),
-              title: Text(
-                user.notificationsNewCount > 0
-                    ? '${context.l10n.notificationsScreenTitle} [${user.notificationsNewCount}]'
-                    : context.l10n.notificationsScreenTitle,
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push('/notifications'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.voice_over_off_outlined),
-              title: Text(
-                '${context.l10n.mutedUsersScreenTitle} [${ref.watch(mutedUsersListProvider).length}]',
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push('/muted-users'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.comments_disabled_outlined),
-              title: Text(
-                '${context.l10n.mutedCommunitiesScreenTitle} [${ref.watch(mutedCommunitiesListProvider).length}]',
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push('/muted-communities'),
-            ),
-          ],
         ],
       ),
     );
@@ -212,7 +232,9 @@ class _SignInTile extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.surfaceContainerHighest,
             child: Icon(
               Icons.person_outline,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -230,8 +252,8 @@ class _SignInTile extends StatelessWidget {
                 Text(
                   message,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),

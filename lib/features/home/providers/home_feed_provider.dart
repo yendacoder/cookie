@@ -102,7 +102,7 @@ class HomeFeedNotifier extends _$HomeFeedNotifier {
 
     return PostFeedState(
       posts: posts,
-      nextCursor: data['next'] as String?,
+      nextCursor: data['next']?.toString(),
     );
   }
 

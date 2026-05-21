@@ -10,6 +10,7 @@ import '../../features/communities/screens/community_screen.dart';
 import '../../features/communities/screens/muted_communities_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/notifications/screens/notifications_screen.dart';
+import '../../features/posts/screens/youtube_player_screen.dart';
 import '../../features/profile/screens/edit_profile_screen.dart';
 import '../../features/lists/screens/list_detail_screen.dart';
 import '../../features/lists/screens/lists_screen.dart';
@@ -69,14 +70,10 @@ GoRouter router(Ref ref) {
       ),
       GoRoute(
         path: '/communities',
-        builder: (context, state) => CommunitiesScreen(
-          selectMode: state.extra == true,
-        ),
+        builder: (context, state) =>
+            CommunitiesScreen(selectMode: state.extra == true),
       ),
-      GoRoute(
-        path: '/lists',
-        builder: (context, state) => const ListsScreen(),
-      ),
+      GoRoute(path: '/lists', builder: (context, state) => const ListsScreen()),
       GoRoute(
         path: '/lists/:listId',
         builder: (context, state) => ListDetailScreen(
@@ -92,6 +89,13 @@ GoRouter router(Ref ref) {
             images: args.images,
             initialIndex: args.initialIndex,
           );
+        },
+      ),
+      GoRoute(
+        path: '/youtube-player',
+        builder: (context, state) {
+          final videoId = state.extra as String;
+          return YoutubePlayerScreen(videoId: videoId);
         },
       ),
       GoRoute(
@@ -116,9 +120,8 @@ GoRouter router(Ref ref) {
       ),
       GoRoute(
         path: '/u/:username',
-        builder: (context, state) => UserScreen(
-          username: state.pathParameters['username']!,
-        ),
+        builder: (context, state) =>
+            UserScreen(username: state.pathParameters['username']!),
       ),
       GoRoute(
         path: '/notifications',
@@ -136,10 +139,7 @@ GoRouter router(Ref ref) {
         path: '/profile/edit',
         builder: (context, state) => const EditProfileScreen(),
       ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/compose',
         pageBuilder: (context, state) {

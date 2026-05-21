@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cookie/core/utils/markdown_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,8 +62,7 @@ class _UserScreenState extends ConsumerState<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userState =
-        ref.watch(userDetailProvider(widget.username));
+    final userState = ref.watch(userDetailProvider(widget.username));
 
     return userState.when(
       loading: () => Scaffold(
@@ -73,14 +73,11 @@ class _UserScreenState extends ConsumerState<UserScreen> {
         appBar: AppBar(title: Text(widget.username)),
         body: ErrorView(
           error: error,
-          onRetry: () =>
-              ref.invalidate(userDetailProvider(widget.username)),
+          onRetry: () => ref.invalidate(userDetailProvider(widget.username)),
         ),
       ),
-      data: (user) => _UserLoaded(
-        user: user,
-        scrollController: _scrollController,
-      ),
+      data: (user) =>
+          _UserLoaded(user: user, scrollController: _scrollController),
     );
   }
 }
@@ -88,10 +85,7 @@ class _UserScreenState extends ConsumerState<UserScreen> {
 // ── Loaded state ──────────────────────────────────────────────────────────────
 
 class _UserLoaded extends ConsumerStatefulWidget {
-  const _UserLoaded({
-    required this.user,
-    required this.scrollController,
-  });
+  const _UserLoaded({required this.user, required this.scrollController});
 
   final PublicUser user;
   final ScrollController scrollController;
@@ -110,30 +104,21 @@ class _UserLoadedState extends ConsumerState<_UserLoaded> {
         onRefresh: () async {
           ref.invalidate(userDetailProvider(widget.user.username));
           ref.invalidate(userActivityProvider(widget.user.username));
-          await ref
-              .read(userDetailProvider(widget.user.username).future);
+          await ref.read(userDetailProvider(widget.user.username).future);
         },
         child: CustomScrollView(
           controller: widget.scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            SliverAppBar(
-              pinned: true,
-              title: Text(widget.user.username),
-            ),
-            SliverToBoxAdapter(
-              child: _UserHeader(user: widget.user),
-            ),
+            SliverAppBar(pinned: true, title: Text('@${widget.user.username}')),
+            SliverToBoxAdapter(child: _UserHeader(user: widget.user)),
             SliverToBoxAdapter(
               child: _FilterChips(
                 filter: _filter,
                 onFilterChanged: (f) => setState(() => _filter = f),
               ),
             ),
-            _ActivitySliver(
-              user: widget.user,
-              filter: _filter,
-            ),
+            _ActivitySliver(user: widget.user, filter: _filter),
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
         ),
@@ -157,7 +142,6 @@ class _UserHeader extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final muted = colorScheme.onSurfaceVariant;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -195,55 +179,52 @@ class _UserHeader extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          '@${user.username}',
-                          style: textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: 4),
                         Column(
                           crossAxisAlignment: .start,
                           mainAxisSize: .min,
                           children: [
+                            if (user.isAdmin) ...[
+                              Text(
+                                context.l10n.userAdmin,
+                                style: Theme.of(context).textTheme.labelLarge
+                                    ?.copyWith(color: colorScheme.tertiary),
+                              ),
+                              const SizedBox(height: 12),
+                            ],
                             _StatChip(
                               label: context.l10n.pointsLabel(user.points),
                             ),
-                            const SizedBox(width: 12),
                             _StatChip(
                               label: context.l10n.postsLabel(user.noPosts),
                             ),
-                            const SizedBox(width: 12),
                             _StatChip(
-                              label: context.l10n.commentsLabel(user.noComments),
+                              label: context.l10n.commentsLabel(
+                                user.noComments,
+                              ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 12),
                         Text(
                           context.l10n.userJoined(
                             DateFormat.yMMMM().format(user.createdAt),
                           ),
-                          style: textTheme.bodySmall
-                              ?.copyWith(color: muted),
+                          style: textTheme.bodySmall?.copyWith(color: muted),
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              if (user.aboutMe case final String about when about.isNotEmpty)
-                ...[
-                const SizedBox(height: 12),
+              if (markdownToPlainText(user.aboutMe ?? '').trim() case final String about
+                  when about.isNotEmpty) ...[
+                const SizedBox(height: 24),
                 MarkdownText(about, baseStyle: textTheme.bodyMedium),
               ],
-              const SizedBox(height: 12),
-              if (isAuthenticated && !isOwnProfile)
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    _UserMuteButton(user: user),
-                  ],
-                ),
+              if (isAuthenticated && !isOwnProfile) ...[
+                const SizedBox(height: 12),
+                _UserMuteButton(user: user),
+              ],
               const SizedBox(height: 16),
             ],
           ),
@@ -269,10 +250,7 @@ class _StatChip extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: textTheme.labelLarge?.copyWith(color: muted),
-        ),
+        Text(label, style: textTheme.labelLarge?.copyWith(color: muted)),
       ],
     );
   }
@@ -310,10 +288,7 @@ class _UserMuteButton extends ConsumerWidget {
 // ── Filter chips ──────────────────────────────────────────────────────────────
 
 class _FilterChips extends StatelessWidget {
-  const _FilterChips({
-    required this.filter,
-    required this.onFilterChanged,
-  });
+  const _FilterChips({required this.filter, required this.onFilterChanged});
 
   final UserActivityFilter filter;
   final ValueChanged<UserActivityFilter> onFilterChanged;
@@ -360,8 +335,7 @@ class _ActivitySliver extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activityState =
-        ref.watch(userActivityProvider(user.username));
+    final activityState = ref.watch(userActivityProvider(user.username));
 
     return activityState.when(
       loading: () => SliverToBoxAdapter(
@@ -373,8 +347,7 @@ class _ActivitySliver extends ConsumerWidget {
       error: (error, _) => SliverToBoxAdapter(
         child: ErrorView(
           error: error,
-          onRetry: () =>
-              ref.invalidate(userActivityProvider(user.username)),
+          onRetry: () => ref.invalidate(userActivityProvider(user.username)),
         ),
       ),
       data: (activity) {
@@ -394,8 +367,8 @@ class _ActivitySliver extends ConsumerWidget {
                 child: Text(
                   context.l10n.feedEndOfContent,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ),
@@ -417,15 +390,16 @@ class _ActivitySliver extends ConsumerWidget {
                 final item = filteredItems[index];
                 return switch (item) {
                   UserFeedPost(:final post) => PostCard(
-                      post: post,
-                      showCommunity: true,
-                      onTap: () => context.push(
-                        '/c/${post.communityName}/post/${post.publicId}',
-                        extra: post,
-                      ),
+                    post: post,
+                    showCommunity: true,
+                    onTap: () => context.push(
+                      '/c/${post.communityName}/post/${post.publicId}',
+                      extra: post,
                     ),
-                  UserFeedComment(:final comment) =>
-                    _UserCommentCard(comment: comment),
+                  ),
+                  UserFeedComment(:final comment) => _UserCommentCard(
+                    comment: comment,
+                  ),
                 };
               },
             ),
@@ -460,11 +434,7 @@ class _UserCommentCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.mode_comment_outlined,
-                  size: 12,
-                  color: muted,
-                ),
+                Icon(Icons.mode_comment_outlined, size: 12, color: muted),
                 const SizedBox(width: 4),
                 Text(
                   comment.communityName,
@@ -480,19 +450,17 @@ class _UserCommentCard extends StatelessWidget {
             const SizedBox(height: 6),
             comment.deleted
                 ? Text(
-                    '[deleted]',
-                    style: textTheme.bodySmall
-                        ?.copyWith(fontStyle: FontStyle.italic),
+                    context.l10n.postDetailCommentDeleted,
+                    style: textTheme.bodySmall?.copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
                   )
-                : MarkdownText(
-                    comment.body,
-                    baseStyle: textTheme.bodySmall,
-                  ),
-            if (comment.postTitle case final String title when title.isNotEmpty)
-              ...[
+                : MarkdownText(comment.body, baseStyle: textTheme.bodySmall),
+            if (comment.postTitle case final String title
+                when title.isNotEmpty) ...[
               const SizedBox(height: 4),
               Text(
-                'on: $title',
+                context.l10n.commentPostReference(title),
                 style: textTheme.labelSmall?.copyWith(color: muted),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -503,17 +471,12 @@ class _UserCommentCard extends StatelessWidget {
       ),
     );
   }
-
-
 }
 
 // ── Activity footer ───────────────────────────────────────────────────────────
 
 class _ActivityFooter extends ConsumerWidget {
-  const _ActivityFooter({
-    required this.activity,
-    required this.username,
-  });
+  const _ActivityFooter({required this.activity, required this.username});
 
   final UserActivityState activity;
   final String username;
@@ -524,9 +487,7 @@ class _ActivityFooter extends ConsumerWidget {
     if (!activity.isLoadingMore && activity.hasMore) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (context.mounted) {
-          ref
-              .read(userActivityProvider(username).notifier)
-              .loadMore();
+          ref.read(userActivityProvider(username).notifier).loadMore();
         }
       });
     }
@@ -547,14 +508,13 @@ class _ActivityFooter extends ConsumerWidget {
               child: Text(
                 context.l10n.feedLoadMoreError,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+                  color: Theme.of(context).colorScheme.error,
+                ),
               ),
             ),
             TextButton(
-              onPressed: () => ref
-                  .read(userActivityProvider(username).notifier)
-                  .loadMore(),
+              onPressed: () =>
+                  ref.read(userActivityProvider(username).notifier).loadMore(),
               child: Text(context.l10n.retryButton),
             ),
           ],
@@ -569,8 +529,8 @@ class _ActivityFooter extends ConsumerWidget {
           child: Text(
             context.l10n.feedEndOfContent,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       );

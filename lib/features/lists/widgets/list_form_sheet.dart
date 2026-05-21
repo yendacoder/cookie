@@ -108,6 +108,7 @@ class _ListFormSheetState extends State<ListFormSheet> {
                     controller: _displayNameCtrl,
                     decoration: InputDecoration(
                       labelText: l10n.listsDisplayNameLabel,
+                      alignLabelWithHint: true,
                       border: const OutlineInputBorder(),
                     ),
                     textCapitalization: TextCapitalization.sentences,
@@ -121,6 +122,7 @@ class _ListFormSheetState extends State<ListFormSheet> {
                     controller: _descriptionCtrl,
                     decoration: InputDecoration(
                       labelText: l10n.listsDescriptionLabel,
+                      alignLabelWithHint: true,
                       border: const OutlineInputBorder(),
                     ),
                     maxLines: 3,

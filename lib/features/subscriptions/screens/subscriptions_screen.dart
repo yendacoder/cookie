@@ -3,11 +3,14 @@ import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/consts.dart';
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/widgets/default_app_bar.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/widgets/auth_gate.dart';
-import '../../home/providers/home_feed_provider.dart' show PostFeedState, PostSort;
+import '../../home/providers/home_feed_provider.dart'
+    show PostFeedState, PostSort;
 import '../../posts/widgets/post_card.dart';
 import '../../posts/widgets/post_card_skeleton.dart';
 import '../../shell/providers/nav_bar_visibility_provider.dart';
@@ -23,6 +26,8 @@ class SubscriptionsScreen extends ConsumerStatefulWidget {
 
 class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
   final _scrollController = ScrollController();
+  double _anchorOffset = 0;
+  ScrollDirection _lastDirection = ScrollDirection.idle;
 
   @override
   void initState() {
@@ -46,11 +51,24 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
       return;
     }
 
+    final pos = _scrollController.position;
+    final direction = pos.userScrollDirection;
+    if (direction != ScrollDirection.idle && direction != _lastDirection) {
+      _anchorOffset = pos.pixels;
+      _lastDirection = direction;
+    }
+
+    final delta = (pos.pixels - _anchorOffset).abs();
+
     switch (_scrollController.position.userScrollDirection) {
       case ScrollDirection.forward:
-        ref.read(navBarVisibilityProvider.notifier).show();
+        if (delta >= kScrollNavigationShowThreshold) {
+          ref.read(navBarVisibilityProvider.notifier).show();
+        }
       case ScrollDirection.reverse:
-        ref.read(navBarVisibilityProvider.notifier).hide();
+        if (delta >= kScrollNavigationHideThreshold) {
+          ref.read(navBarVisibilityProvider.notifier).hide();
+        }
       case ScrollDirection.idle:
         break;
     }
@@ -62,26 +80,18 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
 
     return authState.when(
       loading: () => Scaffold(
-        appBar: AppBar(title: Text(context.l10n.subscriptionsScreenTitle)),
+        appBar: DefaultAppBar(title: context.l10n.subscriptionsScreenTitle),
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, _) => Scaffold(
-        appBar: AppBar(title: Text(context.l10n.subscriptionsScreenTitle)),
+        appBar: DefaultAppBar(title: context.l10n.subscriptionsScreenTitle),
         body: ErrorView(
           error: error,
           onRetry: () => ref.invalidate(authProvider),
         ),
       ),
       data: (user) => Scaffold(
-        body: AuthGate(
-          child: _FeedView(scrollController: _scrollController),
-        ),
-        floatingActionButton: user != null
-            ? FloatingActionButton(
-                onPressed: () => context.push('/compose'),
-                child: const Icon(Icons.edit_outlined),
-              )
-            : null,
+        body: AuthGate(child: _FeedView(scrollController: _scrollController)),
       ),
     );
   }
@@ -97,7 +107,15 @@ class _FeedView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final feedState = ref.watch(subscriptionsFeedProvider);
-
+    ref.listen(subscriptionsFeedProvider, (previous, next) {
+      if (previous?.hasValue == true && next.isLoading) {
+        scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
     return RefreshIndicator(
       onRefresh: () async {
         ref.invalidate(subscriptionsFeedProvider);
@@ -107,17 +125,11 @@ class _FeedView extends ConsumerWidget {
         controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
-          SliverAppBar(
-            title: Text(context.l10n.subscriptionsScreenTitle),
-            floating: true,
-            snap: true,
-          ),
+          DefaultSliverAppBar(title: context.l10n.subscriptionsScreenTitle),
           SliverToBoxAdapter(child: _SortChips()),
           feedState.when(
-            loading: () => const SliverToBoxAdapter(
-              child: PostFeedSkeleton(),
-            ),
-            error: (error, _) => SliverFillRemaining(
+            loading: () => const SliverToBoxAdapter(child: PostFeedSkeleton()),
+            error: (error, t) => SliverFillRemaining(
               child: ErrorView(
                 error: error,
                 onRetry: () => ref.invalidate(subscriptionsFeedProvider),
@@ -170,8 +182,9 @@ class _SortChips extends ConsumerWidget {
               label: Text(sort.label(context.l10n)),
               selected: sort == current,
               showCheckmark: false,
-              onSelected: (_) =>
-                  ref.read(subscriptionsFeedSortProvider.notifier).setSort(sort),
+              onSelected: (_) => ref
+                  .read(subscriptionsFeedSortProvider.notifier)
+                  .setSort(sort),
             ),
         ],
       ),
@@ -205,8 +218,8 @@ class _FeedFooter extends StatelessWidget {
               child: Text(
                 context.l10n.feedLoadMoreError,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+                  color: Theme.of(context).colorScheme.error,
+                ),
               ),
             ),
             TextButton(
@@ -226,8 +239,8 @@ class _FeedFooter extends StatelessWidget {
           child: Text(
             context.l10n.feedEndOfContent,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       );

@@ -33,9 +33,8 @@ class _CommunitiesScreenState extends ConsumerState<CommunitiesScreen> {
     final isAuthenticated = ref.read(authProvider).value != null;
     _tab = isAuthenticated ? _Tab.joined : _Tab.all;
     _searchController.addListener(
-      () => setState(
-        () => _filter = _searchController.text.trim().toLowerCase(),
-      ),
+      () =>
+          setState(() => _filter = _searchController.text.trim().toLowerCase()),
     );
   }
 
@@ -47,9 +46,7 @@ class _CommunitiesScreenState extends ConsumerState<CommunitiesScreen> {
 
   List<Community> _applyFilter(List<Community> list) {
     if (_filter.isEmpty) return list;
-    return list
-        .where((c) => c.name.toLowerCase().contains(_filter))
-        .toList();
+    return list.where((c) => c.name.toLowerCase().contains(_filter)).toList();
   }
 
   Future<void> _onRefresh() {
@@ -81,7 +78,9 @@ class _CommunitiesScreenState extends ConsumerState<CommunitiesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.selectMode ? l10n.communitiesSelectTitle : l10n.communitiesScreenTitle,
+          widget.selectMode
+              ? l10n.communitiesSelectTitle
+              : l10n.communitiesScreenTitle,
         ),
       ),
       body: Column(
@@ -131,18 +130,19 @@ class _CommunitiesScreenState extends ConsumerState<CommunitiesScreen> {
           ),
           Expanded(
             child: switch (feedState) {
-              AsyncLoading() =>
-                const Center(child: CircularProgressIndicator()),
+              AsyncLoading() => const Center(
+                child: CircularProgressIndicator(),
+              ),
               AsyncError(:final error) => ErrorView(
-                  error: error,
-                  onRetry: _onRetry,
-                ),
+                error: error,
+                onRetry: _onRetry,
+              ),
               AsyncData(:final value) => _CommunitiesList(
-                  communities: _applyFilter(value),
-                  tab: _tab,
-                  selectMode: widget.selectMode,
-                  onRefresh: _onRefresh,
-                ),
+                communities: _applyFilter(value),
+                tab: _tab,
+                selectMode: widget.selectMode,
+                onRefresh: _onRefresh,
+              ),
             },
           ),
         ],
@@ -178,8 +178,8 @@ class _CommunitiesList extends StatelessWidget {
                 : context.l10n.communitiesEmpty,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       );
@@ -203,10 +203,7 @@ class _CommunitiesList extends StatelessWidget {
 // ── Tile ──────────────────────────────────────────────────────────────────────
 
 class _CommunityTile extends StatelessWidget {
-  const _CommunityTile({
-    required this.community,
-    required this.selectMode,
-  });
+  const _CommunityTile({required this.community, required this.selectMode});
 
   final Community community;
   final bool selectMode;
@@ -214,35 +211,9 @@ class _CommunityTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: colorScheme.secondaryContainer,
-        child: community.proPic != null
-            ? ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: community.proPic!.fullUrl,
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                ),
-              )
-            : Text(
-                community.name.isNotEmpty
-                    ? community.name[0].toUpperCase()
-                    : '?',
-                style: TextStyle(color: colorScheme.onSecondaryContainer),
-              ),
-      ),
-      title: Text(community.name),
-      subtitle: (community.about?.isNotEmpty ?? false)
-          ? Text(
-              markdownToPlainText(community.about!),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            )
-          : Text(context.l10n.membersLabel(community.noMembers)),
-      trailing: selectMode ? null : const Icon(Icons.chevron_right),
+    return InkWell(
       onTap: () {
         if (selectMode) {
           context.pop(community);
@@ -250,6 +221,55 @@ class _CommunityTile extends StatelessWidget {
           context.push('/c/${community.name}');
         }
       },
+      child: Row(
+        children: [
+          SizedBox(width: 16),
+          CircleAvatar(
+            backgroundColor: colorScheme.secondaryContainer,
+            child: community.proPic != null
+                ? ClipOval(
+                    child: CachedNetworkImage(
+                      imageUrl: community.proPic!.fullUrl,
+                      width: 40,
+                      height: 40,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Text(
+                    community.name.isNotEmpty
+                        ? community.name[0].toUpperCase()
+                        : '?',
+                    style: TextStyle(color: colorScheme.onSecondaryContainer),
+                  ),
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  Text(community.name, style: textTheme.titleMedium),
+                  if (community.about?.isNotEmpty ?? false)
+                    Text(
+                      markdownToPlainText(community.about!),
+                      maxLines: 4,
+                      overflow: .ellipsis,
+                    ),
+                  SizedBox(height: 8,),
+                  Text(context.l10n.membersLabel(community.noMembers), style: textTheme.labelMedium,),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 16),
+          if (!selectMode)
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: const Icon(Icons.chevron_right),
+            ),
+        ],
+      ),
     );
   }
 }

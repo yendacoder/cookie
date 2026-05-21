@@ -37,7 +37,7 @@ class ListItemsNotifier extends _$ListItemsNotifier {
           .cast<Map<String, dynamic>>()
           .map(ListItem.fromJson)
           .toList(),
-      nextCursor: data['next'] as String?,
+      nextCursor: data['next']?.toString(),
     );
   }
 

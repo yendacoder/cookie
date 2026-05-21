@@ -185,14 +185,17 @@ class PostFeedSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SkeletonPulse(
-      child: Column(
-        children: [
-          for (var i = 0; i < count; i++) ...[
-            if (i > 0) const SizedBox(height: 32),
-            PostCardSkeleton(showCommunity: showCommunity),
+    return SingleChildScrollView(
+      physics: NeverScrollableScrollPhysics(),
+      child: SkeletonPulse(
+        child: Column(
+          children: [
+            for (var i = 0; i < count; i++) ...[
+              if (i > 0) const SizedBox(height: 32),
+              PostCardSkeleton(showCommunity: showCommunity),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

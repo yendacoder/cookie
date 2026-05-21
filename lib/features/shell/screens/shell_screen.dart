@@ -1,3 +1,5 @@
+import 'package:cookie/features/home/providers/home_feed_provider.dart';
+import 'package:cookie/features/subscriptions/providers/subscriptions_feed_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -34,6 +36,12 @@ class ShellScreen extends ConsumerWidget {
                     selectedIndex: navigationShell.currentIndex,
                     labelBehavior: .alwaysHide,
                     onDestinationSelected: (index) {
+                      if (index == navigationShell.currentIndex) {
+                        switch (index) {
+                          case 0: ref.invalidate(homeFeedProvider, asReload: true);
+                          case 1: ref.invalidate(subscriptionsFeedProvider, asReload: true);
+                        }
+                      }
                       ref.read(navBarVisibilityProvider.notifier).show();
                       navigationShell.goBranch(
                         index,

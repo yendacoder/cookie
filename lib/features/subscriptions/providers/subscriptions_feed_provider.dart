@@ -3,7 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../models/post.dart';
-import '../../home/providers/home_feed_provider.dart' show PostFeedState, PostSort;
+import '../../home/providers/home_feed_provider.dart'
+    show PostFeedState, PostSort;
 
 part 'subscriptions_feed_provider.g.dart';
 
@@ -44,22 +45,27 @@ class SubscriptionsFeedNotifier extends _$SubscriptionsFeedNotifier {
     required PostSort sort,
     required String? cursor,
   }) async {
-    final response = await ref.read(apiClientProvider).get(
-      'posts',
-      queryParameters: {
-        'feed': 'subscriptions',
-        'sort': sort.apiValue,
-        'next': ?cursor,
-      },
-    );
+    final response = await ref
+        .read(apiClientProvider)
+        .get(
+          'posts',
+          queryParameters: {
+            'feed': 'subscriptions',
+            'sort': sort.apiValue,
+            'next': ?cursor,
+          },
+        );
     final data = response.data as Map<String, dynamic>;
     final posts = (data['posts'] as List)
         .cast<Map<String, dynamic>>()
         .map(Post.fromJson)
         .where((p) => _seenIds.add(p.id))
         .toList();
-
-    return PostFeedState(posts: posts, nextCursor: data['next'] as String?);
+    final res = PostFeedState(
+      posts: posts,
+      nextCursor: data['next']?.toString(),
+    );
+    return res;
   }
 
   Future<void> loadMore() async {
@@ -68,32 +74,40 @@ class SubscriptionsFeedNotifier extends _$SubscriptionsFeedNotifier {
 
     final cursorToLoad = current.nextCursor!;
 
-    state = AsyncData(PostFeedState(
-      posts: current.posts,
-      nextCursor: cursorToLoad,
-      isLoadingMore: true,
-    ));
+    state = AsyncData(
+      PostFeedState(
+        posts: current.posts,
+        nextCursor: cursorToLoad,
+        isLoadingMore: true,
+      ),
+    );
 
     try {
       final sort =
           ref.read(subscriptionsFeedSortProvider).value ?? PostSort.hot;
       final page = await _loadPage(sort: sort, cursor: cursorToLoad);
 
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.nextCursor == cursorToLoad) {
-        state = AsyncData(PostFeedState(
-          posts: [...value.posts, ...page.posts],
-          nextCursor: page.nextCursor,
-        ));
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.nextCursor == cursorToLoad) {
+        state = AsyncData(
+          PostFeedState(
+            posts: [...value.posts, ...page.posts],
+            nextCursor: page.nextCursor,
+          ),
+        );
       }
     } catch (e) {
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.nextCursor == cursorToLoad) {
-        state = AsyncData(PostFeedState(
-          posts: value.posts,
-          nextCursor: value.nextCursor,
-          loadMoreError: e,
-        ));
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.nextCursor == cursorToLoad) {
+        state = AsyncData(
+          PostFeedState(
+            posts: value.posts,
+            nextCursor: value.nextCursor,
+            loadMoreError: e,
+          ),
+        );
       }
     }
   }

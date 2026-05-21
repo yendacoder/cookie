@@ -134,17 +134,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       validator: (v) =>
                           (v == null || v.isEmpty) ? ' ' : null,
                     ),
-                    const SizedBox(height: 8),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () => launchUrl(
-                          Uri.parse('https://discuit.org/forgot-password'),
-                          mode: LaunchMode.externalApplication,
-                        ),
-                        child: Text(l10n.loginForgotPassword),
-                      ),
-                    ),
                     const SizedBox(height: 16),
                     FilledButton(
                       onPressed: _isSubmitting ? null : _submit,
@@ -163,7 +152,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         const SizedBox(width: 4),
                         TextButton(
                           onPressed: () => launchUrl(
-                            Uri.parse('https://discuit.org/register'),
+                            Uri.parse('https://discuit.org/'),
                             mode: LaunchMode.externalApplication,
                           ),
                           child: Text(l10n.loginRegisterLink),

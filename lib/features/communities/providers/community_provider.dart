@@ -116,7 +116,7 @@ class CommunityFeedNotifier extends _$CommunityFeedNotifier {
         .where((p) => _seenIds.add(p.id))
         .toList();
 
-    return PostFeedState(posts: posts, nextCursor: data['next'] as String?);
+    return PostFeedState(posts: posts, nextCursor: data['next']?.toString());
   }
 
   Future<void> loadMore() async {

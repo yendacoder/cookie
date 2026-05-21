@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppTheme {
+  static const kUpvoteColor = Color(0xFF3AAF4E);
+  static const kDownvoteColor = Color(0xFFE4667C);
+
   // Warm cookie-orange seed color
   static const _seed = Color(0xFFD97040);
 

@@ -100,6 +100,12 @@ abstract class AppLocalizations {
   /// **'Cookie'**
   String get appTitle;
 
+  /// No description provided for @appNameVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Cookie for Discuit, version {version}'**
+  String appNameVersion(String version);
+
   /// Home navigation tab label
   ///
   /// In en, this message translates to:
@@ -136,6 +142,12 @@ abstract class AppLocalizations {
   /// **'Sign in'**
   String get loginTitle;
 
+  /// No description provided for @navPost.
+  ///
+  /// In en, this message translates to:
+  /// **'Post'**
+  String get navPost;
+
   /// No description provided for @loginUsernameLabel.
   ///
   /// In en, this message translates to:
@@ -165,12 +177,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Register on the web'**
   String get loginRegisterLink;
-
-  /// No description provided for @loginForgotPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Forgot password?'**
-  String get loginForgotPassword;
 
   /// No description provided for @loginErrorInvalid.
   ///
@@ -580,6 +586,12 @@ abstract class AppLocalizations {
   /// **'Joined {date}'**
   String userJoined(String date);
 
+  /// No description provided for @userAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get userAdmin;
+
   /// No description provided for @postsLabel.
   ///
   /// In en, this message translates to:
@@ -592,6 +604,12 @@ abstract class AppLocalizations {
   /// **'Add a comment…'**
   String get commentHint;
 
+  /// No description provided for @commentPostReference.
+  ///
+  /// In en, this message translates to:
+  /// **'on {post}'**
+  String commentPostReference(String post);
+
   /// No description provided for @commentReplyingTo.
   ///
   /// In en, this message translates to:
@@ -603,6 +621,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reply'**
   String get commentReplyButton;
+
+  /// No description provided for @commentOP.
+  ///
+  /// In en, this message translates to:
+  /// **'OP'**
+  String get commentOP;
+
+  /// No description provided for @commentAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get commentAdmin;
 
   /// No description provided for @commentSubmitError.
   ///
@@ -901,13 +931,13 @@ abstract class AppLocalizations {
   /// No description provided for @composeTitleHint.
   ///
   /// In en, this message translates to:
-  /// **'Title'**
+  /// **'Post Title'**
   String get composeTitleHint;
 
   /// No description provided for @composeTypeText.
   ///
   /// In en, this message translates to:
-  /// **'Text'**
+  /// **'Text / Link'**
   String get composeTypeText;
 
   /// No description provided for @composeTypeImage.
@@ -919,7 +949,7 @@ abstract class AppLocalizations {
   /// No description provided for @composeBodyHint.
   ///
   /// In en, this message translates to:
-  /// **'Add text (optional)'**
+  /// **'Text or link (optional)'**
   String get composeBodyHint;
 
   /// No description provided for @composeUrlDetected.

@@ -4,6 +4,13 @@
   "appTitle": "Cookie",
   "@appTitle": {"description": "The name of the application"},
 
+  "appNameVersion": "Cookie for Discuit, version {version}",
+  "@appNameVersion": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+
   "navHome": "Home",
   "@navHome": {"description": "Home navigation tab label"},
 
@@ -22,6 +29,9 @@
   "loginTitle": "Sign in",
   "@loginTitle": {},
 
+  "navPost": "Post",
+  "@navPost": {},
+
   "loginUsernameLabel": "Username",
   "@loginUsernameLabel": {},
 
@@ -36,9 +46,6 @@
 
   "loginRegisterLink": "Register on the web",
   "@loginRegisterLink": {},
-
-  "loginForgotPassword": "Forgot password?",
-  "@loginForgotPassword": {},
 
   "loginErrorInvalid": "Invalid username or password",
   "@loginErrorInvalid": {},
@@ -284,6 +291,9 @@
     }
   },
 
+  "userAdmin": "Admin",
+  "@userAdmin": {},
+
   "postsLabel": "{count, plural, =1{1 post} other{{count} posts}}",
   "@postsLabel": {
     "placeholders": {
@@ -294,6 +304,13 @@
   "commentHint": "Add a comment…",
   "@commentHint": {},
 
+  "commentPostReference": "on {post}",
+  "@commentPostReference": {
+    "placeholders": {
+      "post": {"type": "String"}
+    }
+  },
+
   "commentReplyingTo": "Replying to @{username}",
   "@commentReplyingTo": {
     "placeholders": {
@@ -303,6 +320,12 @@
 
   "commentReplyButton": "Reply",
   "@commentReplyButton": {},
+
+  "commentOP": "OP",
+  "@commentOP": {},
+
+  "commentAdmin": "Admin",
+  "@commentAdmin": {},
 
   "commentSubmitError": "Failed to post comment",
   "@commentSubmitError": {},
@@ -473,16 +496,16 @@
   "composeCommunityHint": "Select a community",
   "@composeCommunityHint": {},
 
-  "composeTitleHint": "Title",
+  "composeTitleHint": "Post Title",
   "@composeTitleHint": {},
 
-  "composeTypeText": "Text",
+  "composeTypeText": "Text / Link",
   "@composeTypeText": {},
 
   "composeTypeImage": "Image",
   "@composeTypeImage": {},
 
-  "composeBodyHint": "Add text (optional)",
+  "composeBodyHint": "Text or link (optional)",
   "@composeBodyHint": {},
 
   "composeUrlDetected": "Will be posted as a link",
@@ -505,9 +528,6 @@
 
   "composeMarkdownGuideTitle": "Markdown guide",
   "@composeMarkdownGuideTitle": {},
-
-  "cancelButton": "Cancel",
-  "@cancelButton": {},
 
   "deleteButton": "Delete",
   "@deleteButton": {},

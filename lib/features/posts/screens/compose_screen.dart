@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cookie/features/communities/providers/community_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/markdown_text.dart';
 import '../../../models/community.dart';
 import '../../../models/discuit_image.dart';
@@ -50,6 +51,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
   final _images = <_ImageEntry>[];
   bool _submitting = false;
   bool _isUrlBody = false;
+  bool _loadingCommunity = false;
 
   bool get _isEditing => widget.editingPost != null;
 
@@ -71,7 +73,8 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
   void _onBodyChanged() {
     final text = _bodyCtrl.text.trim();
     final uri = Uri.tryParse(text);
-    final isUrl = uri != null &&
+    final isUrl =
+        uri != null &&
         (uri.scheme == 'https' || uri.scheme == 'http') &&
         uri.host.isNotEmpty;
     if (isUrl != _isUrlBody) setState(() => _isUrlBody = isUrl);
@@ -79,7 +82,26 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
 
   Future<void> _selectCommunity() async {
     final result = await context.push<Community>('/communities', extra: true);
-    if (result != null) setState(() => _community = result);
+    if (result != null) {
+      setState(() {
+        _loadingCommunity = true;
+        _community = result;
+      });
+      try {
+        final res = await ref.read(communityDetailProvider(result.name).future);
+        if (mounted) {
+          _loadingCommunity = false;
+          setState(() => _community = res);
+        }
+      } catch (e) {
+        setState(() => _loadingCommunity = false);
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(e.toString())));
+        }
+      }
+    }
   }
 
   Future<void> _addImage() async {
@@ -102,13 +124,6 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
     );
   }
 
-  void _showMarkdownGuide() {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => const _MarkdownGuideDialog(),
-    );
-  }
-
   bool get _canSubmit {
     if (_submitting) return false;
     if (_titleCtrl.text.trim().isEmpty) return false;
@@ -128,10 +143,13 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
 
       if (_isEditing) {
         final post = widget.editingPost!;
-        await api.put('posts/${post.publicId}', data: {
-          'title': title,
-          if (post.type == 'text') 'body': _bodyCtrl.text.trim(),
-        });
+        await api.put(
+          'posts/${post.publicId}',
+          data: {
+            'title': title,
+            if (post.type == 'text') 'body': _bodyCtrl.text.trim(),
+          },
+        );
         if (mounted) context.pop();
         return;
       }
@@ -148,28 +166,34 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
               filename: entry.file.path.split('/').last,
             ),
           });
-          final res = await api.post('_images', data: formData);
+          final res = await api.post('_uploads', data: formData);
           uploaded.add({
             'imageId': (res.data as Map<String, dynamic>)['id'] as String,
-            'caption': entry.altCtrl.text.trim(),
+            'altText': entry.altCtrl.text.trim(),
           });
         }
-        final res = await api.post('posts', data: {
-          'type': 'image',
-          'title': title,
-          'community': communityName,
-          'images': uploaded,
-        });
+        final res = await api.post(
+          'posts',
+          data: {
+            'type': 'image',
+            'title': title,
+            'community': communityName,
+            'images': uploaded,
+          },
+        );
         newPost = Post.fromJson(res.data as Map<String, dynamic>);
       } else {
         final body = _bodyCtrl.text.trim();
-        final res = await api.post('posts', data: {
-          'type': _isUrlBody ? 'link' : 'text',
-          'title': title,
-          'community': communityName,
-          if (_isUrlBody) 'url': body,
-          if (!_isUrlBody && body.isNotEmpty) 'body': body,
-        });
+        final res = await api.post(
+          'posts',
+          data: {
+            'type': _isUrlBody ? 'link' : 'text',
+            'title': title,
+            'community': communityName,
+            if (_isUrlBody) 'url': body,
+            if (!_isUrlBody && body.isNotEmpty) 'body': body,
+          },
+        );
         newPost = Post.fromJson(res.data as Map<String, dynamic>);
       }
 
@@ -183,9 +207,9 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _submitting = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     }
   }
@@ -208,7 +232,9 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? l10n.composeEditTitle : l10n.composeScreenTitle),
+        title: Text(
+          _isEditing ? l10n.composeEditTitle : l10n.composeScreenTitle,
+        ),
         actions: [
           if (_submitting)
             const Padding(
@@ -233,15 +259,10 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
           // ── Community selector ────────────────────────────────────────
           if (_isEditing)
             ListTile(
-              leading: CircleAvatar(
+              leading: Avatar(
                 radius: 16,
-                backgroundColor: colorScheme.secondaryContainer,
-                child: Text(
-                  widget.editingPost!.communityName[0].toUpperCase(),
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colorScheme.onSecondaryContainer,
-                  ),
-                ),
+                imageUrl: widget.editingPost!.communityProPic?.fullUrl,
+                fallback: widget.editingPost!.communityName,
               ),
               title: Text(
                 widget.editingPost!.communityName,
@@ -250,33 +271,15 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
             )
           else
             ListTile(
-              leading: _community?.proPic != null
-                  ? CircleAvatar(
-                      radius: 16,
-                      child: ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl: _community!.proPic!.fullUrl,
-                          width: 32,
-                          height: 32,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+              leading: _loadingCommunity
+                  ? SizedBox.square(
+                      dimension: 16,
+                      child: CircularProgressIndicator(),
                     )
-                  : CircleAvatar(
+                  : Avatar(
                       radius: 16,
-                      backgroundColor: colorScheme.secondaryContainer,
-                      child: _community != null
-                          ? Text(
-                              _community!.name[0].toUpperCase(),
-                              style: textTheme.labelSmall?.copyWith(
-                                color: colorScheme.onSecondaryContainer,
-                              ),
-                            )
-                          : Icon(
-                              Icons.group_outlined,
-                              size: 16,
-                              color: colorScheme.onSecondaryContainer,
-                            ),
+                      imageUrl: _community?.proPic?.fullUrl,
+                      fallback: _community?.name ?? '',
                     ),
               title: Text(
                 _community?.name ?? l10n.composeCommunityHint,
@@ -296,27 +299,9 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
 
           const Divider(height: 1),
 
-          // ── Title ─────────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            child: TextField(
-              controller: _titleCtrl,
-              decoration: InputDecoration(
-                hintText: l10n.composeTitleHint,
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.zero,
-              ),
-              style: textTheme.titleMedium,
-              maxLines: 3,
-              minLines: 1,
-              textCapitalization: TextCapitalization.sentences,
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
           // ── Type toggle (hidden when editing) ────────────────────────
           if (!_isEditing) ...[
+            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SegmentedButton<_PostType>(
@@ -333,12 +318,30 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                   ),
                 ],
                 selected: {_type},
-                onSelectionChanged: (sel) =>
-                    setState(() => _type = sel.first),
+                onSelectionChanged: (sel) => setState(() => _type = sel.first),
               ),
             ),
             const SizedBox(height: 16),
           ],
+
+          // ── Title ─────────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: TextField(
+              controller: _titleCtrl,
+              decoration: InputDecoration(
+                labelText: l10n.composeTitleHint,
+                border: const OutlineInputBorder(),
+                alignLabelWithHint: true,
+              ),
+              style: textTheme.titleMedium,
+              maxLines: 3,
+              minLines: 1,
+              textCapitalization: TextCapitalization.sentences,
+            ),
+          ),
+
+          const SizedBox(height: 16),
 
           // ── Content ───────────────────────────────────────────────────
           if (_isEditing) ...[
@@ -350,12 +353,11 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                 child: TextField(
                   controller: _bodyCtrl,
                   decoration: InputDecoration(
-                    hintText: l10n.composeBodyHint,
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
+                    labelText: l10n.composeBodyHint,
+                    border: const OutlineInputBorder(),
+                    alignLabelWithHint: true,
                   ),
                   style: textTheme.bodyMedium,
-                  maxLines: null,
                   minLines: 5,
                   textCapitalization: TextCapitalization.sentences,
                 ),
@@ -365,23 +367,15 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(
+                    TextButton.icon(
                       onPressed: _showPreview,
-                      tooltip: l10n.composePreviewTitle,
+                      label: Text(l10n.composePreviewTitle),
                       icon: const Icon(Icons.preview_outlined),
-                      iconSize: 20,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                    IconButton(
-                      onPressed: _showMarkdownGuide,
-                      tooltip: l10n.composeMarkdownGuideTitle,
-                      icon: const Icon(Icons.help_outline_rounded),
-                      iconSize: 20,
-                      color: colorScheme.onSurfaceVariant,
                     ),
                   ],
                 ),
               ),
+              _MarkdownGuide(),
             ],
           ] else if (_type == _PostType.text) ...[
             Padding(
@@ -389,9 +383,9 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
               child: TextField(
                 controller: _bodyCtrl,
                 decoration: InputDecoration(
-                  hintText: l10n.composeBodyHint,
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
+                  labelText: l10n.composeBodyHint,
+                  border: const OutlineInputBorder(),
+                  alignLabelWithHint: true,
                 ),
                 style: textTheme.bodyMedium,
                 maxLines: null,
@@ -399,34 +393,16 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                 textCapitalization: TextCapitalization.sentences,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    onPressed: _showPreview,
-                    tooltip: l10n.composePreviewTitle,
-                    icon: const Icon(Icons.preview_outlined),
-                    iconSize: 20,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                  IconButton(
-                    onPressed: _showMarkdownGuide,
-                    tooltip: l10n.composeMarkdownGuideTitle,
-                    icon: const Icon(Icons.help_outline_rounded),
-                    iconSize: 20,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ],
-              ),
-            ),
             if (_isUrlBody)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                 child: Row(
                   children: [
-                    Icon(Icons.link_rounded, size: 14, color: colorScheme.primary),
+                    Icon(
+                      Icons.link_rounded,
+                      size: 14,
+                      color: colorScheme.primary,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       l10n.composeUrlDetected,
@@ -437,6 +413,20 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                   ],
                 ),
               ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton.icon(
+                    onPressed: _showPreview,
+                    label: Text(l10n.composePreviewTitle),
+                    icon: const Icon(Icons.preview_outlined),
+                  ),
+                ],
+              ),
+            ),
+            _MarkdownGuide(),
           ] else ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -515,46 +505,44 @@ class _ImageEntryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: .stretch,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: SizedBox.square(
-              dimension: 80,
-              child: Image.file(entry.file, fit: BoxFit.cover),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: ColoredBox(
+                color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                child: Image.file(entry.file, fit: .contain),
+              ),
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextField(
-                  controller: entry.altCtrl,
-                  decoration: InputDecoration(
-                    hintText: context.l10n.composeAltTextHint,
-                    isDense: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  style: Theme.of(context).textTheme.bodySmall,
-                  maxLines: 2,
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    onPressed: onRemove,
-                    icon: const Icon(Icons.delete_outline, size: 16),
-                    label: Text(context.l10n.listItemRemove),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.error,
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                    ),
-                  ),
-                ),
-              ],
+          const SizedBox(height: 12),
+
+          TextField(
+            controller: entry.altCtrl,
+            decoration: InputDecoration(
+              hintText: context.l10n.composeAltTextHint,
+              isDense: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            style: Theme.of(context).textTheme.bodySmall,
+            maxLines: 5,
+            minLines: 1,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: onRemove,
+              icon: const Icon(Icons.delete_outline, size: 16),
+              label: Text(context.l10n.listItemRemove),
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+              ),
             ),
           ),
         ],
@@ -584,8 +572,8 @@ class _PreviewDialog extends StatelessWidget {
               ? Text(
                   l10n.composePreviewEmpty,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 )
               : MarkdownText(body, selectable: true),
         ),
@@ -602,8 +590,8 @@ class _PreviewDialog extends StatelessWidget {
 
 // ── Markdown guide dialog ─────────────────────────────────────────────────────
 
-class _MarkdownGuideDialog extends StatelessWidget {
-  const _MarkdownGuideDialog();
+class _MarkdownGuide extends StatelessWidget {
+  const _MarkdownGuide();
 
   static const _entries = [
     ('**bold**', 'Bold'),
@@ -623,43 +611,40 @@ class _MarkdownGuideDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
-    final l10n = context.l10n;
 
-    return AlertDialog(
-      title: Text(l10n.composeMarkdownGuideTitle),
-      content: SizedBox(
-        width: double.maxFinite,
-        child: ListView.separated(
-          shrinkWrap: true,
-          itemCount: _entries.length,
-          separatorBuilder: (_, _) => const Divider(height: 12),
-          itemBuilder: (_, i) {
-            final (syntax, description) = _entries[i];
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    syntax,
-                    style: textTheme.bodySmall?.copyWith(
-                      fontFamily: 'monospace',
-                      color: colorScheme.onSurfaceVariant,
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+      crossAxisAlignment: .start,
+      children: [
+        Text('Formatting guide', style: Theme.of(context).textTheme.titleSmall),
+        SizedBox(height: 16,),
+        ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: _entries.length,
+            separatorBuilder: (_, _) => const Divider(height: 12),
+            itemBuilder: (_, i) {
+              final (syntax, description) = _entries[i];
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      syntax,
+                      style: textTheme.bodySmall?.copyWith(
+                        fontFamily: 'monospace',
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Text(description, style: textTheme.bodySmall),
-              ],
-            );
-          },
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(l10n.confirmButton),
-        ),
+                  const SizedBox(width: 12),
+                  Text(description, style: textTheme.bodySmall),
+                ],
+              );
+            },
+          ),
       ],
-    );
+    ));
   }
 }

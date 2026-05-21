@@ -25,7 +25,7 @@ _DiscuitImage _$DiscuitImageFromJson(Map<String, dynamic> json) =>
                   .toList() ??
               const [],
         ),
-        caption: $checkedConvert('caption', (v) => v as String?),
+        altText: $checkedConvert('altText', (v) => v as String?),
       );
       return val;
     });
@@ -41,7 +41,7 @@ Map<String, dynamic> _$DiscuitImageToJson(_DiscuitImage instance) =>
       'averageColor': instance.averageColor,
       'url': instance.url,
       'copies': instance.copies,
-      'caption': instance.caption,
+      'altText': instance.altText,
     };
 
 _ImageCopy _$ImageCopyFromJson(Map<String, dynamic> json) =>

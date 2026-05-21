@@ -60,21 +60,15 @@ class MarkdownText extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       // Blockquote: left-border accent instead of blue background.
-      blockquotePadding:
-          const EdgeInsets.only(left: 12, top: 4, bottom: 4),
+      blockquotePadding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
       blockquoteDecoration: BoxDecoration(
         border: Border(
-          left: BorderSide(
-            color: colorScheme.outlineVariant,
-            width: 3,
-          ),
+          left: BorderSide(color: colorScheme.outlineVariant, width: 3),
         ),
       ),
       // Horizontal rule using the theme divider colour.
       horizontalRuleDecoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: colorScheme.outlineVariant),
-        ),
+        border: Border(top: BorderSide(color: colorScheme.outlineVariant)),
       ),
     );
 
@@ -82,11 +76,18 @@ class MarkdownText extends StatelessWidget {
       data: data,
       selectable: selectable,
       styleSheet: styleSheet,
-      onTapLink: (text, href, title) async {
+      onTapLink: (text, href, title) {
         if (href == null) return;
         final uri = Uri.tryParse(href);
         if (uri != null) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
+          if (uri.isAbsolute) {
+            launchUrl(uri, mode: LaunchMode.externalApplication);
+          } else {
+            final uri = Uri.tryParse('https://discuit.org/$href');
+            if (uri != null) {
+              launchUrl(uri, mode: LaunchMode.externalApplication);
+            }
+          }
         }
       },
     );

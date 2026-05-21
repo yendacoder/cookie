@@ -12,6 +12,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Cookie';
 
   @override
+  String appNameVersion(String version) {
+    return 'Cookie for Discuit, version $version';
+  }
+
+  @override
   String get navHome => 'Home';
 
   @override
@@ -30,6 +35,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginTitle => 'Sign in';
 
   @override
+  String get navPost => 'Post';
+
+  @override
   String get loginUsernameLabel => 'Username';
 
   @override
@@ -43,9 +51,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginRegisterLink => 'Register on the web';
-
-  @override
-  String get loginForgotPassword => 'Forgot password?';
 
   @override
   String get loginErrorInvalid => 'Invalid username or password';
@@ -337,6 +342,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get userAdmin => 'Admin';
+
+  @override
   String postsLabel(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -351,12 +359,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commentHint => 'Add a comment…';
 
   @override
+  String commentPostReference(String post) {
+    return 'on $post';
+  }
+
+  @override
   String commentReplyingTo(String username) {
     return 'Replying to @$username';
   }
 
   @override
   String get commentReplyButton => 'Reply';
+
+  @override
+  String get commentOP => 'OP';
+
+  @override
+  String get commentAdmin => 'Admin';
 
   @override
   String get commentSubmitError => 'Failed to post comment';
@@ -531,16 +550,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get composeCommunityHint => 'Select a community';
 
   @override
-  String get composeTitleHint => 'Title';
+  String get composeTitleHint => 'Post Title';
 
   @override
-  String get composeTypeText => 'Text';
+  String get composeTypeText => 'Text / Link';
 
   @override
   String get composeTypeImage => 'Image';
 
   @override
-  String get composeBodyHint => 'Add text (optional)';
+  String get composeBodyHint => 'Text or link (optional)';
 
   @override
   String get composeUrlDetected => 'Will be posted as a link';
