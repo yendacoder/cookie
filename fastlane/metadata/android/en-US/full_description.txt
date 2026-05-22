@@ -1,0 +1,30 @@
+Cookie is a mobile client for the discuit.org social platform.
+
+Join the friendly, open, and independent community of like-minded people.
+Cookie aims for feature parity with Discuit, however some features may come at a later stage as the API is not fully documented and requires reverse engineering.
+
+What you can do now:
+- Browse posts anonymously or while logged in with your existing account (home feed or personal subscriptions). Includes an in-app YouTube player and a comfortable image viewer for single and multi-image posts.
+- Comment on and vote for posts and comments, and edit or delete your own posts and comments.
+- Join or leave communities, mute users or communities, and hide individual posts.
+- Save posts to lists (bookmarks) and create, edit, or remove your own lists.
+- Check notifications.
+- Edit your own profile.
+- Basic mod tools: edit community settings and manage rules.
+- Light/dark mode.
+
+Features in the app that don't exist in the web version:
+- Embedded animations from Tenor/Giphy in comments.
+- Full-size image viewer for image post types.
+- Color-coded nested comment indicators.
+- Preview text post formatting before posting.
+
+What is coming later™:
+- Indicators for new comments and posts since last visit.
+- Browse other users' public lists.
+- Image post editing.
+- Additional mod tools: moderating content, banning/unbanning users, and managing the moderators list.
+
+What is out of scope:
+- Registration and password recovery.
+- GIF/animation posts, images in comments, image+text post types, and search — unless Discuit adds native support for these features.

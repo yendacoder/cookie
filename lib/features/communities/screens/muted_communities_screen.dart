@@ -1,0 +1,102 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/extensions/build_context_ext.dart';
+import '../../../models/discuit_image.dart';
+import '../providers/community_mutes_provider.dart';
+import '../providers/muted_communities_list_provider.dart';
+
+class MutedCommunitiesScreen extends ConsumerWidget {
+  const MutedCommunitiesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mutes = ref.watch(mutedCommunitiesListProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(context.l10n.mutedCommunitiesScreenTitle),
+      ),
+      body: mutes.isEmpty
+          ? Center(
+              child: Text(
+                context.l10n.mutedCommunitiesEmpty,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            )
+          : ListView.separated(
+              itemCount: mutes.length,
+              separatorBuilder: (_, _) => const Divider(height: 1),
+              itemBuilder: (context, index) {
+                final mute = mutes[index];
+                final community = mute.mutedCommunity;
+                return _MutedCommunityTile(
+                  communityId: mute.mutedCommunityId,
+                  name: community?.name,
+                  noMembers: community?.noMembers,
+                  proPicUrl: community?.proPic?.fullUrl,
+                  onUnmute: () {
+                    ref
+                        .read(mutedCommunitiesListProvider.notifier)
+                        .remove(mute.mutedCommunityId);
+                    ref
+                        .read(communityMutesProvider.notifier)
+                        .unmute(mute.mutedCommunityId);
+                  },
+                );
+              },
+            ),
+    );
+  }
+}
+
+class _MutedCommunityTile extends StatelessWidget {
+  const _MutedCommunityTile({
+    required this.communityId,
+    required this.name,
+    required this.noMembers,
+    required this.proPicUrl,
+    required this.onUnmute,
+  });
+
+  final String communityId;
+  final String? name;
+  final int? noMembers;
+  final String? proPicUrl;
+  final VoidCallback onUnmute;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: colorScheme.secondaryContainer,
+        child: proPicUrl != null
+            ? ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: proPicUrl!,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                ),
+              )
+            : Icon(
+                Icons.group_outlined,
+                color: colorScheme.onSecondaryContainer,
+              ),
+      ),
+      title: Text(name ?? communityId),
+      subtitle: noMembers != null
+          ? Text(context.l10n.membersLabel(noMembers!))
+          : null,
+      trailing: TextButton(
+        onPressed: onUnmute,
+        child: Text(context.l10n.communityUnmute),
+      ),
+    );
+  }
+}
