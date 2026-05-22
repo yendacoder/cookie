@@ -47,8 +47,11 @@ class ShellScreen extends ConsumerWidget {
                         index,
                         initialLocation: index == navigationShell.currentIndex,
                       );
-                      ref.read(lastTabProvider.notifier).set(index);
-                      SharedPreferencesAsync().setInt('last_tab', index);
+                      // do not save profile tab as last as it feels unexpected
+                      if (index < 2) {
+                        ref.read(lastTabProvider.notifier).set(index);
+                        SharedPreferencesAsync().setInt('last_tab', index);
+                      }
                     },
                     destinations: [
                       NavigationDestination(
