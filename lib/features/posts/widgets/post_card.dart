@@ -62,7 +62,22 @@ class PostCard extends ConsumerWidget {
               children: [
                 _PostHeader(post: post, showCommunity: showCommunity),
                 const SizedBox(height: 8),
-                Text(post.title, style: Theme.of(context).textTheme.titleSmall),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        post.title,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ),
+                    if (post.isPinned)
+                      Icon(
+                        Icons.push_pin,
+                        size: 14,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                  ],
+                ),
                 _PostContent(post: post),
               ],
             ),
@@ -502,7 +517,7 @@ class _PostMenuButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = ref.watch(authProvider).value;
-    if (currentUser == null) return const SizedBox.shrink();
+    if (currentUser == null) return const SizedBox(width: 16);
 
     final isAuthor = currentUser.username == post.username;
     final l10n = context.l10n;
@@ -519,40 +534,34 @@ class _PostMenuButton extends ConsumerWidget {
           )
         else
           PopupMenuItem(
-            value: _PostMenuAction.saveToList,
+            value: .saveToList,
             child: Text(l10n.postMenuSaveToList),
           ),
         if (isAuthor) ...[
+          PopupMenuItem(value: .editPost, child: Text(l10n.postMenuEdit)),
           PopupMenuItem(
-            value: _PostMenuAction.editPost,
-            child: Text(l10n.postMenuEdit),
-          ),
-          PopupMenuItem(
-            value: _PostMenuAction.deletePost,
+            value: .deletePost,
             child: Text(
               l10n.postMenuDelete,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
         ],
-        PopupMenuItem(
-          value: _PostMenuAction.hide,
-          child: Text(l10n.postMenuHide),
-        ),
+        PopupMenuItem(value: .hide, child: Text(l10n.postMenuHide)),
       ],
       onSelected: (action) async {
         switch (action) {
-          case _PostMenuAction.saveToList:
+          case .saveToList:
             showModalBottomSheet(
               context: context,
               isScrollControlled: true,
               builder: (_) => PostSaveToListSheet(post: post),
             );
-          case _PostMenuAction.removeFromList:
+          case .removeFromList:
             onRemoveFromList?.call();
-          case _PostMenuAction.editPost:
+          case .editPost:
             context.push('/compose', extra: post);
-          case _PostMenuAction.deletePost:
+          case .deletePost:
             final confirmed = await showDialog<bool>(
               context: context,
               builder: (ctx) => AlertDialog(
@@ -577,7 +586,9 @@ class _PostMenuButton extends ConsumerWidget {
             try {
               await ref
                   .read(apiClientProvider)
-                  .delete('posts/${post.publicId}');
+                  .delete(
+                    'posts/${post.publicId}?deleteAs=normal&deleteContent=true',
+                  );
               if (context.mounted) {
                 ref.read(hiddenPostsProvider.notifier).hide(post.id);
               }

@@ -313,6 +313,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancelButton => 'Cancel';
 
   @override
+  String get okayButton => 'OK';
+
+  @override
   String get confirmButton => 'Confirm';
 
   @override
@@ -506,6 +509,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveButton => 'Save';
 
   @override
+  String get postMenuOpenInBrowser => 'Open in browser';
+
+  @override
   String get postMenuSaveToList => 'Save to list';
 
   @override
@@ -671,4 +677,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commentEditTitle => 'Edit comment';
+
+  @override
+  String get imageViewerAltText => 'Alt text';
 }

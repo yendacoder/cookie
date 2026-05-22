@@ -141,7 +141,7 @@ final class UserActivityNotifierProvider
 }
 
 String _$userActivityNotifierHash() =>
-    r'73b0615bc5ddb9ff9916ebd4fb480e7f906137a5';
+    r'd16f7fd8db929ee0470607a63697ee939d365c9a';
 
 final class UserActivityNotifierFamily extends $Family
     with

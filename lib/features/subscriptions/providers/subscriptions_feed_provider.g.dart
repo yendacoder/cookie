@@ -79,7 +79,7 @@ final class SubscriptionsFeedNotifierProvider
 }
 
 String _$subscriptionsFeedNotifierHash() =>
-    r'bbb6b8fa298027594b385aed679c1a98da52a0ed';
+    r'a359ecebcd49f01801efa8e0f8eb7c2092a0839a';
 
 abstract class _$SubscriptionsFeedNotifier
     extends $AsyncNotifier<PostFeedState> {

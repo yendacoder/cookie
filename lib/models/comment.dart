@@ -32,7 +32,7 @@ abstract class Comment with _$Comment {
     required bool deleted,
     DateTime? deletedAt,
     String? deletedAs,
-    required User author,
+    User? author,
     bool? isAuthorMuted,
     bool? userVoted,
     bool? userVotedUp,

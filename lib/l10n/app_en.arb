@@ -260,6 +260,9 @@
   "cancelButton": "Cancel",
   "@cancelButton": {},
 
+  "okayButton": "OK",
+  "@okayButton": {},
+
   "confirmButton": "Confirm",
   "@confirmButton": {},
 
@@ -452,6 +455,9 @@
   "saveButton": "Save",
   "@saveButton": {},
 
+  "postMenuOpenInBrowser": "Open in browser",
+  "@postMenuOpenInBrowser": {},
+
   "postMenuSaveToList": "Save to list",
   "@postMenuSaveToList": {},
 
@@ -614,5 +620,8 @@
   "@commentDeleteConfirm": {},
 
   "commentEditTitle": "Edit comment",
-  "@commentEditTitle": {}
+  "@commentEditTitle": {},
+
+  "imageViewerAltText": "Alt text",
+  "@imageViewerAltText": {}
 }

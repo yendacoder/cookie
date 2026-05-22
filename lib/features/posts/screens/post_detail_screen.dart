@@ -201,16 +201,17 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
           PopupMenuButton<_PostMenuAction>(
             itemBuilder: (_) => [
               PopupMenuItem(
-                value: _PostMenuAction.saveToList,
+                value: .openInBrowser,
+                child: Text(l10n.postMenuOpenInBrowser),
+              ),
+              PopupMenuItem(
+                value: .saveToList,
                 child: Text(l10n.postMenuSaveToList),
               ),
               if (isAuthor) ...[
+                PopupMenuItem(value: .editPost, child: Text(l10n.postMenuEdit)),
                 PopupMenuItem(
-                  value: _PostMenuAction.editPost,
-                  child: Text(l10n.postMenuEdit),
-                ),
-                PopupMenuItem(
-                  value: _PostMenuAction.deletePost,
+                  value: .deletePost,
                   child: Text(
                     l10n.postMenuDelete,
                     style: TextStyle(
@@ -219,25 +220,29 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   ),
                 ),
               ],
-              PopupMenuItem(
-                value: _PostMenuAction.hide,
-                child: Text(l10n.postMenuHide),
-              ),
+              PopupMenuItem(value: .hide, child: Text(l10n.postMenuHide)),
             ],
             onSelected: (action) async {
               switch (action) {
-                case _PostMenuAction.saveToList:
+                case .openInBrowser:
+                  launchUrl(
+                    Uri.parse(
+                      'https://discuit.org/${post.communityName}/post/${post.publicId}',
+                    ),
+                    mode: LaunchMode.externalApplication,
+                  );
+                case .saveToList:
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
                     builder: (_) => PostSaveToListSheet(post: post),
                   );
-                case _PostMenuAction.editPost:
+                case .editPost:
                   await context.push('/compose', extra: post);
                   if (context.mounted) {
                     ref.invalidate(postDetailProvider(post.publicId));
                   }
-                case _PostMenuAction.deletePost:
+                case .deletePost:
                   final confirmed = await showDialog<bool>(
                     context: context,
                     builder: (ctx) => AlertDialog(
@@ -264,7 +269,9 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   try {
                     await ref
                         .read(apiClientProvider)
-                        .delete('posts/${post.publicId}');
+                        .delete(
+                          'posts/${post.publicId}?deleteAs=normal&deleteContent=true',
+                        );
                     if (context.mounted) context.pop();
                   } catch (e) {
                     if (context.mounted) {
@@ -273,7 +280,7 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       ).showSnackBar(SnackBar(content: Text(e.toString())));
                     }
                   }
-                case _PostMenuAction.hide:
+                case .hide:
                   ref.read(hiddenPostsProvider.notifier).hide(post.id);
                   context.pop();
               }
@@ -284,7 +291,7 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
   }
 }
 
-enum _PostMenuAction { saveToList, editPost, deletePost, hide }
+enum _PostMenuAction { openInBrowser, saveToList, editPost, deletePost, hide }
 
 // ── Post body ─────────────────────────────────────────────────────────────────
 
@@ -385,8 +392,6 @@ class _DetailImage extends StatefulWidget {
 }
 
 class _DetailImageState extends State<_DetailImage> {
-  int _currentPage = 0;
-
   @override
   Widget build(BuildContext context) {
     final images = widget.post.images.isNotEmpty
@@ -399,7 +404,6 @@ class _DetailImageState extends State<_DetailImage> {
       child: PostImageCarousel(
         images: images,
         fit: BoxFit.contain,
-        onPageChanged: (i) => setState(() => _currentPage = i),
         onTap: (index) => context.push(
           '/image-viewer',
           extra: ImageViewerArgs(images: images, initialIndex: index),
@@ -410,24 +414,7 @@ class _DetailImageState extends State<_DetailImage> {
     if (images.length == 1) {
       carousel = Hero(tag: PostCard.heroTag(widget.post.id), child: carousel);
     }
-
-    final caption = images[_currentPage].altText;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        carousel,
-        if (caption != null && caption.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Text(
-            caption,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ],
-    );
+    return carousel;
   }
 }
 
@@ -830,7 +817,7 @@ class _CommentsSectionSliver extends StatelessWidget {
               final comment = comments[index];
               return _CommentCard(
                 comment: comment,
-                isOp: comment.author.id == post.author?.id,
+                isOp: comment.author?.id == post.author?.id,
                 postPublicId: post.publicId,
                 onReply: onReplyTap != null ? () => onReplyTap!(comment) : null,
               );
@@ -889,7 +876,7 @@ class _CommentCard extends ConsumerWidget {
     final gifUri = _extractGifUri(comment.body);
 
     return Padding(
-      padding: EdgeInsets.only(left: indent),
+      padding: EdgeInsets.only(left: indent + 6, right: 6),
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -917,7 +904,7 @@ class _CommentCard extends ConsumerWidget {
                             mainAxisSize: .min,
                             children: [
                               Avatar(
-                                imageUrl: comment.author.proPic?.fullUrl,
+                                imageUrl: comment.author?.proPic?.fullUrl,
                                 fallback: comment.username,
                                 radius: 8,
                               ),
@@ -932,7 +919,7 @@ class _CommentCard extends ConsumerWidget {
                                   ),
                                 ),
                               ],
-                              if (comment.author.isAdmin) ...[
+                              if (comment.author?.isAdmin == true) ...[
                                 SizedBox(width: 8),
                                 Text(
                                   context.l10n.commentAdmin,
@@ -951,7 +938,7 @@ class _CommentCard extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 12),
                     isDeleted
                         ? Text(
                             context.l10n.postDetailCommentDeleted,
@@ -963,11 +950,10 @@ class _CommentCard extends ConsumerWidget {
                           )
                         : MarkdownText(
                             comment.body,
-                            selectable: true,
                             baseStyle: Theme.of(context).textTheme.bodySmall,
                           ),
                     if (gifUri != null) CommentGif(gifUri: gifUri),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
                         _CommentVoteButton(
@@ -1014,8 +1000,7 @@ class _CommentCard extends ConsumerWidget {
                         ],
                         if (onReply != null && !isDeleted) ...[
                           const SizedBox(width: 12),
-                          GestureDetector(
-                            behavior: HitTestBehavior.opaque,
+                          InkWell(
                             onTap: onReply,
                             child: Text(
                               context.l10n.commentReplyButton,
@@ -1023,12 +1008,14 @@ class _CommentCard extends ConsumerWidget {
                             ),
                           ),
                         ],
-                        if (!isDeleted)
+                        if (!isDeleted) ...[
+                          const SizedBox(width: 12),
                           _CommentMenuButton(
                             comment: comment,
                             postPublicId: postPublicId,
                             muted: muted,
                           ),
+                        ],
                       ],
                     ),
                   ],
@@ -1069,14 +1056,18 @@ class _CommentMenuButton extends ConsumerWidget {
     return PopupMenuButton<_CommentMenuAction>(
       iconSize: 14,
       icon: Icon(Icons.more_horiz, size: 14, color: muted),
-      padding: EdgeInsets.zero,
+      padding: .zero,
+      style: TextButton.styleFrom(
+        padding: .zero,
+        visualDensity: .compact,
+        minimumSize: Size.zero,
+        iconSize: 14,
+        tapTargetSize: .shrinkWrap,
+      ),
       itemBuilder: (_) => [
+        PopupMenuItem(value: .edit, child: Text(l10n.commentMenuEdit)),
         PopupMenuItem(
-          value: _CommentMenuAction.edit,
-          child: Text(l10n.commentMenuEdit),
-        ),
-        PopupMenuItem(
-          value: _CommentMenuAction.delete,
+          value: .delete,
           child: Text(
             l10n.commentMenuDelete,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
@@ -1085,7 +1076,7 @@ class _CommentMenuButton extends ConsumerWidget {
       ],
       onSelected: (action) async {
         switch (action) {
-          case _CommentMenuAction.edit:
+          case .edit:
             showModalBottomSheet<void>(
               context: context,
               isScrollControlled: true,
@@ -1094,7 +1085,7 @@ class _CommentMenuButton extends ConsumerWidget {
                 postPublicId: postPublicId,
               ),
             );
-          case _CommentMenuAction.delete:
+          case .delete:
             final confirmed = await showDialog<bool>(
               context: context,
               builder: (ctx) => AlertDialog(
@@ -1257,8 +1248,7 @@ class _CommentVoteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return InkWell(
       onTap: showSpinner ? null : onTap,
       child: showSpinner
           ? SizedBox.square(

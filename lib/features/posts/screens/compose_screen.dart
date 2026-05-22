@@ -167,10 +167,15 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
             ),
           });
           final res = await api.post('_uploads', data: formData);
-          uploaded.add({
-            'imageId': (res.data as Map<String, dynamic>)['id'] as String,
-            'altText': entry.altCtrl.text.trim(),
-          });
+          final imageId = (res.data as Map<String, dynamic>)['id'] as String;
+          uploaded.add({'imageId': imageId});
+
+          if (entry.altCtrl.text.trim().isNotEmpty) {
+            await api.put(
+              'images/$imageId',
+              data: {'altText': entry.altCtrl.text},
+            );
+          }
         }
         final res = await api.post(
           'posts',
@@ -615,11 +620,14 @@ class _MarkdownGuide extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
-      crossAxisAlignment: .start,
-      children: [
-        Text('Formatting guide', style: Theme.of(context).textTheme.titleSmall),
-        SizedBox(height: 16,),
-        ListView.separated(
+        crossAxisAlignment: .start,
+        children: [
+          Text(
+            'Formatting guide',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          SizedBox(height: 16),
+          ListView.separated(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: _entries.length,
@@ -644,7 +652,8 @@ class _MarkdownGuide extends StatelessWidget {
               );
             },
           ),
-      ],
-    ));
+        ],
+      ),
+    );
   }
 }

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Comment {
 
- String get id; String get postId; String get postPublicId; String get communityId; String get communityName; String? get userId; String get username; String? get userGhostId; String get userGroup; bool get userDeleted; String? get parentId; int get depth; int get noReplies; int? get noDirectReplies; List<String>? get ancestors; String get body; int get upvotes; int get downvotes; DateTime get createdAt; DateTime? get editedAt; bool? get contentStripped; bool get deleted; DateTime? get deletedAt; String? get deletedAs; User get author; bool? get isAuthorMuted; bool? get userVoted; bool? get userVotedUp; String? get postTitle; bool get postDeleted; String? get postDeletedAs;
+ String get id; String get postId; String get postPublicId; String get communityId; String get communityName; String? get userId; String get username; String? get userGhostId; String get userGroup; bool get userDeleted; String? get parentId; int get depth; int get noReplies; int? get noDirectReplies; List<String>? get ancestors; String get body; int get upvotes; int get downvotes; DateTime get createdAt; DateTime? get editedAt; bool? get contentStripped; bool get deleted; DateTime? get deletedAt; String? get deletedAs; User? get author; bool? get isAuthorMuted; bool? get userVoted; bool? get userVotedUp; String? get postTitle; bool get postDeleted; String? get postDeletedAs;
 /// Create a copy of Comment
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,11 +48,11 @@ abstract mixin class $CommentCopyWith<$Res>  {
   factory $CommentCopyWith(Comment value, $Res Function(Comment) _then) = _$CommentCopyWithImpl;
 @useResult
 $Res call({
- String id, String postId, String postPublicId, String communityId, String communityName, String? userId, String username, String? userGhostId, String userGroup, bool userDeleted, String? parentId, int depth, int noReplies, int? noDirectReplies, List<String>? ancestors, String body, int upvotes, int downvotes, DateTime createdAt, DateTime? editedAt, bool? contentStripped, bool deleted, DateTime? deletedAt, String? deletedAs, User author, bool? isAuthorMuted, bool? userVoted, bool? userVotedUp, String? postTitle, bool postDeleted, String? postDeletedAs
+ String id, String postId, String postPublicId, String communityId, String communityName, String? userId, String username, String? userGhostId, String userGroup, bool userDeleted, String? parentId, int depth, int noReplies, int? noDirectReplies, List<String>? ancestors, String body, int upvotes, int downvotes, DateTime createdAt, DateTime? editedAt, bool? contentStripped, bool deleted, DateTime? deletedAt, String? deletedAs, User? author, bool? isAuthorMuted, bool? userVoted, bool? userVotedUp, String? postTitle, bool postDeleted, String? postDeletedAs
 });
 
 
-$UserCopyWith<$Res> get author;
+$UserCopyWith<$Res>? get author;
 
 }
 /// @nodoc
@@ -65,7 +65,7 @@ class _$CommentCopyWithImpl<$Res>
 
 /// Create a copy of Comment
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? postId = null,Object? postPublicId = null,Object? communityId = null,Object? communityName = null,Object? userId = freezed,Object? username = null,Object? userGhostId = freezed,Object? userGroup = null,Object? userDeleted = null,Object? parentId = freezed,Object? depth = null,Object? noReplies = null,Object? noDirectReplies = freezed,Object? ancestors = freezed,Object? body = null,Object? upvotes = null,Object? downvotes = null,Object? createdAt = null,Object? editedAt = freezed,Object? contentStripped = freezed,Object? deleted = null,Object? deletedAt = freezed,Object? deletedAs = freezed,Object? author = null,Object? isAuthorMuted = freezed,Object? userVoted = freezed,Object? userVotedUp = freezed,Object? postTitle = freezed,Object? postDeleted = null,Object? postDeletedAs = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? postId = null,Object? postPublicId = null,Object? communityId = null,Object? communityName = null,Object? userId = freezed,Object? username = null,Object? userGhostId = freezed,Object? userGroup = null,Object? userDeleted = null,Object? parentId = freezed,Object? depth = null,Object? noReplies = null,Object? noDirectReplies = freezed,Object? ancestors = freezed,Object? body = null,Object? upvotes = null,Object? downvotes = null,Object? createdAt = null,Object? editedAt = freezed,Object? contentStripped = freezed,Object? deleted = null,Object? deletedAt = freezed,Object? deletedAs = freezed,Object? author = freezed,Object? isAuthorMuted = freezed,Object? userVoted = freezed,Object? userVotedUp = freezed,Object? postTitle = freezed,Object? postDeleted = null,Object? postDeletedAs = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
@@ -91,8 +91,8 @@ as DateTime?,contentStripped: freezed == contentStripped ? _self.contentStripped
 as bool?,deleted: null == deleted ? _self.deleted : deleted // ignore: cast_nullable_to_non_nullable
 as bool,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,deletedAs: freezed == deletedAs ? _self.deletedAs : deletedAs // ignore: cast_nullable_to_non_nullable
-as String?,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
-as User,isAuthorMuted: freezed == isAuthorMuted ? _self.isAuthorMuted : isAuthorMuted // ignore: cast_nullable_to_non_nullable
+as String?,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
+as User?,isAuthorMuted: freezed == isAuthorMuted ? _self.isAuthorMuted : isAuthorMuted // ignore: cast_nullable_to_non_nullable
 as bool?,userVoted: freezed == userVoted ? _self.userVoted : userVoted // ignore: cast_nullable_to_non_nullable
 as bool?,userVotedUp: freezed == userVotedUp ? _self.userVotedUp : userVotedUp // ignore: cast_nullable_to_non_nullable
 as bool?,postTitle: freezed == postTitle ? _self.postTitle : postTitle // ignore: cast_nullable_to_non_nullable
@@ -105,9 +105,12 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserCopyWith<$Res> get author {
-  
-  return $UserCopyWith<$Res>(_self.author, (value) {
+$UserCopyWith<$Res>? get author {
+    if (_self.author == null) {
+    return null;
+  }
+
+  return $UserCopyWith<$Res>(_self.author!, (value) {
     return _then(_self.copyWith(author: value));
   });
 }
@@ -192,7 +195,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String postId,  String postPublicId,  String communityId,  String communityName,  String? userId,  String username,  String? userGhostId,  String userGroup,  bool userDeleted,  String? parentId,  int depth,  int noReplies,  int? noDirectReplies,  List<String>? ancestors,  String body,  int upvotes,  int downvotes,  DateTime createdAt,  DateTime? editedAt,  bool? contentStripped,  bool deleted,  DateTime? deletedAt,  String? deletedAs,  User author,  bool? isAuthorMuted,  bool? userVoted,  bool? userVotedUp,  String? postTitle,  bool postDeleted,  String? postDeletedAs)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String postId,  String postPublicId,  String communityId,  String communityName,  String? userId,  String username,  String? userGhostId,  String userGroup,  bool userDeleted,  String? parentId,  int depth,  int noReplies,  int? noDirectReplies,  List<String>? ancestors,  String body,  int upvotes,  int downvotes,  DateTime createdAt,  DateTime? editedAt,  bool? contentStripped,  bool deleted,  DateTime? deletedAt,  String? deletedAs,  User? author,  bool? isAuthorMuted,  bool? userVoted,  bool? userVotedUp,  String? postTitle,  bool postDeleted,  String? postDeletedAs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Comment() when $default != null:
 return $default(_that.id,_that.postId,_that.postPublicId,_that.communityId,_that.communityName,_that.userId,_that.username,_that.userGhostId,_that.userGroup,_that.userDeleted,_that.parentId,_that.depth,_that.noReplies,_that.noDirectReplies,_that.ancestors,_that.body,_that.upvotes,_that.downvotes,_that.createdAt,_that.editedAt,_that.contentStripped,_that.deleted,_that.deletedAt,_that.deletedAs,_that.author,_that.isAuthorMuted,_that.userVoted,_that.userVotedUp,_that.postTitle,_that.postDeleted,_that.postDeletedAs);case _:
@@ -213,7 +216,7 @@ return $default(_that.id,_that.postId,_that.postPublicId,_that.communityId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String postId,  String postPublicId,  String communityId,  String communityName,  String? userId,  String username,  String? userGhostId,  String userGroup,  bool userDeleted,  String? parentId,  int depth,  int noReplies,  int? noDirectReplies,  List<String>? ancestors,  String body,  int upvotes,  int downvotes,  DateTime createdAt,  DateTime? editedAt,  bool? contentStripped,  bool deleted,  DateTime? deletedAt,  String? deletedAs,  User author,  bool? isAuthorMuted,  bool? userVoted,  bool? userVotedUp,  String? postTitle,  bool postDeleted,  String? postDeletedAs)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String postId,  String postPublicId,  String communityId,  String communityName,  String? userId,  String username,  String? userGhostId,  String userGroup,  bool userDeleted,  String? parentId,  int depth,  int noReplies,  int? noDirectReplies,  List<String>? ancestors,  String body,  int upvotes,  int downvotes,  DateTime createdAt,  DateTime? editedAt,  bool? contentStripped,  bool deleted,  DateTime? deletedAt,  String? deletedAs,  User? author,  bool? isAuthorMuted,  bool? userVoted,  bool? userVotedUp,  String? postTitle,  bool postDeleted,  String? postDeletedAs)  $default,) {final _that = this;
 switch (_that) {
 case _Comment():
 return $default(_that.id,_that.postId,_that.postPublicId,_that.communityId,_that.communityName,_that.userId,_that.username,_that.userGhostId,_that.userGroup,_that.userDeleted,_that.parentId,_that.depth,_that.noReplies,_that.noDirectReplies,_that.ancestors,_that.body,_that.upvotes,_that.downvotes,_that.createdAt,_that.editedAt,_that.contentStripped,_that.deleted,_that.deletedAt,_that.deletedAs,_that.author,_that.isAuthorMuted,_that.userVoted,_that.userVotedUp,_that.postTitle,_that.postDeleted,_that.postDeletedAs);case _:
@@ -233,7 +236,7 @@ return $default(_that.id,_that.postId,_that.postPublicId,_that.communityId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String postId,  String postPublicId,  String communityId,  String communityName,  String? userId,  String username,  String? userGhostId,  String userGroup,  bool userDeleted,  String? parentId,  int depth,  int noReplies,  int? noDirectReplies,  List<String>? ancestors,  String body,  int upvotes,  int downvotes,  DateTime createdAt,  DateTime? editedAt,  bool? contentStripped,  bool deleted,  DateTime? deletedAt,  String? deletedAs,  User author,  bool? isAuthorMuted,  bool? userVoted,  bool? userVotedUp,  String? postTitle,  bool postDeleted,  String? postDeletedAs)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String postId,  String postPublicId,  String communityId,  String communityName,  String? userId,  String username,  String? userGhostId,  String userGroup,  bool userDeleted,  String? parentId,  int depth,  int noReplies,  int? noDirectReplies,  List<String>? ancestors,  String body,  int upvotes,  int downvotes,  DateTime createdAt,  DateTime? editedAt,  bool? contentStripped,  bool deleted,  DateTime? deletedAt,  String? deletedAs,  User? author,  bool? isAuthorMuted,  bool? userVoted,  bool? userVotedUp,  String? postTitle,  bool postDeleted,  String? postDeletedAs)?  $default,) {final _that = this;
 switch (_that) {
 case _Comment() when $default != null:
 return $default(_that.id,_that.postId,_that.postPublicId,_that.communityId,_that.communityName,_that.userId,_that.username,_that.userGhostId,_that.userGroup,_that.userDeleted,_that.parentId,_that.depth,_that.noReplies,_that.noDirectReplies,_that.ancestors,_that.body,_that.upvotes,_that.downvotes,_that.createdAt,_that.editedAt,_that.contentStripped,_that.deleted,_that.deletedAt,_that.deletedAs,_that.author,_that.isAuthorMuted,_that.userVoted,_that.userVotedUp,_that.postTitle,_that.postDeleted,_that.postDeletedAs);case _:
@@ -248,7 +251,7 @@ return $default(_that.id,_that.postId,_that.postPublicId,_that.communityId,_that
 @JsonSerializable()
 
 class _Comment implements Comment {
-  const _Comment({required this.id, required this.postId, required this.postPublicId, required this.communityId, required this.communityName, this.userId, required this.username, this.userGhostId, required this.userGroup, required this.userDeleted, this.parentId, required this.depth, required this.noReplies, this.noDirectReplies, final  List<String>? ancestors, required this.body, required this.upvotes, required this.downvotes, required this.createdAt, this.editedAt, this.contentStripped, required this.deleted, this.deletedAt, this.deletedAs, required this.author, this.isAuthorMuted, this.userVoted, this.userVotedUp, this.postTitle, required this.postDeleted, this.postDeletedAs}): _ancestors = ancestors;
+  const _Comment({required this.id, required this.postId, required this.postPublicId, required this.communityId, required this.communityName, this.userId, required this.username, this.userGhostId, required this.userGroup, required this.userDeleted, this.parentId, required this.depth, required this.noReplies, this.noDirectReplies, final  List<String>? ancestors, required this.body, required this.upvotes, required this.downvotes, required this.createdAt, this.editedAt, this.contentStripped, required this.deleted, this.deletedAt, this.deletedAs, this.author, this.isAuthorMuted, this.userVoted, this.userVotedUp, this.postTitle, required this.postDeleted, this.postDeletedAs}): _ancestors = ancestors;
   factory _Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
 
 @override final  String id;
@@ -283,7 +286,7 @@ class _Comment implements Comment {
 @override final  bool deleted;
 @override final  DateTime? deletedAt;
 @override final  String? deletedAs;
-@override final  User author;
+@override final  User? author;
 @override final  bool? isAuthorMuted;
 @override final  bool? userVoted;
 @override final  bool? userVotedUp;
@@ -324,11 +327,11 @@ abstract mixin class _$CommentCopyWith<$Res> implements $CommentCopyWith<$Res> {
   factory _$CommentCopyWith(_Comment value, $Res Function(_Comment) _then) = __$CommentCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String postId, String postPublicId, String communityId, String communityName, String? userId, String username, String? userGhostId, String userGroup, bool userDeleted, String? parentId, int depth, int noReplies, int? noDirectReplies, List<String>? ancestors, String body, int upvotes, int downvotes, DateTime createdAt, DateTime? editedAt, bool? contentStripped, bool deleted, DateTime? deletedAt, String? deletedAs, User author, bool? isAuthorMuted, bool? userVoted, bool? userVotedUp, String? postTitle, bool postDeleted, String? postDeletedAs
+ String id, String postId, String postPublicId, String communityId, String communityName, String? userId, String username, String? userGhostId, String userGroup, bool userDeleted, String? parentId, int depth, int noReplies, int? noDirectReplies, List<String>? ancestors, String body, int upvotes, int downvotes, DateTime createdAt, DateTime? editedAt, bool? contentStripped, bool deleted, DateTime? deletedAt, String? deletedAs, User? author, bool? isAuthorMuted, bool? userVoted, bool? userVotedUp, String? postTitle, bool postDeleted, String? postDeletedAs
 });
 
 
-@override $UserCopyWith<$Res> get author;
+@override $UserCopyWith<$Res>? get author;
 
 }
 /// @nodoc
@@ -341,7 +344,7 @@ class __$CommentCopyWithImpl<$Res>
 
 /// Create a copy of Comment
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? postId = null,Object? postPublicId = null,Object? communityId = null,Object? communityName = null,Object? userId = freezed,Object? username = null,Object? userGhostId = freezed,Object? userGroup = null,Object? userDeleted = null,Object? parentId = freezed,Object? depth = null,Object? noReplies = null,Object? noDirectReplies = freezed,Object? ancestors = freezed,Object? body = null,Object? upvotes = null,Object? downvotes = null,Object? createdAt = null,Object? editedAt = freezed,Object? contentStripped = freezed,Object? deleted = null,Object? deletedAt = freezed,Object? deletedAs = freezed,Object? author = null,Object? isAuthorMuted = freezed,Object? userVoted = freezed,Object? userVotedUp = freezed,Object? postTitle = freezed,Object? postDeleted = null,Object? postDeletedAs = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? postId = null,Object? postPublicId = null,Object? communityId = null,Object? communityName = null,Object? userId = freezed,Object? username = null,Object? userGhostId = freezed,Object? userGroup = null,Object? userDeleted = null,Object? parentId = freezed,Object? depth = null,Object? noReplies = null,Object? noDirectReplies = freezed,Object? ancestors = freezed,Object? body = null,Object? upvotes = null,Object? downvotes = null,Object? createdAt = null,Object? editedAt = freezed,Object? contentStripped = freezed,Object? deleted = null,Object? deletedAt = freezed,Object? deletedAs = freezed,Object? author = freezed,Object? isAuthorMuted = freezed,Object? userVoted = freezed,Object? userVotedUp = freezed,Object? postTitle = freezed,Object? postDeleted = null,Object? postDeletedAs = freezed,}) {
   return _then(_Comment(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,postId: null == postId ? _self.postId : postId // ignore: cast_nullable_to_non_nullable
@@ -367,8 +370,8 @@ as DateTime?,contentStripped: freezed == contentStripped ? _self.contentStripped
 as bool?,deleted: null == deleted ? _self.deleted : deleted // ignore: cast_nullable_to_non_nullable
 as bool,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,deletedAs: freezed == deletedAs ? _self.deletedAs : deletedAs // ignore: cast_nullable_to_non_nullable
-as String?,author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
-as User,isAuthorMuted: freezed == isAuthorMuted ? _self.isAuthorMuted : isAuthorMuted // ignore: cast_nullable_to_non_nullable
+as String?,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
+as User?,isAuthorMuted: freezed == isAuthorMuted ? _self.isAuthorMuted : isAuthorMuted // ignore: cast_nullable_to_non_nullable
 as bool?,userVoted: freezed == userVoted ? _self.userVoted : userVoted // ignore: cast_nullable_to_non_nullable
 as bool?,userVotedUp: freezed == userVotedUp ? _self.userVotedUp : userVotedUp // ignore: cast_nullable_to_non_nullable
 as bool?,postTitle: freezed == postTitle ? _self.postTitle : postTitle // ignore: cast_nullable_to_non_nullable
@@ -382,9 +385,12 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserCopyWith<$Res> get author {
-  
-  return $UserCopyWith<$Res>(_self.author, (value) {
+$UserCopyWith<$Res>? get author {
+    if (_self.author == null) {
+    return null;
+  }
+
+  return $UserCopyWith<$Res>(_self.author!, (value) {
     return _then(_self.copyWith(author: value));
   });
 }

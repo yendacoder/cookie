@@ -532,6 +532,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancelButton;
 
+  /// No description provided for @okayButton.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get okayButton;
+
   /// No description provided for @confirmButton.
   ///
   /// In en, this message translates to:
@@ -843,6 +849,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get saveButton;
+
+  /// No description provided for @postMenuOpenInBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in browser'**
+  String get postMenuOpenInBrowser;
 
   /// No description provided for @postMenuSaveToList.
   ///
@@ -1167,6 +1179,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit comment'**
   String get commentEditTitle;
+
+  /// No description provided for @imageViewerAltText.
+  ///
+  /// In en, this message translates to:
+  /// **'Alt text'**
+  String get imageViewerAltText;
 }
 
 class _AppLocalizationsDelegate

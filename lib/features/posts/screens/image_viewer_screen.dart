@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/extensions/build_context_ext.dart';
 import '../../../models/discuit_image.dart';
 
 /// Navigation argument bag — passed as `extra` to the `/image-viewer` route.
@@ -62,6 +64,31 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.text_snippet_rounded),
+            tooltip: context.l10n.imageViewerAltText,
+            onPressed: widget.images[_currentPage].altText?.isNotEmpty == true
+                ? () {
+                    showDialog<void>(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text(context.l10n.imageViewerAltText),
+                        content: Text(
+                          widget.images[_currentPage].altText ?? '',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => ctx.pop(false),
+                            child: Text(context.l10n.okayButton),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                : null,
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -86,36 +113,17 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
             ),
           ),
           // Caption and/or page indicator at the bottom.
-          Builder(builder: (context) {
-            final caption = widget.images[_currentPage].altText;
-            final hasCaption = caption != null && caption.isNotEmpty;
-            if (!hasCaption && count <= 1) return const SizedBox.shrink();
-            return Positioned(
-              bottom: MediaQuery.paddingOf(context).bottom + 16,
-              left: 24,
-              right: 24,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (hasCaption)
-                    Text(
-                      caption,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        height: 1.4,
-                        shadows: [
-                          Shadow(color: Colors.black87, blurRadius: 8),
-                        ],
-                      ),
-                    ),
-                  if (hasCaption && count > 1) const SizedBox(height: 10),
-                  if (count > 1) _PageIndicator(current: _currentPage, count: count),
-                ],
-              ),
-            );
-          }),
+          Builder(
+            builder: (context) {
+              if (count <= 2) return const SizedBox.shrink();
+              return Positioned(
+                bottom: MediaQuery.paddingOf(context).bottom + 16,
+                left: 24,
+                right: 24,
+                child: _PageIndicator(current: _currentPage, count: count),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -166,15 +174,18 @@ class _ZoomablePageState extends State<_ZoomablePage>
   void _handleDoubleTap() {
     _animCtrl.reset();
 
-    final target = _isZoomed ? Matrix4.identity() : _zoomedAt(_doubleTapPosition!);
+    final target = _isZoomed
+        ? Matrix4.identity()
+        : _zoomedAt(_doubleTapPosition!);
 
-    _animation = Matrix4Tween(begin: _transformCtrl.value, end: target)
-        .animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeInOut))
-      ..addListener(() {
-        _transformCtrl.value = _animation!.value;
-        _notifyZoom();
-        setState(() {}); // keep panEnabled in sync
-      });
+    _animation =
+        Matrix4Tween(begin: _transformCtrl.value, end: target).animate(
+          CurvedAnimation(parent: _animCtrl, curve: Curves.easeInOut),
+        )..addListener(() {
+          _transformCtrl.value = _animation!.value;
+          _notifyZoom();
+          setState(() {}); // keep panEnabled in sync
+        });
 
     _animCtrl.forward();
   }
@@ -188,10 +199,10 @@ class _ZoomablePageState extends State<_ZoomablePage>
   Matrix4 _zoomedAt(Offset pos) {
     const s = _zoomScale;
     return Matrix4.identity()
-      ..setEntry(0, 0, s)                   // scale x
-      ..setEntry(1, 1, s)                   // scale y
-      ..setEntry(0, 3, pos.dx * (1 - s))    // translate x
-      ..setEntry(1, 3, pos.dy * (1 - s));   // translate y
+      ..setEntry(0, 0, s) // scale x
+      ..setEntry(1, 1, s) // scale y
+      ..setEntry(0, 3, pos.dx * (1 - s)) // translate x
+      ..setEntry(1, 3, pos.dy * (1 - s)); // translate y
   }
 
   void _onInteractionUpdate(ScaleUpdateDetails _) {

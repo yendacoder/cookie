@@ -50,7 +50,7 @@ _Comment _$CommentFromJson(Map<String, dynamic> json) =>
         deletedAs: $checkedConvert('deletedAs', (v) => v as String?),
         author: $checkedConvert(
           'author',
-          (v) => User.fromJson(v as Map<String, dynamic>),
+          (v) => v == null ? null : User.fromJson(v as Map<String, dynamic>),
         ),
         isAuthorMuted: $checkedConvert('isAuthorMuted', (v) => v as bool?),
         userVoted: $checkedConvert('userVoted', (v) => v as bool?),
