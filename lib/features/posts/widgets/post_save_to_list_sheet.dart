@@ -43,85 +43,87 @@ class _PostSaveToListSheetState extends ConsumerState<PostSaveToListSheet> {
   Widget build(BuildContext context) {
     final listsState = ref.watch(userListsProvider);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-          child: Text(
-            context.l10n.postMenuSaveToList,
-            style: Theme.of(context).textTheme.titleMedium,
+    return SafeArea(
+      child: Column(
+        mainAxisSize: .min,
+        crossAxisAlignment: .stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text(
+              context.l10n.postMenuSaveToList,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ),
-        ),
-        const Divider(height: 1),
-        switch (listsState) {
-          AsyncLoading() => const Padding(
-              padding: EdgeInsets.all(32),
-              child: Center(child: CircularProgressIndicator()),
-            ),
-          AsyncError() => Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(context.l10n.errorGeneric),
-            ),
-          AsyncData(:final value) when value.isEmpty => Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    context.l10n.listsEmpty,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color:
-                              Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      context.push('/lists');
-                    },
-                    child: Text(context.l10n.listsCreateTitle),
-                  ),
-                ],
+          const Divider(height: 1),
+          switch (listsState) {
+            AsyncLoading() => const Padding(
+                padding: EdgeInsets.all(32),
+                child: Center(child: CircularProgressIndicator()),
               ),
-            ),
-          AsyncData(:final value) => ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.sizeOf(context).height * 0.5,
+            AsyncError() => Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(context.l10n.errorGeneric),
               ),
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: value.length,
-                separatorBuilder: (_, _) => const Divider(height: 1),
-                itemBuilder: (context, index) {
-                  final list = value[index];
-                  final saving = _savingListId == list.id;
-                  return ListTile(
-                    leading: Icon(
-                      list.public
-                          ? Icons.bookmark_outlined
-                          : Icons.lock_outline,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+            AsyncData(:final value) when value.isEmpty => Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      context.l10n.listsEmpty,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
-                    title: Text(list.displayName),
-                    subtitle: Text(context.l10n.listItemCount(list.numItems)),
-                    trailing: saving
-                        ? const SizedBox.square(
-                            dimension: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : null,
-                    onTap: saving
-                        ? null
-                        : () => _saveTo(list.id, list.displayName),
-                  );
-                },
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        context.push('/lists');
+                      },
+                      child: Text(context.l10n.listsCreateTitle),
+                    ),
+                  ],
+                ),
               ),
-            ),
-        },
-        SizedBox(height: MediaQuery.paddingOf(context).bottom + 8),
-      ],
+            AsyncData(:final value) => ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height * 0.5,
+                ),
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: value.length,
+                  separatorBuilder: (_, _) => const Divider(height: 1),
+                  itemBuilder: (context, index) {
+                    final list = value[index];
+                    final saving = _savingListId == list.id;
+                    return ListTile(
+                      leading: Icon(
+                        list.public
+                            ? Icons.bookmark_outlined
+                            : Icons.lock_outline,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      title: Text(list.displayName),
+                      subtitle: Text(context.l10n.listItemCount(list.numItems)),
+                      trailing: saving
+                          ? const SizedBox.square(
+                              dimension: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : null,
+                      onTap: saving
+                          ? null
+                          : () => _saveTo(list.id, list.displayName),
+                    );
+                  },
+                ),
+              ),
+          },
+          const SizedBox(height: 8),
+        ],
+      ),
     );
   }
 }

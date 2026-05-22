@@ -24,7 +24,16 @@ class ShellScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      body: navigationShell,
+      body: MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          padding: MediaQuery.viewPaddingOf(context).copyWith(
+            bottom: isNavBarVisible
+                ? 0
+                : MediaQuery.viewPaddingOf(context).bottom,
+          ),
+        ),
+        child: navigationShell,
+      ),
       bottomNavigationBar: ClipRect(
         child: AnimatedSize(
           duration: const Duration(milliseconds: 250),
@@ -38,8 +47,13 @@ class ShellScreen extends ConsumerWidget {
                     onDestinationSelected: (index) {
                       if (index == navigationShell.currentIndex) {
                         switch (index) {
-                          case 0: ref.invalidate(homeFeedProvider, asReload: true);
-                          case 1: ref.invalidate(subscriptionsFeedProvider, asReload: true);
+                          case 0:
+                            ref.invalidate(homeFeedProvider, asReload: true);
+                          case 1:
+                            ref.invalidate(
+                              subscriptionsFeedProvider,
+                              asReload: true,
+                            );
                         }
                       }
                       ref.read(navBarVisibilityProvider.notifier).show();
