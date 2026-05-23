@@ -467,6 +467,12 @@
   "postMenuHide": "Hide post",
   "@postMenuHide": {},
 
+  "postMenuMuteUser": "Mute user",
+  "@postMenuMuteUser": {},
+
+  "postMenuMuteCommunity": "Mute community",
+  "@postMenuMuteCommunity": {},
+
   "postHiddenLabel": "Post hidden",
   "@postHiddenLabel": {},
 
@@ -623,5 +629,8 @@
   "@commentEditTitle": {},
 
   "imageViewerAltText": "Alt text",
-  "@imageViewerAltText": {}
+  "@imageViewerAltText": {},
+
+  "imageViewerSave": "Save image",
+  "@imageViewerSave": {}
 }

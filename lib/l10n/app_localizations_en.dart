@@ -521,6 +521,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get postMenuHide => 'Hide post';
 
   @override
+  String get postMenuMuteUser => 'Mute user';
+
+  @override
+  String get postMenuMuteCommunity => 'Mute community';
+
+  @override
   String get postHiddenLabel => 'Post hidden';
 
   @override
@@ -680,4 +686,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get imageViewerAltText => 'Alt text';
+
+  @override
+  String get imageViewerSave => 'Save image';
 }

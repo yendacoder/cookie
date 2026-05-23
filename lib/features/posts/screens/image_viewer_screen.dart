@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cookie/core/utils/image_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -35,6 +36,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
   // When any page is zoomed in, disable PageView swiping so pan and swipe
   // gestures don't conflict.
   bool _isAnyPageZoomed = false;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -44,6 +46,18 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
     _pageController = PageController(
       initialPage: count > 1 ? count * 100 + widget.initialIndex : 0,
     );
+  }
+
+  void _save(String url) async {
+    setState(() {
+      _isSaving = true;
+    });
+    await ImageDownloader().shareOrSave(url);
+    if (mounted) {
+      setState(() {
+        _isSaving = false;
+      });
+    }
   }
 
   @override
@@ -87,6 +101,18 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
                     );
                   }
                 : null,
+          ),
+          IconButton(
+            icon: _isSaving
+                ? SizedBox.square(
+                    dimension: 16,
+                    child: CircularProgressIndicator(strokeWidth: 1.5),
+                  )
+                : const Icon(Icons.save),
+            tooltip: context.l10n.imageViewerSave,
+            onPressed: _isSaving
+                ? null
+                : () => _save(widget.images[_currentPage].fullUrl),
           ),
         ],
       ),

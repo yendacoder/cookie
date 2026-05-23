@@ -874,6 +874,18 @@ abstract class AppLocalizations {
   /// **'Hide post'**
   String get postMenuHide;
 
+  /// No description provided for @postMenuMuteUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute user'**
+  String get postMenuMuteUser;
+
+  /// No description provided for @postMenuMuteCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute community'**
+  String get postMenuMuteCommunity;
+
   /// No description provided for @postHiddenLabel.
   ///
   /// In en, this message translates to:
@@ -1185,6 +1197,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Alt text'**
   String get imageViewerAltText;
+
+  /// No description provided for @imageViewerSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save image'**
+  String get imageViewerSave;
 }
 
 class _AppLocalizationsDelegate
