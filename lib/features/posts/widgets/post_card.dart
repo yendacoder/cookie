@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cookie/core/theme/app_theme.dart';
 import 'package:cookie/core/widgets/youtube_content.dart';
+import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,24 +16,39 @@ import '../../../core/widgets/avatar.dart';
 import '../../../models/discuit_image.dart';
 import '../../../models/post.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../communities/providers/community_mutes_provider.dart';
+import '../../user/providers/muted_users_list_provider.dart';
+import '../../user/providers/user_mutes_provider.dart';
 import '../../voting/providers/voting_provider.dart';
 import '../providers/hidden_posts_provider.dart';
 import '../screens/image_viewer_screen.dart';
 import 'post_image_carousel.dart';
 import 'post_save_to_list_sheet.dart';
 
-enum _PostMenuAction { saveToList, removeFromList, editPost, deletePost, hide }
+enum _PostMenuAction {
+  saveToList,
+  removeFromList,
+  editPost,
+  deletePost,
+  hide,
+  muteUser,
+  muteCommunity,
+}
 
 class PostCard extends ConsumerWidget {
   const PostCard({
     super.key,
     required this.post,
     required this.onTap,
+    this.checkMutedUser = true,
+    this.checkMutedCommunity = true,
     this.showCommunity = true,
     this.onRemoveFromList,
   });
 
   final Post post;
+  final bool checkMutedUser;
+  final bool checkMutedCommunity;
   final VoidCallback onTap;
 
   /// When false the community name and icon are hidden in the post header.
@@ -47,7 +63,17 @@ class PostCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isHidden = ref.watch(hiddenPostsProvider).contains(post.id);
-    if (isHidden) return _HiddenPlaceholder(post: post);
+    final isMutedCommunity =
+        checkMutedCommunity &&
+        ref
+            .watch(mutedCommunitiesListProvider)
+            .any((it) => it.id == post.communityId);
+    final isMutedUser =
+        checkMutedUser &&
+        ref.watch(mutedUsersListProvider).any((it) => it.id == post.author?.id);
+    if (isHidden || isMutedUser || isMutedCommunity) {
+      return _HiddenPlaceholder(post: post, withUndo: isHidden);
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -88,6 +114,8 @@ class PostCard extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(16, 0, 4, 12),
           child: _PostFooter(
             post: post,
+            muteUser: checkMutedUser,
+            muteCommunity: checkMutedCommunity,
             onDetailTap: onTap,
             onRemoveFromList: onRemoveFromList,
           ),
@@ -339,11 +367,15 @@ class _TextContent extends StatelessWidget {
 class _PostFooter extends ConsumerWidget {
   const _PostFooter({
     required this.post,
+    required this.muteUser,
+    required this.muteCommunity,
     required this.onDetailTap,
     this.onRemoveFromList,
   });
 
   final Post post;
+  final bool muteUser;
+  final bool muteCommunity;
   final VoidCallback onDetailTap;
   final VoidCallback? onRemoveFromList;
 
@@ -416,6 +448,8 @@ class _PostFooter extends ConsumerWidget {
         _PostMenuButton(
           post: post,
           muted: muted,
+          muteUser: muteUser,
+          muteCommunity: muteCommunity,
           onRemoveFromList: onRemoveFromList,
         ),
       ],
@@ -473,9 +507,10 @@ class _ImagePlaceholder extends StatelessWidget {
 // ── Hidden placeholder ────────────────────────────────────────────────────────
 
 class _HiddenPlaceholder extends ConsumerWidget {
-  const _HiddenPlaceholder({required this.post});
+  const _HiddenPlaceholder({required this.post, required this.withUndo});
 
   final Post post;
+  final bool withUndo;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -490,11 +525,12 @@ class _HiddenPlaceholder extends ConsumerWidget {
             ),
           ),
           const Spacer(),
-          TextButton(
-            onPressed: () =>
-                ref.read(hiddenPostsProvider.notifier).unhide(post.id),
-            child: Text(context.l10n.undoButton),
-          ),
+          if (withUndo)
+            TextButton(
+              onPressed: () =>
+                  ref.read(hiddenPostsProvider.notifier).unhide(post.id),
+              child: Text(context.l10n.undoButton),
+            ),
         ],
       ),
     );
@@ -507,11 +543,15 @@ class _PostMenuButton extends ConsumerWidget {
   const _PostMenuButton({
     required this.post,
     required this.muted,
+    required this.muteUser,
+    required this.muteCommunity,
     this.onRemoveFromList,
   });
 
   final Post post;
   final Color muted;
+  final bool muteUser;
+  final bool muteCommunity;
   final VoidCallback? onRemoveFromList;
 
   @override
@@ -548,6 +588,13 @@ class _PostMenuButton extends ConsumerWidget {
           ),
         ],
         PopupMenuItem(value: .hide, child: Text(l10n.postMenuHide)),
+        if (muteUser)
+          PopupMenuItem(value: .muteUser, child: Text(l10n.postMenuMuteUser)),
+        if (muteCommunity)
+          PopupMenuItem(
+            value: .muteCommunity,
+            child: Text(l10n.postMenuMuteCommunity),
+          ),
       ],
       onSelected: (action) async {
         switch (action) {
@@ -599,8 +646,16 @@ class _PostMenuButton extends ConsumerWidget {
                 ).showSnackBar(SnackBar(content: Text(e.toString())));
               }
             }
-          case _PostMenuAction.hide:
-            ref.read(hiddenPostsProvider.notifier).hide(post.id);
+          case .hide:
+            await ref.read(hiddenPostsProvider.notifier).hide(post.id);
+          case .muteCommunity:
+            await ref
+                .read(communityMutesProvider.notifier)
+                .mute(post.communityId, post.communityName);
+          case .muteUser:
+            await ref
+                .read(userMutesProvider.notifier)
+                .mute(post.author?.id ?? '', post.author?.username ?? '');
         }
       },
     );

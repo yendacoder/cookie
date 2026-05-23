@@ -347,7 +347,7 @@ class _MuteButton extends ConsumerWidget {
         if (muted) {
           notifier.unmute(community.id);
         } else {
-          notifier.mute(community.id);
+          notifier.mute(community.id, community.name);
         }
       },
       icon: Icon(
@@ -461,6 +461,7 @@ class _FeedSliver extends ConsumerWidget {
               return PostCard(
                 post: post,
                 showCommunity: false,
+                checkMutedCommunity: false,
                 onTap: () => context.push(
                   '/c/${post.communityName}/post/${post.publicId}',
                   extra: post,

@@ -216,8 +216,8 @@ class _UserHeader extends ConsumerWidget {
                   ),
                 ],
               ),
-              if (markdownToPlainText(user.aboutMe ?? '').trim() case final String about
-                  when about.isNotEmpty) ...[
+              if (markdownToPlainText(user.aboutMe ?? '').trim()
+                  case final String about when about.isNotEmpty) ...[
                 const SizedBox(height: 24),
                 MarkdownText(about, baseStyle: textTheme.bodyMedium),
               ],
@@ -273,7 +273,7 @@ class _UserMuteButton extends ConsumerWidget {
         if (muted) {
           notifier.unmute(user.id);
         } else {
-          notifier.mute(user.id);
+          notifier.mute(user.id, user.username);
         }
       },
       icon: Icon(
@@ -392,6 +392,7 @@ class _ActivitySliver extends ConsumerWidget {
                   UserFeedPost(:final post) => PostCard(
                     post: post,
                     showCommunity: true,
+                    checkMutedUser: false,
                     onTap: () => context.push(
                       '/c/${post.communityName}/post/${post.publicId}',
                       extra: post,

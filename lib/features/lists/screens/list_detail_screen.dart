@@ -17,11 +17,7 @@ import '../providers/user_lists_provider.dart';
 import '../widgets/list_form_sheet.dart';
 
 class ListDetailScreen extends ConsumerStatefulWidget {
-  const ListDetailScreen({
-    super.key,
-    required this.listId,
-    this.initialList,
-  });
+  const ListDetailScreen({super.key, required this.listId, this.initialList});
 
   final int listId;
   final UserList? initialList;
@@ -46,27 +42,30 @@ class _ListDetailScreenState extends ConsumerState<ListDetailScreen> {
       isScrollControlled: true,
       builder: (_) => ListFormSheet(
         initial: _list,
-        onSave: ({
-          required name,
-          required displayName,
-          description,
-          required public,
-        }) async {
-          final response = await ref.read(apiClientProvider).put(
-            'lists/${widget.listId}',
-            data: {
-              'name': name,
-              'displayName': displayName,
-              'description': description,
-              'public': public,
+        onSave:
+            ({
+              required name,
+              required displayName,
+              description,
+              required public,
+            }) async {
+              final response = await ref
+                  .read(apiClientProvider)
+                  .put(
+                    'lists/${widget.listId}',
+                    data: {
+                      'name': name,
+                      'displayName': displayName,
+                      'description': description,
+                      'public': public,
+                    },
+                  );
+              final updated = UserList.fromJson(
+                response.data as Map<String, dynamic>,
+              );
+              if (mounted) setState(() => _list = updated);
+              ref.read(userListsProvider.notifier).updateList(updated);
             },
-          );
-          final updated = UserList.fromJson(
-            response.data as Map<String, dynamic>,
-          );
-          if (mounted) setState(() => _list = updated);
-          ref.read(userListsProvider.notifier).updateList(updated);
-        },
       ),
     );
   }
@@ -87,10 +86,7 @@ class _ListDetailScreenState extends ConsumerState<ListDetailScreen> {
             ),
         ],
       ),
-      body: _ListDetailBody(
-        listId: widget.listId,
-        list: _list,
-      ),
+      body: _ListDetailBody(listId: widget.listId, list: _list),
     );
   }
 }
@@ -123,27 +119,26 @@ class _ListDetailBody extends ConsumerWidget {
                 child: Text(
                   desc,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
             ),
 
           switch (feedState) {
             AsyncLoading() => SliverToBoxAdapter(
-                child: PostFeedSkeleton(showCommunity: true),
-              ),
+              child: PostFeedSkeleton(showCommunity: true),
+            ),
             AsyncError(:final error) => SliverFillRemaining(
-                child: ErrorView(
-                  error: error,
-                  onRetry: () => ref.invalidate(listItemsProvider(listId)),
-                ),
+              child: ErrorView(
+                error: error,
+                onRetry: () => ref.invalidate(listItemsProvider(listId)),
               ),
+            ),
             AsyncData(:final value) => _ItemsSliver(
-                feed: value,
-                listId: listId,
-              ),
+              feed: value,
+              listId: listId,
+            ),
           },
 
           const SliverToBoxAdapter(child: SizedBox(height: 32)),
@@ -170,8 +165,8 @@ class _ItemsSliver extends ConsumerWidget {
           child: Text(
             context.l10n.listItemsEmpty,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       );
@@ -222,10 +217,7 @@ class _ItemTile extends ConsumerWidget {
                 const SizedBox(height: 4),
                 Text(
                   context.l10n.listItemRemove,
-                  style: TextStyle(
-                    color: colorScheme.onError,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: colorScheme.onError, fontSize: 12),
                 ),
               ],
             ),
@@ -244,6 +236,8 @@ class _ItemTile extends ConsumerWidget {
       return PostCard(
         post: post,
         showCommunity: true,
+        checkMutedCommunity: false,
+        checkMutedUser: false,
         onTap: () => context.push(
           '/c/${post.communityName}/post/${post.publicId}',
           extra: post,
@@ -301,13 +295,11 @@ class _CommentItem extends StatelessWidget {
             comment.deleted
                 ? Text(
                     context.l10n.postDetailCommentDeleted,
-                    style: textTheme.bodySmall
-                        ?.copyWith(fontStyle: FontStyle.italic),
+                    style: textTheme.bodySmall?.copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
                   )
-                : MarkdownText(
-                    comment.body,
-                    baseStyle: textTheme.bodySmall,
-                  ),
+                : MarkdownText(comment.body, baseStyle: textTheme.bodySmall),
           ],
         ),
       ),
@@ -349,8 +341,8 @@ class _ItemsFooter extends ConsumerWidget {
               child: Text(
                 context.l10n.feedLoadMoreError,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+                  color: Theme.of(context).colorScheme.error,
+                ),
               ),
             ),
             TextButton(
@@ -370,8 +362,8 @@ class _ItemsFooter extends ConsumerWidget {
           child: Text(
             context.l10n.feedEndOfContent,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       );

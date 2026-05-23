@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
 import '../../../models/discuit_image.dart';
@@ -15,16 +16,14 @@ class MutedUsersScreen extends ConsumerWidget {
     final mutes = ref.watch(mutedUsersListProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(context.l10n.mutedUsersScreenTitle),
-      ),
+      appBar: AppBar(title: Text(context.l10n.mutedUsersScreenTitle)),
       body: mutes.isEmpty
           ? Center(
               child: Text(
                 context.l10n.mutedUsersEmpty,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             )
           : ListView.separated(
@@ -38,9 +37,6 @@ class MutedUsersScreen extends ConsumerWidget {
                   username: user?.username,
                   proPicUrl: user?.proPic?.fullUrl,
                   onUnmute: () {
-                    ref
-                        .read(mutedUsersListProvider.notifier)
-                        .remove(mute.mutedUserId);
                     ref
                         .read(userMutesProvider.notifier)
                         .unmute(mute.mutedUserId);
@@ -70,6 +66,7 @@ class _MutedUserTile extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return ListTile(
+      onTap: () => context.push('/u/$username'),
       leading: CircleAvatar(
         backgroundColor: colorScheme.primaryContainer,
         child: proPicUrl != null

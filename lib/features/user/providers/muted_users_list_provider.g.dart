@@ -41,7 +41,7 @@ final class MutedUsersListProvider
   }
 }
 
-String _$mutedUsersListHash() => r'45aed5b91c3a9c40ce96c6c9804ca437046a6009';
+String _$mutedUsersListHash() => r'bbf8a8afcba4df312e72aa6efa5f26eaa9be896a';
 
 abstract class _$MutedUsersList extends $Notifier<List<InitialUserMute>> {
   List<InitialUserMute> build();

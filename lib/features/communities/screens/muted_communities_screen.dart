@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
 import '../../../models/discuit_image.dart';
@@ -73,6 +74,7 @@ class _MutedCommunityTile extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return ListTile(
+      onTap: () => context.push('/c/$name'),
       leading: CircleAvatar(
         backgroundColor: colorScheme.secondaryContainer,
         child: proPicUrl != null
@@ -90,7 +92,9 @@ class _MutedCommunityTile extends StatelessWidget {
               ),
       ),
       title: Text(name ?? communityId),
-      subtitle: noMembers != null
+      // members count can be set to 0 when the community record is
+      // temporary before server sync
+      subtitle: (noMembers ?? 0) > 0
           ? Text(context.l10n.membersLabel(noMembers!))
           : null,
       trailing: TextButton(
