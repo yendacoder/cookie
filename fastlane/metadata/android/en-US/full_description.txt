@@ -18,6 +18,7 @@ Features in the app that don't exist in the web version:
 - Full-size image viewer for image post types.
 - Color-coded nested comment indicators.
 - Preview text post formatting before posting.
+- Clickable user @mentions in text posts and comments.
 
 What is coming later™:
 - Indicators for new comments and posts since last visit.
