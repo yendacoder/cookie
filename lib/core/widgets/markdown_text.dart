@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import 'package:go_router/go_router.dart';
+import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
+
+class _MentionSyntax extends md.InlineSyntax {
+  // Matches @username — adjust the character class to your username rules
+  _MentionSyntax() : super(r'@([\w]+(?:\.[\w]+)*)');
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    final username = match[1]!;
+    final anchor = md.Element('a', [md.Text('@$username')])
+      ..attributes['href'] = 'mention://$username';
+    parser.addNode(anchor);
+    return true;
+  }
+}
 
 /// Renders markdown using project-wide typography and colour settings.
 ///
@@ -76,16 +92,22 @@ class MarkdownText extends StatelessWidget {
       data: data,
       selectable: selectable,
       styleSheet: styleSheet,
+      inlineSyntaxes: [_MentionSyntax()],
       onTapLink: (text, href, title) {
         if (href == null) return;
-        final uri = Uri.tryParse(href);
-        if (uri != null) {
-          if (uri.isAbsolute) {
-            launchUrl(uri, mode: LaunchMode.externalApplication);
-          } else {
-            final uri = Uri.tryParse('https://discuit.org/$href');
-            if (uri != null) {
+        if (href.startsWith('mention://')) {
+          final username = href.substring('mention://'.length);
+          context.push('/u/$username');
+        } else {
+          final uri = Uri.tryParse(href);
+          if (uri != null) {
+            if (uri.isAbsolute) {
               launchUrl(uri, mode: LaunchMode.externalApplication);
+            } else {
+              final uri = Uri.tryParse('https://discuit.org/$href');
+              if (uri != null) {
+                launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
             }
           }
         }
