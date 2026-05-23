@@ -115,8 +115,8 @@ class PostVotesNotifier extends _$PostVotesNotifier {
       state = {
         ...state,
         id: VoteState(
-          userVoted: updated.userVoted,
-          userVotedUp: updated.userVotedUp,
+          userVoted: updated.userVoted ?? false,
+          userVotedUp: updated.userVotedUp ?? false,
           upvotes: updated.upvotes,
           downvotes: updated.downvotes,
         ),
@@ -158,8 +158,8 @@ class CommentVotesNotifier extends _$CommentVotesNotifier {
       state = {
         ...state,
         id: VoteState(
-          userVoted: updated.userVoted,
-          userVotedUp: updated.userVotedUp,
+          userVoted: updated.userVoted ?? false,
+          userVotedUp: updated.userVotedUp ?? false,
           upvotes: updated.upvotes,
           downvotes: updated.downvotes,
         ),
