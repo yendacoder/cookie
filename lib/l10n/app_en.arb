@@ -604,6 +604,24 @@
   "postMenuDelete": "Delete post",
   "@postMenuDelete": {},
 
+  "postMenuReport": "Report",
+  "@postMenuReport": {},
+
+  "reportTitle": "Select reason",
+  "@reportTitle": {},
+
+  "reportReasons": "Breaks community rules\nCopyright violation\nSpam\nPornography",
+  "@reportReasons": {},
+
+  "postReportSuccess": "Post reported",
+  "@postReportSuccess": {},
+
+  "commentReportSuccess": "Comment reported",
+  "@commentReportSuccess": {},
+
+  "reportFail": "Report failed, please try again later.",
+  "@reportFail": {},
+
   "postDeleteTitle": "Delete post",
   "@postDeleteTitle": {},
 

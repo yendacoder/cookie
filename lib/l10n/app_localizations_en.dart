@@ -660,6 +660,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get postMenuDelete => 'Delete post';
 
   @override
+  String get postMenuReport => 'Report';
+
+  @override
+  String get reportTitle => 'Select reason';
+
+  @override
+  String get reportReasons =>
+      'Breaks community rules\nCopyright violation\nSpam\nPornography';
+
+  @override
+  String get postReportSuccess => 'Post reported';
+
+  @override
+  String get commentReportSuccess => 'Comment reported';
+
+  @override
+  String get reportFail => 'Report failed, please try again later.';
+
+  @override
   String get postDeleteTitle => 'Delete post';
 
   @override

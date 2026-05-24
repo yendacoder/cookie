@@ -168,6 +168,21 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
+  void _reportPost(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
+    final reason = await _showReportReasonDialog(context);
+    if (reason == null) return;
+    try {
+      await ref
+          .read(postDetailProvider(post.publicId).notifier)
+          .reportPost(reason);
+      messenger.showSnackBar(SnackBar(content: Text(l10n.postReportSuccess)));
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.reportFail)));
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = ref.watch(authProvider).value;
@@ -221,6 +236,7 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 ),
               ],
               PopupMenuItem(value: .hide, child: Text(l10n.postMenuHide)),
+              PopupMenuItem(value: .report, child: Text(l10n.postMenuReport)),
             ],
             onSelected: (action) async {
               switch (action) {
@@ -283,6 +299,8 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 case .hide:
                   ref.read(hiddenPostsProvider.notifier).hide(post.id);
                   context.pop();
+                case .report:
+                  _reportPost(context, ref);
               }
             },
           ),
@@ -291,7 +309,14 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
   }
 }
 
-enum _PostMenuAction { openInBrowser, saveToList, editPost, deletePost, hide }
+enum _PostMenuAction {
+  openInBrowser,
+  saveToList,
+  editPost,
+  deletePost,
+  hide,
+  report,
+}
 
 // ── Post body ─────────────────────────────────────────────────────────────────
 
@@ -1031,7 +1056,7 @@ class _CommentCard extends ConsumerWidget {
 
 // ── Comment menu button ───────────────────────────────────────────────────────
 
-enum _CommentMenuAction { edit, delete }
+enum _CommentMenuAction { edit, delete, report }
 
 class _CommentMenuButton extends ConsumerWidget {
   const _CommentMenuButton({
@@ -1044,13 +1069,67 @@ class _CommentMenuButton extends ConsumerWidget {
   final String postPublicId;
   final Color muted;
 
+  void _deleteComment(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.commentDeleteTitle),
+        content: Text(l10n.commentDeleteConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => ctx.pop(false),
+            child: Text(l10n.cancelButton),
+          ),
+          TextButton(
+            onPressed: () => ctx.pop(true),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(l10n.deleteButton),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+    try {
+      await ref
+          .read(postDetailProvider(postPublicId).notifier)
+          .deleteComment(comment.id);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
+  }
+
+  void _reportComment(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
+    final reason = await _showReportReasonDialog(context);
+    if (reason == null) return;
+    try {
+      await ref
+          .read(postDetailProvider(postPublicId).notifier)
+          .reportComment(comment.id, reason);
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.commentReportSuccess)),
+      );
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.reportFail)));
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = ref.watch(authProvider).value;
-    if (currentUser == null || currentUser.username != comment.username) {
+    if (currentUser == null) {
       return const SizedBox.shrink();
     }
 
+    final isOwn = currentUser.username == comment.username;
     final l10n = context.l10n;
 
     return PopupMenuButton<_CommentMenuAction>(
@@ -1065,14 +1144,17 @@ class _CommentMenuButton extends ConsumerWidget {
         tapTargetSize: .shrinkWrap,
       ),
       itemBuilder: (_) => [
-        PopupMenuItem(value: .edit, child: Text(l10n.commentMenuEdit)),
-        PopupMenuItem(
-          value: .delete,
-          child: Text(
-            l10n.commentMenuDelete,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
+        if (isOwn) ...[
+          PopupMenuItem(value: .edit, child: Text(l10n.commentMenuEdit)),
+          PopupMenuItem(
+            value: .delete,
+            child: Text(
+              l10n.commentMenuDelete,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
           ),
-        ),
+        ],
+        PopupMenuItem(value: .report, child: Text(l10n.postMenuReport)),
       ],
       onSelected: (action) async {
         switch (action) {
@@ -1086,38 +1168,9 @@ class _CommentMenuButton extends ConsumerWidget {
               ),
             );
           case .delete:
-            final confirmed = await showDialog<bool>(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                title: Text(l10n.commentDeleteTitle),
-                content: Text(l10n.commentDeleteConfirm),
-                actions: [
-                  TextButton(
-                    onPressed: () => ctx.pop(false),
-                    child: Text(l10n.cancelButton),
-                  ),
-                  TextButton(
-                    onPressed: () => ctx.pop(true),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.error,
-                    ),
-                    child: Text(l10n.deleteButton),
-                  ),
-                ],
-              ),
-            );
-            if (confirmed != true || !context.mounted) return;
-            try {
-              await ref
-                  .read(postDetailProvider(postPublicId).notifier)
-                  .deleteComment(comment.id);
-            } catch (e) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(e.toString())));
-              }
-            }
+            _deleteComment(context, ref);
+          case .report:
+            _reportComment(context, ref);
         }
       },
     );
@@ -1334,4 +1387,37 @@ Uri? _extractGifUri(String commentBody) {
     }
   }
   return null;
+}
+
+Future<int?> _showReportReasonDialog(BuildContext context) {
+  final reasons = context.l10n.reportReasons.split('\n');
+  return showDialog<int>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text(context.l10n.reportTitle),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: reasons.length,
+          itemBuilder: (_, i) {
+            return ListTile(
+              contentPadding: EdgeInsets.zero,
+              onTap: () => Navigator.pop(ctx, i + 1),
+              title: Text(
+                reasons[i],
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            );
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: Text(context.l10n.cancelButton),
+        ),
+      ],
+    ),
+  );
 }

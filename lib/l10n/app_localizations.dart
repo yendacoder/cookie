@@ -1144,6 +1144,42 @@ abstract class AppLocalizations {
   /// **'Delete post'**
   String get postMenuDelete;
 
+  /// No description provided for @postMenuReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get postMenuReport;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select reason'**
+  String get reportTitle;
+
+  /// No description provided for @reportReasons.
+  ///
+  /// In en, this message translates to:
+  /// **'Breaks community rules\nCopyright violation\nSpam\nPornography'**
+  String get reportReasons;
+
+  /// No description provided for @postReportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Post reported'**
+  String get postReportSuccess;
+
+  /// No description provided for @commentReportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment reported'**
+  String get commentReportSuccess;
+
+  /// No description provided for @reportFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Report failed, please try again later.'**
+  String get reportFail;
+
   /// No description provided for @postDeleteTitle.
   ///
   /// In en, this message translates to:
