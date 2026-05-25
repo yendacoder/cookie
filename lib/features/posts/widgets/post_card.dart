@@ -110,15 +110,12 @@ class PostCard extends ConsumerWidget {
           ),
         ),
         // Footer sits outside InkWell — no gesture conflict with vote taps.
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 4, 12),
-          child: _PostFooter(
-            post: post,
-            muteUser: checkMutedUser,
-            muteCommunity: checkMutedCommunity,
-            onDetailTap: onTap,
-            onRemoveFromList: onRemoveFromList,
-          ),
+        _PostFooter(
+          post: post,
+          muteUser: checkMutedUser,
+          muteCommunity: checkMutedCommunity,
+          onDetailTap: onTap,
+          onRemoveFromList: onRemoveFromList,
         ),
       ],
     );
@@ -403,56 +400,57 @@ class _PostFooter extends ConsumerWidget {
         ? AppTheme.kDownvoteColor
         : muted;
 
-    return Row(
-      children: [
-        _VoteButton(
-          icon: Icons.arrow_upward_rounded,
-          size: 16,
-          isActive: votedUp,
-          activeColor: AppTheme.kUpvoteColor,
-          showSpinner: showUpSpinner,
-          muted: muted,
-          onTap: () => ref.read(postVotesProvider.notifier).vote(post, true),
-        ),
-        const SizedBox(width: 6),
-        Text('$score', style: base?.copyWith(color: scoreColor)),
-        const SizedBox(width: 6),
-        _VoteButton(
-          icon: Icons.arrow_downward_rounded,
-          size: 16,
-          isActive: votedDown,
-          activeColor: AppTheme.kDownvoteColor,
-          showSpinner: showDownSpinner,
-          muted: muted,
-          onTap: () => ref.read(postVotesProvider.notifier).vote(post, false),
-        ),
-        Expanded(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: onDetailTap,
-            child: Row(
-              children: [
-                const SizedBox(width: 18),
-                Icon(Icons.mode_comment_outlined, size: 14, color: muted),
-                const SizedBox(width: 6),
-                Text('${post.noComments}', style: base),
-                const Spacer(),
-                Text(
-                  post.createdAt.toRelativeString(context.l10n),
-                  style: base,
-                ),
-              ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 0, 4, 12),
+      child: Row(
+        children: [
+          _VoteButton(
+            icon: Icons.arrow_upward_rounded,
+            size: 16,
+            isActive: votedUp,
+            activeColor: AppTheme.kUpvoteColor,
+            showSpinner: showUpSpinner,
+            muted: muted,
+            onTap: () => ref.read(postVotesProvider.notifier).vote(post, true),
+          ),
+          Text('$score', style: base?.copyWith(color: scoreColor)),
+          _VoteButton(
+            icon: Icons.arrow_downward_rounded,
+            size: 16,
+            isActive: votedDown,
+            activeColor: AppTheme.kDownvoteColor,
+            showSpinner: showDownSpinner,
+            muted: muted,
+            onTap: () => ref.read(postVotesProvider.notifier).vote(post, false),
+          ),
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: onDetailTap,
+              child: Row(
+                children: [
+                  const SizedBox(width: 12),
+                  Icon(Icons.mode_comment_outlined, size: 14, color: muted),
+                  const SizedBox(width: 6),
+                  Text('${post.noComments}', style: base),
+                  const Spacer(),
+                  Text(
+                    post.createdAt.toRelativeString(context.l10n),
+                    style: base,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        _PostMenuButton(
-          post: post,
-          muted: muted,
-          muteUser: muteUser,
-          muteCommunity: muteCommunity,
-          onRemoveFromList: onRemoveFromList,
-        ),
-      ],
+          _PostMenuButton(
+            post: post,
+            muted: muted,
+            muteUser: muteUser,
+            muteCommunity: muteCommunity,
+            onRemoveFromList: onRemoveFromList,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -481,12 +479,18 @@ class _VoteButton extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: showSpinner ? null : onTap,
-      child: showSpinner
-          ? SizedBox.square(
-              dimension: size,
-              child: CircularProgressIndicator(strokeWidth: 1.5, color: muted),
-            )
-          : Icon(icon, size: size, color: isActive ? activeColor : muted),
+      child: Padding(
+        padding: EdgeInsetsGeometry.all(6),
+        child: showSpinner
+            ? SizedBox.square(
+                dimension: size,
+                child: CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                  color: muted,
+                ),
+              )
+            : Icon(icon, size: size, color: isActive ? activeColor : muted),
+      ),
     );
   }
 }

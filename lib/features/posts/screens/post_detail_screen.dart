@@ -328,25 +328,27 @@ class _PostDetailBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: .stretch,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _PostMeta(post: post),
-              const SizedBox(height: 12),
-              SelectableText(
-                post.title,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 12),
-              _PostDetailContent(post: post),
-              const SizedBox(height: 16),
-              _PostDetailFooter(post: post),
-            ],
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: _PostMeta(post: post),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SelectableText(
+            post.title,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
+        ),
+        const SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: _PostDetailContent(post: post),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 16, 16, 10),
+          child: _PostDetailFooter(post: post),
         ),
         const Divider(),
       ],
@@ -571,9 +573,7 @@ class _PostDetailFooter extends ConsumerWidget {
           muted: muted,
           onTap: () => ref.read(postVotesProvider.notifier).vote(post, true),
         ),
-        const SizedBox(width: 6),
         Text('$score', style: style?.copyWith(color: scoreColor)),
-        const SizedBox(width: 6),
         _DetailVoteButton(
           icon: Icons.arrow_downward_rounded,
           isActive: votedDown,
@@ -583,10 +583,11 @@ class _PostDetailFooter extends ConsumerWidget {
           onTap: () => ref.read(postVotesProvider.notifier).vote(post, false),
         ),
         if (pct != null) ...[
-          const SizedBox(width: 12),
+          const SizedBox(width: 6),
           Text('$pct%', style: style),
+          const SizedBox(width: 6),
         ],
-        const SizedBox(width: 16),
+        const SizedBox(width: 10),
         Icon(Icons.mode_comment_outlined, size: 16, color: muted),
         const SizedBox(width: 6),
         Text(context.l10n.commentsLabel(post.noComments), style: style),
@@ -617,12 +618,18 @@ class _DetailVoteButton extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: showSpinner ? null : onTap,
-      child: showSpinner
-          ? SizedBox.square(
-              dimension: 16,
-              child: CircularProgressIndicator(strokeWidth: 1.5, color: muted),
-            )
-          : Icon(icon, size: 16, color: isActive ? activeColor : muted),
+      child: Padding(
+        padding: EdgeInsetsGeometry.all(6),
+        child: showSpinner
+            ? SizedBox.square(
+                dimension: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                  color: muted,
+                ),
+              )
+            : Icon(icon, size: 16, color: isActive ? activeColor : muted),
+      ),
     );
   }
 }
@@ -916,12 +923,12 @@ class _CommentCard extends ConsumerWidget {
                 ),
               ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 10, 16, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 10, 16, 0),
+                    child: Row(
                       children: [
                         GestureDetector(
                           onTap: () => context.push('/u/${comment.username}'),
@@ -963,8 +970,11 @@ class _CommentCard extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-                    isDeleted
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: isDeleted
                         ? Text(
                             context.l10n.postDetailCommentDeleted,
                             style: Theme.of(context).textTheme.bodySmall
@@ -977,74 +987,79 @@ class _CommentCard extends ConsumerWidget {
                             comment.body,
                             baseStyle: Theme.of(context).textTheme.bodySmall,
                           ),
-                    if (gifUri != null) CommentGif(gifUri: gifUri),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        _CommentVoteButton(
-                          icon: Icons.arrow_upward_rounded,
-                          isActive: votedUp,
-                          activeColor: AppTheme.kUpvoteColor,
-                          showSpinner: showUpSpinner,
-                          muted: muted,
-                          onTap: () => ref
-                              .read(commentVotesProvider.notifier)
-                              .vote(comment, true),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          '${upvotes - downvotes}',
-                          style: labelStyle?.copyWith(
-                            color: votedUp
-                                ? AppTheme.kUpvoteColor
-                                : votedDown
-                                ? AppTheme.kDownvoteColor
-                                : muted,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        _CommentVoteButton(
-                          icon: Icons.arrow_downward_rounded,
-                          isActive: votedDown,
-                          activeColor: AppTheme.kDownvoteColor,
-                          showSpinner: showDownSpinner,
-                          muted: muted,
-                          onTap: () => ref
-                              .read(commentVotesProvider.notifier)
-                              .vote(comment, false),
-                        ),
-                        if (comment.noReplies > 0) ...[
-                          const SizedBox(width: 8),
-                          Icon(
-                            Icons.subdirectory_arrow_right_rounded,
-                            size: 12,
-                            color: muted,
-                          ),
-                          const SizedBox(width: 2),
-                          Text('${comment.noReplies}', style: labelStyle),
-                        ],
-                        if (onReply != null && !isDeleted) ...[
-                          const SizedBox(width: 12),
-                          InkWell(
-                            onTap: onReply,
-                            child: Text(
-                              context.l10n.commentReplyButton,
-                              style: labelStyle,
-                            ),
-                          ),
-                        ],
-                        if (!isDeleted) ...[
-                          const SizedBox(width: 12),
-                          _CommentMenuButton(
-                            comment: comment,
-                            postPublicId: postPublicId,
-                            muted: muted,
-                          ),
-                        ],
-                      ],
+                  ),
+                  if (gifUri != null)
+                    Padding(
+                      padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+                      child: CommentGif(gifUri: gifUri),
                     ),
-                  ],
-                ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      SizedBox(width: 2),
+                      _CommentVoteButton(
+                        icon: Icons.arrow_upward_rounded,
+                        isActive: votedUp,
+                        activeColor: AppTheme.kUpvoteColor,
+                        showSpinner: showUpSpinner,
+                        muted: muted,
+                        onTap: () => ref
+                            .read(commentVotesProvider.notifier)
+                            .vote(comment, true),
+                      ),
+                      Text(
+                        '${upvotes - downvotes}',
+                        style: labelStyle?.copyWith(
+                          color: votedUp
+                              ? AppTheme.kUpvoteColor
+                              : votedDown
+                              ? AppTheme.kDownvoteColor
+                              : muted,
+                        ),
+                      ),
+                      _CommentVoteButton(
+                        icon: Icons.arrow_downward_rounded,
+                        isActive: votedDown,
+                        activeColor: AppTheme.kDownvoteColor,
+                        showSpinner: showDownSpinner,
+                        muted: muted,
+                        onTap: () => ref
+                            .read(commentVotesProvider.notifier)
+                            .vote(comment, false),
+                      ),
+                      if (comment.noReplies > 0) ...[
+                        const SizedBox(width: 2),
+                        Icon(
+                          Icons.subdirectory_arrow_right_rounded,
+                          size: 12,
+                          color: muted,
+                        ),
+                        const SizedBox(width: 2),
+                        Text('${comment.noReplies}', style: labelStyle),
+                        const SizedBox(width: 6),
+                      ],
+                      if (onReply != null && !isDeleted) ...[
+                        const SizedBox(width: 6),
+                        InkWell(
+                          onTap: onReply,
+                          child: Text(
+                            context.l10n.commentReplyButton,
+                            style: labelStyle,
+                          ),
+                        ),
+                      ],
+                      if (!isDeleted) ...[
+                        const SizedBox(width: 12),
+                        _CommentMenuButton(
+                          comment: comment,
+                          postPublicId: postPublicId,
+                          muted: muted,
+                        ),
+                      ],
+                    ],
+                  ),
+                  SizedBox(height: 4),
+                ],
               ),
             ),
           ],
@@ -1303,12 +1318,18 @@ class _CommentVoteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: showSpinner ? null : onTap,
-      child: showSpinner
-          ? SizedBox.square(
-              dimension: 16,
-              child: CircularProgressIndicator(strokeWidth: 1.5, color: muted),
-            )
-          : Icon(icon, size: 16, color: isActive ? activeColor : muted),
+      child: Padding(
+        padding: EdgeInsetsGeometry.all(6),
+        child: showSpinner
+            ? SizedBox.square(
+                dimension: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 1.5,
+                  color: muted,
+                ),
+              )
+            : Icon(icon, size: 16, color: isActive ? activeColor : muted),
+      ),
     );
   }
 }
