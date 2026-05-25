@@ -1,1 +1,0 @@
-Initial 2.0 release with all basic browsing and posting functionality implemented.

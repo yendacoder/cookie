@@ -79,10 +79,20 @@ jobs:
         with:
           name: 'apk'
 
+      - name: Prepare changelog
+        id: generate_changelog
+        uses: mikepenz/release-changelog-builder-action@v6
+        with:
+          mode: 'COMMIT'
+          configuration: 'changelog_config.json'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ inputs.VERSION_TAG }}
+          body: ${{ steps.generate_changelog.outputs.changelog }}
           files: cookie.apk
           prerelease: true
 

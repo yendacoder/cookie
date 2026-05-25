@@ -1,5 +1,0 @@
-- FEAT: download images option on the image viewer screen
-- FEAT: possibility to mute users and communities from a list
-- FEAT: user @mentions highlighted and tappable in text posts and comments
-- FIX: incorrect positioning of the lists bottom sheet when the main tab bar is hidden
-- FIX: removing a vote not updating the visual state correctly
