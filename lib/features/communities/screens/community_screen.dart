@@ -287,6 +287,10 @@ class _CommunityHeader extends ConsumerWidget {
               final mod = mods[i];
               return ListTile(
                 contentPadding: EdgeInsets.zero,
+                onTap: () {
+                  context.pop();
+                  context.push('/u/${mod.username}');
+                },
                 leading: CircleAvatar(
                   radius: 18,
                   backgroundColor: Theme.of(
@@ -315,6 +319,7 @@ class _CommunityHeader extends ConsumerWidget {
                   mod.username as String,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
+                trailing: const Icon(Icons.chevron_right),
               );
             },
           ),
@@ -322,7 +327,7 @@ class _CommunityHeader extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text(context.l10n.confirmButton),
+            child: Text(context.l10n.okayButton),
           ),
         ],
       ),
