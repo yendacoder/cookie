@@ -934,12 +934,6 @@ abstract class AppLocalizations {
   /// **'Profile saved'**
   String get profileSaved;
 
-  /// No description provided for @viewMyProfile.
-  ///
-  /// In en, this message translates to:
-  /// **'My profile'**
-  String get viewMyProfile;
-
   /// No description provided for @composeScreenTitle.
   ///
   /// In en, this message translates to:

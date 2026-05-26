@@ -553,9 +553,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSaved => 'Profile saved';
 
   @override
-  String get viewMyProfile => 'My profile';
-
-  @override
   String get composeScreenTitle => 'New post';
 
   @override

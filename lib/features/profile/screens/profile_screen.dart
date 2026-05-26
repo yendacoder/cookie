@@ -78,12 +78,6 @@ class ProfileScreen extends ConsumerWidget {
                     onTap: () => context.push('/lists'),
                   ),
                   ListTile(
-                    leading: const Icon(Icons.person_outline),
-                    title: Text(context.l10n.viewMyProfile),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.push('/u/${user.username}'),
-                  ),
-                  ListTile(
                     leading: Badge(
                       isLabelVisible: user.notificationsNewCount > 0,
                       child: const Icon(Icons.notifications_outlined),
@@ -212,6 +206,7 @@ class _UserTile extends StatelessWidget {
               ),
             ),
             Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
+            SizedBox(width: 8),
           ],
         ),
       ),
