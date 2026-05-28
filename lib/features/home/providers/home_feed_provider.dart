@@ -88,7 +88,6 @@ class HomeFeedNotifier extends _$HomeFeedNotifier {
     final response = await ref.read(apiClientProvider).get(
       'posts',
       queryParameters: {
-        'feed': 'all',
         'sort': sort.apiValue,
         'next': ?cursor,
       },

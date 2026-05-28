@@ -50,7 +50,7 @@ class SubscriptionsFeedNotifier extends _$SubscriptionsFeedNotifier {
         .get(
           'posts',
           queryParameters: {
-            'feed': 'subscriptions',
+            'feed': 'home',
             'sort': sort.apiValue,
             'next': ?cursor,
           },
