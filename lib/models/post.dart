@@ -40,6 +40,7 @@ abstract class Post with _$Post {
     required DateTime createdAt,
     DateTime? editedAt,
     required DateTime lastActivityAt,
+    DateTime? lastVisitAt,
     required bool deleted,
     DateTime? deletedAt,
     String? deletedBy,

@@ -50,7 +50,7 @@ final class CommunityDetailProvider
   }
 }
 
-String _$communityDetailHash() => r'612feb7a0378b0e973b8a8588d62f7bb022c750f';
+String _$communityDetailHash() => r'30b88e531721648ee85934df246d200c612f59e3';
 
 final class CommunityDetailFamily extends $Family
     with

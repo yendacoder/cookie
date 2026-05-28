@@ -41,7 +41,7 @@ final class PostVotesNotifierProvider
   }
 }
 
-String _$postVotesNotifierHash() => r'9ef266342fc122ffe19e0b4db9cd93b3c7c8dffb';
+String _$postVotesNotifierHash() => r'af06a3cfa9e899fac410523267f8fbf9fd308ed8';
 
 abstract class _$PostVotesNotifier extends $Notifier<Map<String, VoteState>> {
   Map<String, VoteState> build();
@@ -95,7 +95,7 @@ final class CommentVotesNotifierProvider
 }
 
 String _$commentVotesNotifierHash() =>
-    r'a822bee47e07fb644ed2945170a273535d44a202';
+    r'bb8b8b74ee019dd56d10b8828e4239584e02fddd';
 
 abstract class _$CommentVotesNotifier
     extends $Notifier<Map<String, VoteState>> {

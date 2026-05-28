@@ -41,7 +41,7 @@ final class UserMutesProvider
   }
 }
 
-String _$userMutesHash() => r'17c95fce43dec2395e914e0c9e22499ea64d62d3';
+String _$userMutesHash() => r'2183a4b60db358e01508efe06eb98b3c16a958d6';
 
 abstract class _$UserMutes extends $Notifier<Set<String>> {
   Set<String> build();

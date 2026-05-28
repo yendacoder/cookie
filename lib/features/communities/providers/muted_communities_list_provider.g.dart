@@ -43,7 +43,7 @@ final class MutedCommunitiesListProvider
 }
 
 String _$mutedCommunitiesListHash() =>
-    r'82e74cc98bde16670b7e6ba9b0026a121cecdb6e';
+    r'c9e64d1d36286269f50b08b0bffd113c031642cb';
 
 abstract class _$MutedCommunitiesList
     extends $Notifier<List<InitialCommunityMute>> {

@@ -41,7 +41,7 @@ final class CommunityMutesProvider
   }
 }
 
-String _$communityMutesHash() => r'22bef97b4337aee7b0f5c2709fe5066bc1a9e100';
+String _$communityMutesHash() => r'e989d1b6b38b8a90db142aac5c602f356ae6a0a8';
 
 abstract class _$CommunityMutes extends $Notifier<Set<String>> {
   Set<String> build();

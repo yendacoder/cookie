@@ -70,6 +70,10 @@ _Post _$PostFromJson(
       'lastActivityAt',
       (v) => DateTime.parse(v as String),
     ),
+    lastVisitAt: $checkedConvert(
+      'lastVisitAt',
+      (v) => v == null ? null : DateTime.parse(v as String),
+    ),
     deleted: $checkedConvert('deleted', (v) => v as bool),
     deletedAt: $checkedConvert(
       'deletedAt',
@@ -133,6 +137,7 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'createdAt': instance.createdAt.toIso8601String(),
   'editedAt': instance.editedAt?.toIso8601String(),
   'lastActivityAt': instance.lastActivityAt.toIso8601String(),
+  'lastVisitAt': instance.lastVisitAt?.toIso8601String(),
   'deleted': instance.deleted,
   'deletedAt': instance.deletedAt?.toIso8601String(),
   'deletedBy': instance.deletedBy,

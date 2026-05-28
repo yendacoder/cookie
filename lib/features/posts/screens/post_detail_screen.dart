@@ -851,6 +851,7 @@ class _CommentsSectionSliver extends StatelessWidget {
                 comment: comment,
                 isOp: comment.author?.id == post.author?.id,
                 postPublicId: post.publicId,
+                lastPostVisit: post.lastVisitAt,
                 onReply: onReplyTap != null ? () => onReplyTap!(comment) : null,
               );
             },
@@ -875,12 +876,14 @@ class _CommentCard extends ConsumerWidget {
     required this.comment,
     required this.isOp,
     required this.postPublicId,
+    required this.lastPostVisit,
     this.onReply,
   });
 
   final Comment comment;
   final bool isOp;
   final String postPublicId;
+  final DateTime? lastPostVisit;
   final VoidCallback? onReply;
 
   @override
@@ -968,6 +971,17 @@ class _CommentCard extends ConsumerWidget {
                           comment.createdAt.toRelativeString(context.l10n),
                           style: labelStyle,
                         ),
+                        if (lastPostVisit != null &&
+                            comment.createdAt.isAfter(lastPostVisit!))
+                          Container(
+                            width: 6,
+                            height: 6,
+                            margin: EdgeInsets.only(left: 8),
+                            decoration: BoxDecoration(
+                              color: AppTheme.kUpvoteColor,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
                       ],
                     ),
                   ),
