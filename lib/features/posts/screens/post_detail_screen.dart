@@ -90,25 +90,30 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   Widget build(BuildContext context) {
     final detailState = ref.watch(postDetailProvider(widget.postId));
     final post = detailState.value ?? widget.initialPost;
-    final isAuthenticated = ref.watch(authProvider).value != null;
+    final isAuthenticated = ref
+        .watch(authProvider)
+        .value != null;
 
     if (post == null) {
       return Scaffold(
         appBar: AppBar(),
         body: detailState.when(
-          loading: () => SingleChildScrollView(
-            child: Column(
-              children: const [
-                PostFeedSkeleton(count: 1, showCommunity: false),
-                Divider(),
-                CommentListSkeleton(count: 4),
-              ],
-            ),
-          ),
-          error: (error, _) => ErrorView(
-            error: error,
-            onRetry: () => ref.invalidate(postDetailProvider(widget.postId)),
-          ),
+          loading: () =>
+              SingleChildScrollView(
+                child: Column(
+                  children: const [
+                    PostFeedSkeleton(count: 1, showCommunity: false),
+                    Divider(),
+                    CommentListSkeleton(count: 4),
+                  ],
+                ),
+              ),
+          error: (error, _) =>
+              ErrorView(
+                error: error,
+                onRetry: () =>
+                    ref.invalidate(postDetailProvider(widget.postId)),
+              ),
           data: (_) => const SizedBox.shrink(),
         ),
       );
@@ -134,9 +139,9 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                         ref.invalidate(postDetailProvider(widget.postId)),
                     onReplyTap: isAuthenticated
                         ? (comment) {
-                            setState(() => _replyToComment = comment);
-                            _focusNode.requestFocus();
-                          }
+                      setState(() => _replyToComment = comment);
+                      _focusNode.requestFocus();
+                    }
                         : null,
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 32)),
@@ -186,7 +191,9 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentUser = ref.watch(authProvider).value;
+    final currentUser = ref
+        .watch(authProvider)
+        .value;
     final isAuthenticated = currentUser != null;
     final isAuthor = currentUser?.username == post.username;
     final l10n = context.l10n;
@@ -206,7 +213,10 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
           Flexible(
             child: Text(
               post.communityName,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .titleMedium,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -215,7 +225,8 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
       actions: [
         if (isAuthenticated)
           PopupMenuButton<_PostMenuAction>(
-            itemBuilder: (_) => [
+            itemBuilder: (_) =>
+            [
               PopupMenuItem(
                 value: .openInBrowser,
                 child: Text(l10n.postMenuOpenInBrowser),
@@ -231,7 +242,10 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   child: Text(
                     l10n.postMenuDelete,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                      color: Theme
+                          .of(context)
+                          .colorScheme
+                          .error,
                     ),
                   ),
                 ),
@@ -260,33 +274,38 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 case .deletePost:
                   final confirmed = await showDialog<bool>(
                     context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: Text(l10n.postDeleteTitle),
-                      content: Text(l10n.postDeleteConfirm),
-                      actions: [
-                        TextButton(
-                          onPressed: () => ctx.pop(false),
-                          child: Text(l10n.cancelButton),
+                    builder: (ctx) =>
+                        AlertDialog(
+                          title: Text(l10n.postDeleteTitle),
+                          content: Text(l10n.postDeleteConfirm),
+                          actions: [
+                            TextButton(
+                              onPressed: () => ctx.pop(false),
+                              child: Text(l10n.cancelButton),
+                            ),
+                            TextButton(
+                              onPressed: () => ctx.pop(true),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Theme
+                                    .of(
+                                  context,
+                                )
+                                    .colorScheme
+                                    .error,
+                              ),
+                              child: Text(l10n.deleteButton),
+                            ),
+                          ],
                         ),
-                        TextButton(
-                          onPressed: () => ctx.pop(true),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Theme.of(
-                              context,
-                            ).colorScheme.error,
-                          ),
-                          child: Text(l10n.deleteButton),
-                        ),
-                      ],
-                    ),
                   );
                   if (confirmed != true || !context.mounted) return;
                   try {
                     await ref
                         .read(apiClientProvider)
                         .delete(
-                          'posts/${post.publicId}?deleteAs=normal&deleteContent=true',
-                        );
+                      'posts/${post
+                          .publicId}?deleteAs=normal&deleteContent=true',
+                    );
                     if (context.mounted) context.pop();
                   } catch (e) {
                     if (context.mounted) {
@@ -337,7 +356,10 @@ class _PostDetailBody extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SelectableText(
             post.title,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme
+                .of(context)
+                .textTheme
+                .titleLarge,
           ),
         ),
         const SizedBox(height: 12),
@@ -359,10 +381,17 @@ class _PostMeta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final muted = Theme.of(context).colorScheme.onSurfaceVariant;
-    final style = Theme.of(
+    final muted = Theme
+        .of(context)
+        .colorScheme
+        .onSurfaceVariant;
+    final style = Theme
+        .of(
       context,
-    ).textTheme.labelSmall?.copyWith(color: muted);
+    )
+        .textTheme
+        .labelSmall
+        ?.copyWith(color: muted);
 
     return GestureDetector(
       onTap: () => context.push('/u/${post.username}'),
@@ -406,9 +435,10 @@ class _DetailImage extends StatefulWidget {
 
   final Post post;
 
-  static double _containerRatio(List<DiscuitImage> images) => images
-      .map((img) => img.width / img.height)
-      .reduce((a, b) => a < b ? a : b);
+  static double _containerRatio(List<DiscuitImage> images) =>
+      images
+          .map((img) => img.width / img.height)
+          .reduce((a, b) => a < b ? a : b);
 
   @override
   State<_DetailImage> createState() => _DetailImageState();
@@ -427,10 +457,11 @@ class _DetailImageState extends State<_DetailImage> {
       child: PostImageCarousel(
         images: images,
         fit: BoxFit.contain,
-        onTap: (index) => context.push(
-          '/image-viewer',
-          extra: ImageViewerArgs(images: images, initialIndex: index),
-        ),
+        onTap: (index) =>
+            context.push(
+              '/image-viewer',
+              extra: ImageViewerArgs(images: images, initialIndex: index),
+            ),
       ),
     );
 
@@ -451,7 +482,9 @@ class _DetailLink extends StatelessWidget {
     final link = post.link;
     if (link == null) return const SizedBox.shrink();
 
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     final youtubeId = YoutubePlayerController.convertUrlToId(link.url);
 
     return Column(
@@ -459,10 +492,11 @@ class _DetailLink extends StatelessWidget {
       children: [
         InkWell(
           borderRadius: BorderRadius.circular(6),
-          onTap: () => launchUrl(
-            Uri.parse(link.url),
-            mode: LaunchMode.externalApplication,
-          ),
+          onTap: () =>
+              launchUrl(
+                Uri.parse(link.url),
+                mode: LaunchMode.externalApplication,
+              ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
@@ -477,9 +511,13 @@ class _DetailLink extends StatelessWidget {
                 Flexible(
                   child: Text(
                     link.url,
-                    style: Theme.of(
+                    style: Theme
+                        .of(
                       context,
-                    ).textTheme.bodySmall?.copyWith(color: colorScheme.primary),
+                    )
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: colorScheme.primary),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -489,24 +527,25 @@ class _DetailLink extends StatelessWidget {
         ),
         if (youtubeId != null)
           YoutubeContent(videoId: youtubeId)
-        else if (link.image != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: CachedNetworkImage(
-                  imageUrl: link.image!.fullUrl,
-                  fit: BoxFit.cover,
-                  placeholder: (_, _) =>
-                      Container(color: colorScheme.surfaceContainerHighest),
-                  errorWidget: (_, _, _) =>
-                      Container(color: colorScheme.surfaceContainerHighest),
+        else
+          if (link.image != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: CachedNetworkImage(
+                    imageUrl: link.image!.fullUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (_, _) =>
+                        Container(color: colorScheme.surfaceContainerHighest),
+                    errorWidget: (_, _, _) =>
+                        Container(color: colorScheme.surfaceContainerHighest),
+                  ),
                 ),
               ),
             ),
-          ),
       ],
     );
   }
@@ -538,11 +577,17 @@ class _PostDetailFooter extends ConsumerWidget {
     final upvotes = vs?.upvotes ?? post.upvotes;
     final downvotes = vs?.downvotes ?? post.downvotes;
 
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     final muted = colorScheme.onSurfaceVariant;
-    final style = Theme.of(
+    final style = Theme
+        .of(
       context,
-    ).textTheme.labelMedium?.copyWith(color: muted);
+    )
+        .textTheme
+        .labelMedium
+        ?.copyWith(color: muted);
 
     final votedUp = userVoted == true && userVotedUp == true;
     final votedDown = userVoted == true && userVotedUp == false;
@@ -591,9 +636,10 @@ class _PostDetailFooter extends ConsumerWidget {
           Text(context.l10n.commentsLabel(post.noComments), style: style),
           const Spacer(),
           InkWell(
-            onTap: () => SharePlus.instance.share(
-              ShareParams(uri: post.postWebUrl, subject: post.title),
-            ),
+            onTap: () =>
+                SharePlus.instance.share(
+                  ShareParams(uri: post.postWebUrl, subject: post.title),
+                ),
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Row(
@@ -638,12 +684,12 @@ class _DetailVoteButton extends StatelessWidget {
         padding: EdgeInsetsGeometry.all(6),
         child: showSpinner
             ? SizedBox.square(
-                dimension: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 1.5,
-                  color: muted,
-                ),
-              )
+          dimension: 16,
+          child: CircularProgressIndicator(
+            strokeWidth: 1.5,
+            color: muted,
+          ),
+        )
             : Icon(icon, size: 16, color: isActive ? activeColor : muted),
       ),
     );
@@ -671,12 +717,16 @@ class _CommentComposer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
 
     return AnimatedBuilder(
       animation: controller,
       builder: (context, _) {
-        final canSend = controller.text.trim().isNotEmpty && !isSubmitting;
+        final canSend = controller.text
+            .trim()
+            .isNotEmpty && !isSubmitting;
 
         return Material(
           color: colorScheme.surface,
@@ -728,20 +778,20 @@ class _CommentComposer extends StatelessWidget {
                         child: IconButton(
                           icon: isSubmitting
                               ? SizedBox.square(
-                                  dimension: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: colorScheme.primary,
-                                  ),
-                                )
+                            dimension: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: colorScheme.primary,
+                            ),
+                          )
                               : Icon(
-                                  Icons.send_rounded,
-                                  color: canSend
-                                      ? colorScheme.primary
-                                      : colorScheme.onSurface.withValues(
-                                          alpha: 0.38,
-                                        ),
-                                ),
+                            Icons.send_rounded,
+                            color: canSend
+                                ? colorScheme.primary
+                                : colorScheme.onSurface.withValues(
+                              alpha: 0.38,
+                            ),
+                          ),
                           onPressed: canSend ? onSubmit : null,
                         ),
                       ),
@@ -765,7 +815,9 @@ class _ReplyChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     final muted = colorScheme.onSurfaceVariant;
 
     return ColoredBox(
@@ -779,9 +831,13 @@ class _ReplyChip extends StatelessWidget {
             Expanded(
               child: Text(
                 context.l10n.commentReplyingTo(username),
-                style: Theme.of(
+                style: Theme
+                    .of(
                   context,
-                ).textTheme.labelSmall?.copyWith(color: muted),
+                )
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(color: muted),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -826,52 +882,63 @@ class _CommentsSectionSliver extends StatelessWidget {
       slivers: [
         if (isLoading)
           const SliverToBoxAdapter(child: CommentListSkeleton())
-        else if (hasError)
-          SliverToBoxAdapter(
-            child: ErrorView(error: detailState.error!, onRetry: onRetry),
-          )
-        else if (comments == null || comments.isEmpty)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Center(
-                child: Text(
-                  context.l10n.postDetailNoComments,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ),
-          )
         else
-          SliverList.separated(
-            itemCount:
-                comments.length +
-                (detailState.value?.commentsNext != null ? 1 : 0),
-            separatorBuilder: (_, _) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              if (index == comments.length) {
-                return Padding(
-                  padding: const EdgeInsets.all(16),
+          if (hasError)
+            SliverToBoxAdapter(
+              child: ErrorView(error: detailState.error!, onRetry: onRetry),
+            )
+          else
+            if (comments == null || comments.isEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
                   child: Center(
-                    child: OutlinedButton(
-                      onPressed: onRetry,
-                      child: Text(context.l10n.postDetailLoadMoreComments),
+                    child: Text(
+                      context.l10n.postDetailNoComments,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .onSurfaceVariant,
+                      ),
                     ),
                   ),
-                );
-              }
-              final comment = comments[index];
-              return _CommentCard(
-                comment: comment,
-                isOp: comment.author?.id == post.author?.id,
-                postPublicId: post.publicId,
-                lastPostVisit: post.lastVisitAt,
-                onReply: onReplyTap != null ? () => onReplyTap!(comment) : null,
-              );
-            },
-          ),
+                ),
+              )
+            else
+              SliverList.separated(
+                itemCount:
+                comments.length +
+                    (detailState.value?.commentsNext != null ? 1 : 0),
+                separatorBuilder: (_, _) => const Divider(height: 1),
+                itemBuilder: (context, index) {
+                  if (index == comments.length) {
+                    return Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Center(
+                        child: OutlinedButton(
+                          onPressed: onRetry,
+                          child: Text(context.l10n.postDetailLoadMoreComments),
+                        ),
+                      ),
+                    );
+                  }
+                  final comment = comments[index];
+                  return _CommentCard(
+                    comment: comment,
+                    isOp: comment.author?.id == post.author?.id,
+                    postPublicId: post.publicId,
+                    lastPostVisit: post.lastVisitAt,
+                    onReply: onReplyTap != null
+                        ? () => onReplyTap!(comment)
+                        : null,
+                  );
+                },
+              ),
       ],
     );
   }
@@ -907,11 +974,17 @@ class _CommentCard extends ConsumerWidget {
     final depth = comment.depth.clamp(0, 4);
     final indent = depth * 8.0;
     final lineColor = _depthLineColors[comment.depth % _depthLineColors.length];
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     final muted = colorScheme.onSurfaceVariant;
-    final labelStyle = Theme.of(
+    final labelStyle = Theme
+        .of(
       context,
-    ).textTheme.labelSmall?.copyWith(color: muted);
+    )
+        .textTheme
+        .labelSmall
+        ?.copyWith(color: muted);
     final isDeleted = comment.deleted || comment.body.isEmpty;
 
     final vs = ref.watch(commentVotesProvider)[comment.id];
@@ -987,8 +1060,18 @@ class _CommentCard extends ConsumerWidget {
                           comment.createdAt.toRelativeString(context.l10n),
                           style: labelStyle,
                         ),
+                        // Most often own comments will be marked as new
+                        // since the last call to API to fetch the post
+                        // would be before the comment created time.
+                        // It's weird to mark own comments as new, so
+                        // they are excluded explicitly
                         if (lastPostVisit != null &&
-                            comment.createdAt.isAfter(lastPostVisit!))
+                            comment.createdAt.isAfter(lastPostVisit!) &&
+                            ref
+                                .watch(authProvider)
+                                .value
+                                ?.username !=
+                                comment.author?.username)
                           Container(
                             width: 6,
                             height: 6,
@@ -1006,17 +1089,23 @@ class _CommentCard extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: isDeleted
                         ? Text(
-                            context.l10n.postDetailCommentDeleted,
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(
-                                  color: muted,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                          )
+                      context.l10n.postDetailCommentDeleted,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(
+                        color: muted,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    )
                         : MarkdownText(
-                            comment.body,
-                            baseStyle: Theme.of(context).textTheme.bodySmall,
-                          ),
+                      comment.body,
+                      baseStyle: Theme
+                          .of(context)
+                          .textTheme
+                          .bodySmall,
+                    ),
                   ),
                   if (gifUri != null)
                     Padding(
@@ -1033,9 +1122,10 @@ class _CommentCard extends ConsumerWidget {
                         activeColor: AppTheme.kUpvoteColor,
                         showSpinner: showUpSpinner,
                         muted: muted,
-                        onTap: () => ref
-                            .read(commentVotesProvider.notifier)
-                            .vote(comment, true),
+                        onTap: () =>
+                            ref
+                                .read(commentVotesProvider.notifier)
+                                .vote(comment, true),
                       ),
                       Text(
                         '${upvotes - downvotes}',
@@ -1053,9 +1143,10 @@ class _CommentCard extends ConsumerWidget {
                         activeColor: AppTheme.kDownvoteColor,
                         showSpinner: showDownSpinner,
                         muted: muted,
-                        onTap: () => ref
-                            .read(commentVotesProvider.notifier)
-                            .vote(comment, false),
+                        onTap: () =>
+                            ref
+                                .read(commentVotesProvider.notifier)
+                                .vote(comment, false),
                       ),
                       if (comment.noReplies > 0) ...[
                         const SizedBox(width: 2),
@@ -1118,23 +1209,27 @@ class _CommentMenuButton extends ConsumerWidget {
     final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.commentDeleteTitle),
-        content: Text(l10n.commentDeleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => ctx.pop(false),
-            child: Text(l10n.cancelButton),
+      builder: (ctx) =>
+          AlertDialog(
+            title: Text(l10n.commentDeleteTitle),
+            content: Text(l10n.commentDeleteConfirm),
+            actions: [
+              TextButton(
+                onPressed: () => ctx.pop(false),
+                child: Text(l10n.cancelButton),
+              ),
+              TextButton(
+                onPressed: () => ctx.pop(true),
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme
+                      .of(context)
+                      .colorScheme
+                      .error,
+                ),
+                child: Text(l10n.deleteButton),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => ctx.pop(true),
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: Text(l10n.deleteButton),
-          ),
-        ],
-      ),
     );
     if (confirmed != true || !context.mounted) return;
     try {
@@ -1169,7 +1264,9 @@ class _CommentMenuButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentUser = ref.watch(authProvider).value;
+    final currentUser = ref
+        .watch(authProvider)
+        .value;
     if (currentUser == null) {
       return const SizedBox.shrink();
     }
@@ -1188,14 +1285,18 @@ class _CommentMenuButton extends ConsumerWidget {
         iconSize: 14,
         tapTargetSize: .shrinkWrap,
       ),
-      itemBuilder: (_) => [
+      itemBuilder: (_) =>
+      [
         if (isOwn) ...[
           PopupMenuItem(value: .edit, child: Text(l10n.commentMenuEdit)),
           PopupMenuItem(
             value: .delete,
             child: Text(
               l10n.commentMenuDelete,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+              style: TextStyle(color: Theme
+                  .of(context)
+                  .colorScheme
+                  .error),
             ),
           ),
         ],
@@ -1207,10 +1308,11 @@ class _CommentMenuButton extends ConsumerWidget {
             showModalBottomSheet<void>(
               context: context,
               isScrollControlled: true,
-              builder: (_) => _CommentEditSheet(
-                comment: comment,
-                postPublicId: postPublicId,
-              ),
+              builder: (_) =>
+                  _CommentEditSheet(
+                    comment: comment,
+                    postPublicId: postPublicId,
+                  ),
             );
           case .delete:
             _deleteComment(context, ref);
@@ -1277,7 +1379,9 @@ class _CommentEditSheetState extends ConsumerState<_CommentEditSheet> {
     final l10n = context.l10n;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      padding: EdgeInsets.only(bottom: MediaQuery
+          .viewInsetsOf(context)
+          .bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1286,7 +1390,10 @@ class _CommentEditSheetState extends ConsumerState<_CommentEditSheet> {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
               l10n.commentEditTitle,
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .titleMedium,
             ),
           ),
           const Divider(height: 1),
@@ -1310,9 +1417,9 @@ class _CommentEditSheetState extends ConsumerState<_CommentEditSheet> {
                   onPressed: _saving ? null : _submit,
                   child: _saving
                       ? const SizedBox.square(
-                          dimension: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
+                    dimension: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
                       : Text(l10n.saveButton),
                 ),
                 const SizedBox(height: 8),
@@ -1352,12 +1459,12 @@ class _CommentVoteButton extends StatelessWidget {
         padding: EdgeInsetsGeometry.all(6),
         child: showSpinner
             ? SizedBox.square(
-                dimension: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 1.5,
-                  color: muted,
-                ),
-              )
+          dimension: 16,
+          child: CircularProgressIndicator(
+            strokeWidth: 1.5,
+            color: muted,
+          ),
+        )
             : Icon(icon, size: 16, color: isActive ? activeColor : muted),
       ),
     );
@@ -1383,7 +1490,7 @@ List<Comment> _orderComments(List<Comment> comments) {
 
   final maxDepth = comments.fold<int>(
     0,
-    (prev, c) => c.depth > prev ? c.depth : prev,
+        (prev, c) => c.depth > prev ? c.depth : prev,
   );
 
   for (var depth = 0; depth <= maxDepth; depth++) {
@@ -1399,7 +1506,7 @@ List<Comment> _orderComments(List<Comment> comments) {
           continue;
         }
         final insertAfter = result.lastIndexWhere(
-          (c) => c.id == ancestor || c.ancestors?.last == ancestor,
+              (c) => c.id == ancestor || c.ancestors?.last == ancestor,
         );
         result.insert(insertAfter + 1, comment);
       }
@@ -1444,31 +1551,35 @@ Future<int?> _showReportReasonDialog(BuildContext context) {
   final reasons = context.l10n.reportReasons.split('\n');
   return showDialog<int>(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: Text(context.l10n.reportTitle),
-      content: SizedBox(
-        width: double.maxFinite,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: reasons.length,
-          itemBuilder: (_, i) {
-            return ListTile(
-              contentPadding: EdgeInsets.zero,
-              onTap: () => Navigator.pop(ctx, i + 1),
-              title: Text(
-                reasons[i],
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            );
-          },
+    builder: (ctx) =>
+        AlertDialog(
+          title: Text(context.l10n.reportTitle),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: reasons.length,
+              itemBuilder: (_, i) {
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  onTap: () => Navigator.pop(ctx, i + 1),
+                  title: Text(
+                    reasons[i],
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodyMedium,
+                  ),
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(context.l10n.cancelButton),
+            ),
+          ],
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(ctx),
-          child: Text(context.l10n.cancelButton),
-        ),
-      ],
-    ),
   );
 }
