@@ -387,6 +387,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commentSubmitError => 'Failed to post comment';
 
   @override
+  String commentsNewCountTooltip(int count, int total) {
+    return '$count new comments since last open; $total total comments';
+  }
+
+  @override
   String get mutedUsersScreenTitle => 'Muted Users';
 
   @override

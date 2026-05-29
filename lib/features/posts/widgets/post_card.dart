@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cookie/core/theme/app_theme.dart';
 import 'package:cookie/core/widgets/youtube_content.dart';
 import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
+import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -433,6 +434,21 @@ class _PostFooter extends ConsumerWidget {
                   Icon(Icons.mode_comment_outlined, size: 14, color: muted),
                   const SizedBox(width: 6),
                   Text('${post.noComments}', style: base),
+                  if (!ref.watch(readNewCommentsProvider).contains(post.id) &&
+                      (post.newComments ?? 0) > 0)
+                    Tooltip(
+                      message: context.l10n.commentsNewCountTooltip(
+                        post.newComments!,
+                        post.noComments,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Text(
+                          '+${post.newComments}',
+                          style: base!.copyWith(color: AppTheme.kUpvoteColor),
+                        ),
+                      ),
+                    ),
                   const Spacer(),
                   Text(
                     post.createdAt.toRelativeString(context.l10n),

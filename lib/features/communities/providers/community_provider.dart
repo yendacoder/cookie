@@ -5,6 +5,7 @@ import '../../../core/api/api_client.dart';
 import '../../../models/community.dart';
 import '../../../models/post.dart';
 import '../../home/providers/home_feed_provider.dart';
+import '../../posts/providers/read_new_comments_notifier.dart';
 
 part 'community_provider.g.dart';
 
@@ -124,6 +125,7 @@ class CommunityFeedNotifier extends _$CommunityFeedNotifier {
         .where((p) => _seenIds.add(p.id))
         .toList();
 
+    ref.read(readNewCommentsProvider.notifier).clear();
     return PostFeedState(posts: posts, nextCursor: data['next']?.toString());
   }
 

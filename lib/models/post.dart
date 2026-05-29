@@ -56,6 +56,7 @@ abstract class Post with _$Post {
     Community? community,
     User? author,
     List<Comment>? comments,
+    int? newComments,
     String? commentsNext,
   }) = _Post;
 

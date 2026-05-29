@@ -652,6 +652,12 @@ abstract class AppLocalizations {
   /// **'Failed to post comment'**
   String get commentSubmitError;
 
+  /// No description provided for @commentsNewCountTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} new comments since last open; {total} total comments'**
+  String commentsNewCountTooltip(int count, int total);
+
   /// No description provided for @mutedUsersScreenTitle.
   ///
   /// In en, this message translates to:

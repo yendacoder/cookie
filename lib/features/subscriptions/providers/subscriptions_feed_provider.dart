@@ -5,6 +5,7 @@ import '../../../core/api/api_client.dart';
 import '../../../models/post.dart';
 import '../../home/providers/home_feed_provider.dart'
     show PostFeedState, PostSort;
+import '../../posts/providers/read_new_comments_notifier.dart';
 
 part 'subscriptions_feed_provider.g.dart';
 
@@ -61,11 +62,12 @@ class SubscriptionsFeedNotifier extends _$SubscriptionsFeedNotifier {
         .map(Post.fromJson)
         .where((p) => _seenIds.add(p.id))
         .toList();
-    final res = PostFeedState(
+
+    ref.read(readNewCommentsProvider.notifier).clear();
+    return PostFeedState(
       posts: posts,
       nextCursor: data['next']?.toString(),
     );
-    return res;
   }
 
   Future<void> loadMore() async {

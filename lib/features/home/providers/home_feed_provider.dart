@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/api/api_client.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../models/post.dart';
+import '../../posts/providers/read_new_comments_notifier.dart';
 
 part 'home_feed_provider.g.dart';
 
@@ -21,15 +22,15 @@ enum PostSort {
   String get apiValue => name;
 
   String label(AppLocalizations l10n) => switch (this) {
-        hot => l10n.sortHot,
-        latest => l10n.sortNew,
-        activity => l10n.sortActivity,
-        day => l10n.sortDay,
-        week => l10n.sortWeek,
-        month => l10n.sortMonth,
-        year => l10n.sortYear,
-        all => l10n.sortAll,
-      };
+    hot => l10n.sortHot,
+    latest => l10n.sortNew,
+    activity => l10n.sortActivity,
+    day => l10n.sortDay,
+    week => l10n.sortWeek,
+    month => l10n.sortMonth,
+    year => l10n.sortYear,
+    all => l10n.sortAll,
+  };
 }
 
 class PostFeedState {
@@ -85,24 +86,20 @@ class HomeFeedNotifier extends _$HomeFeedNotifier {
     required PostSort sort,
     required String? cursor,
   }) async {
-    final response = await ref.read(apiClientProvider).get(
-      'posts',
-      queryParameters: {
-        'sort': sort.apiValue,
-        'next': ?cursor,
-      },
-    );
+    final response = await ref
+        .read(apiClientProvider)
+        .get(
+          'posts',
+          queryParameters: {'sort': sort.apiValue, 'next': ?cursor},
+        );
     final data = response.data as Map<String, dynamic>;
     final posts = (data['posts'] as List)
         .cast<Map<String, dynamic>>()
         .map(Post.fromJson)
         .where((p) => _seenIds.add(p.id))
         .toList();
-
-    return PostFeedState(
-      posts: posts,
-      nextCursor: data['next']?.toString(),
-    );
+    ref.read(readNewCommentsProvider.notifier).clear();
+    return PostFeedState(posts: posts, nextCursor: data['next']?.toString());
   }
 
   Future<void> loadMore() async {
@@ -111,32 +108,40 @@ class HomeFeedNotifier extends _$HomeFeedNotifier {
 
     final cursorToLoad = current.nextCursor!;
 
-    state = AsyncData(PostFeedState(
-      posts: current.posts,
-      nextCursor: cursorToLoad,
-      isLoadingMore: true,
-    ));
+    state = AsyncData(
+      PostFeedState(
+        posts: current.posts,
+        nextCursor: cursorToLoad,
+        isLoadingMore: true,
+      ),
+    );
 
     try {
       final sort = ref.read(homeFeedSortProvider).value ?? PostSort.hot;
       final page = await _loadPage(sort: sort, cursor: cursorToLoad);
 
       // Guard against stale completions after a sort change resets the state.
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.nextCursor == cursorToLoad) {
-        state = AsyncData(PostFeedState(
-          posts: [...value.posts, ...page.posts],
-          nextCursor: page.nextCursor,
-        ));
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.nextCursor == cursorToLoad) {
+        state = AsyncData(
+          PostFeedState(
+            posts: [...value.posts, ...page.posts],
+            nextCursor: page.nextCursor,
+          ),
+        );
       }
     } catch (e) {
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.nextCursor == cursorToLoad) {
-        state = AsyncData(PostFeedState(
-          posts: value.posts,
-          nextCursor: value.nextCursor,
-          loadMoreError: e,
-        ));
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.nextCursor == cursorToLoad) {
+        state = AsyncData(
+          PostFeedState(
+            posts: value.posts,
+            nextCursor: value.nextCursor,
+            loadMoreError: e,
+          ),
+        );
       }
     }
   }

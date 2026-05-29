@@ -1,3 +1,4 @@
+import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/api/api_client.dart';
@@ -13,7 +14,10 @@ class PostDetailNotifier extends _$PostDetailNotifier {
     final response = await ref
         .read(apiClientProvider)
         .get('posts/$publicId', queryParameters: {'fetchCommunity': 'true'});
-    return Post.fromJson(response.data as Map<String, dynamic>);
+
+    final res = Post.fromJson(response.data as Map<String, dynamic>);
+    ref.read(readNewCommentsProvider.notifier).setRead(res.id);
+    return res;
   }
 
   Future<void> editComment(String commentId, String body) async {

@@ -102,6 +102,7 @@ _Post _$PostFromJson(
           ?.map((e) => Comment.fromJson(e as Map<String, dynamic>))
           .toList(),
     ),
+    newComments: $checkedConvert('newComments', (v) => (v as num?)?.toInt()),
     commentsNext: $checkedConvert('commentsNext', (v) => v as String?),
   );
   return val;
@@ -152,6 +153,7 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'community': instance.community,
   'author': instance.author,
   'comments': instance.comments,
+  'newComments': instance.newComments,
   'commentsNext': instance.commentsNext,
 };
 

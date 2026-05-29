@@ -1,654 +1,564 @@
 {
   "@@locale": "en",
-
   "appTitle": "Cookie",
-  "@appTitle": {"description": "The name of the application"},
-
+  "@appTitle": {
+    "description": "The name of the application"
+  },
   "appNameVersion": "Cookie for Discuit, version {version}",
   "@appNameVersion": {
     "placeholders": {
-      "version": {"type": "String"}
+      "version": {
+        "type": "String"
+      }
     }
   },
-
   "navHome": "Home",
-  "@navHome": {"description": "Home navigation tab label"},
-
+  "@navHome": {
+    "description": "Home navigation tab label"
+  },
   "navSubscriptions": "Subscriptions",
-  "@navSubscriptions": {"description": "Subscriptions navigation tab label"},
-
+  "@navSubscriptions": {
+    "description": "Subscriptions navigation tab label"
+  },
   "navCommunities": "Communities",
-  "@navCommunities": {"description": "Communities navigation tab label"},
-
+  "@navCommunities": {
+    "description": "Communities navigation tab label"
+  },
   "navLists": "Lists",
-  "@navLists": {"description": "Lists navigation tab label"},
-
+  "@navLists": {
+    "description": "Lists navigation tab label"
+  },
   "navProfile": "Profile",
-  "@navProfile": {"description": "Profile navigation tab label"},
-
+  "@navProfile": {
+    "description": "Profile navigation tab label"
+  },
   "loginTitle": "Sign in",
   "@loginTitle": {},
-
   "navPost": "Post",
   "@navPost": {},
-
   "loginUsernameLabel": "Username",
   "@loginUsernameLabel": {},
-
   "loginPasswordLabel": "Password",
   "@loginPasswordLabel": {},
-
   "loginButton": "Sign in",
   "@loginButton": {},
-
   "loginRegisterPrompt": "Don't have an account?",
   "@loginRegisterPrompt": {},
-
   "loginRegisterLink": "Register on the web",
   "@loginRegisterLink": {},
-
   "loginErrorInvalid": "Invalid username or password",
   "@loginErrorInvalid": {},
-
   "loginErrorSuspended": "This account has been suspended",
   "@loginErrorSuspended": {},
-
   "errorGeneric": "Something went wrong",
   "@errorGeneric": {},
-
   "errorNetworkTitle": "Network error",
   "@errorNetworkTitle": {},
-
   "errorNetworkBody": "Unable to reach the server. Check your internet connection.",
   "@errorNetworkBody": {},
-
   "errorParseTitle": "Parsing error",
   "@errorParseTitle": {},
-
   "errorParseBody": "The server returned an unexpected response. The app may need to be updated.",
   "@errorParseBody": {},
-
   "errorParseField": "Field: {field}",
   "@errorParseField": {
     "placeholders": {
-      "field": {"type": "String"}
+      "field": {
+        "type": "String"
+      }
     }
   },
-
   "errorUnknownTitle": "Unexpected error",
   "@errorUnknownTitle": {},
-
   "errorUnknownBody": "An unexpected error occurred.",
   "@errorUnknownBody": {},
-
   "errorAuthRequired": "Sign in to continue",
   "@errorAuthRequired": {},
-
   "errorAuthRequiredBody": "You need to be signed in to view this section.",
   "@errorAuthRequiredBody": {},
-
   "sortHot": "Hot",
   "@sortHot": {},
-
   "sortNew": "New",
   "@sortNew": {},
-
   "sortTop": "Top",
   "@sortTop": {},
-
   "sortActivity": "Activity",
   "@sortActivity": {},
-
   "sortDay": "Today",
   "@sortDay": {},
-
   "sortWeek": "This week",
   "@sortWeek": {},
-
   "sortMonth": "This month",
   "@sortMonth": {},
-
   "sortYear": "This year",
   "@sortYear": {},
-
   "sortAll": "All time",
   "@sortAll": {},
-
   "loadingLabel": "Loading…",
   "@loadingLabel": {},
-
   "timeJustNow": "just now",
   "@timeJustNow": {},
-
   "timeMinutesAgo": "{count, plural, =1{1 min ago} other{{count} min ago}}",
   "@timeMinutesAgo": {
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "timeHoursAgo": "{count, plural, =1{1 hr ago} other{{count} hr ago}}",
   "@timeHoursAgo": {
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "timeDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
   "@timeDaysAgo": {
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "timeWeeksAgo": "{count, plural, =1{1 week ago} other{{count} weeks ago}}",
   "@timeWeeksAgo": {
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "timeMonthsAgo": "{count, plural, =1{1 month ago} other{{count} months ago}}",
   "@timeMonthsAgo": {
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "timeYearsAgo": "{count, plural, =1{1 year ago} other{{count} years ago}}",
   "@timeYearsAgo": {
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "postDetailNoComments": "No comments yet",
   "@postDetailNoComments": {},
-
   "postDetailLoadMoreComments": "Load more comments",
   "@postDetailLoadMoreComments": {},
-
   "postDetailCommentDeleted": "[deleted]",
   "@postDetailCommentDeleted": {},
-
   "feedEndOfContent": "You're all caught up",
   "@feedEndOfContent": {},
-
   "feedLoadMoreError": "Couldn't load more posts",
   "@feedLoadMoreError": {},
-
   "retryButton": "Try again",
   "@retryButton": {},
-
   "signInButton": "Sign in",
   "@signInButton": {},
-
   "upvote": "Upvote",
   "@upvote": {},
-
   "downvote": "Downvote",
   "@downvote": {},
-
   "share": "Share",
   "@share": {},
-
   "commentsLabel": "{count, plural, =0{No comments} =1{1 comment} other{{count} comments}}",
   "@commentsLabel": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "pointsLabel": "{count, plural, =1{1 point} other{{count} points}}",
   "@pointsLabel": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "membersLabel": "{count, plural, =1{1 member} other{{count} members}}",
   "@membersLabel": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "joinButton": "Join",
   "@joinButton": {},
-
   "leaveButton": "Leave",
   "@leaveButton": {},
-
   "communityRulesTitle": "Rules",
   "@communityRulesTitle": {},
-
   "communityNoRules": "This community has no rules.",
   "@communityNoRules": {},
-
   "communityModeratorsTitle": "Moderators",
   "@communityModeratorsTitle": {},
-
   "communityNoModerators": "No moderators listed.",
   "@communityNoModerators": {},
-
   "communityCreatePost": "New post",
   "@communityCreatePost": {},
-
   "postBy": "by {username}",
   "@postBy": {
     "placeholders": {
-      "username": {"type": "String"}
+      "username": {
+        "type": "String"
+      }
     }
   },
-
   "inCommunity": "in {community}",
   "@inCommunity": {
     "placeholders": {
-      "community": {"type": "String"}
+      "community": {
+        "type": "String"
+      }
     }
   },
-
   "homeScreenTitle": "Home",
   "@homeScreenTitle": {},
-
   "subscriptionsScreenTitle": "Subscriptions",
   "@subscriptionsScreenTitle": {},
-
   "communitiesScreenTitle": "Communities",
   "@communitiesScreenTitle": {},
-
   "listsScreenTitle": "Lists",
   "@listsScreenTitle": {},
-
   "profileScreenTitle": "Profile",
   "@profileScreenTitle": {},
-
   "logoutButton": "Sign out",
   "@logoutButton": {},
-
   "logoutConfirmTitle": "Sign out?",
   "@logoutConfirmTitle": {},
-
   "logoutConfirmBody": "You will need to sign in again to access your account.",
   "@logoutConfirmBody": {},
-
   "cancelButton": "Cancel",
   "@cancelButton": {},
-
   "okayButton": "OK",
   "@okayButton": {},
-
   "confirmButton": "Confirm",
   "@confirmButton": {},
-
   "communityMute": "Mute",
   "@communityMute": {},
-
   "communityUnmute": "Unmute",
   "@communityUnmute": {},
-
   "userTabAll": "All",
   "@userTabAll": {},
-
   "userTabPosts": "Posts",
   "@userTabPosts": {},
-
   "userTabComments": "Comments",
   "@userTabComments": {},
-
   "userMute": "Mute",
   "@userMute": {},
-
   "userUnmute": "Unmute",
   "@userUnmute": {},
-
   "userJoined": "Joined {date}",
   "@userJoined": {
     "placeholders": {
-      "date": {"type": "String"}
+      "date": {
+        "type": "String"
+      }
     }
   },
-
   "userAdmin": "Admin",
   "@userAdmin": {},
-
   "postsLabel": "{count, plural, =1{1 post} other{{count} posts}}",
   "@postsLabel": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
-
   "commentHint": "Add a comment…",
   "@commentHint": {},
-
   "commentPostReference": "on {post}",
   "@commentPostReference": {
     "placeholders": {
-      "post": {"type": "String"}
+      "post": {
+        "type": "String"
+      }
     }
   },
-
   "commentReplyingTo": "Replying to @{username}",
   "@commentReplyingTo": {
     "placeholders": {
-      "username": {"type": "String"}
+      "username": {
+        "type": "String"
+      }
     }
   },
-
   "commentReplyButton": "Reply",
   "@commentReplyButton": {},
-
   "commentOP": "OP",
   "@commentOP": {},
-
   "commentAdmin": "Admin",
   "@commentAdmin": {},
-
   "commentSubmitError": "Failed to post comment",
   "@commentSubmitError": {},
-
+  "commentsNewCountTooltip": "{count} new comments since last open; {total} total comments",
+  "@commentsNewCountTooltip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "mutedUsersScreenTitle": "Muted Users",
   "@mutedUsersScreenTitle": {},
-
   "mutedCommunitiesScreenTitle": "Muted Communities",
   "@mutedCommunitiesScreenTitle": {},
-
   "mutedUsersEmpty": "No muted users",
   "@mutedUsersEmpty": {},
-
   "mutedCommunitiesEmpty": "No muted communities",
   "@mutedCommunitiesEmpty": {},
-
   "notificationsScreenTitle": "Notifications",
   "@notificationsScreenTitle": {},
-
   "notificationsEmpty": "No notifications yet",
   "@notificationsEmpty": {},
-
   "notifNewComment": "{author} commented on your post",
   "@notifNewComment": {
-    "placeholders": {"author": {"type": "String"}}
+    "placeholders": {
+      "author": {
+        "type": "String"
+      }
+    }
   },
-
   "notifNewCommentMultiple": "{author} and {others} others commented on your post",
   "@notifNewCommentMultiple": {
     "placeholders": {
-      "author": {"type": "String"},
-      "others": {"type": "int"}
+      "author": {
+        "type": "String"
+      },
+      "others": {
+        "type": "int"
+      }
     }
   },
-
   "notifCommentReply": "{author} replied to your comment",
   "@notifCommentReply": {
-    "placeholders": {"author": {"type": "String"}}
+    "placeholders": {
+      "author": {
+        "type": "String"
+      }
+    }
   },
-
   "notifNewVotesSingle": "1 new upvote on your {targetType}",
   "@notifNewVotesSingle": {
-    "placeholders": {"targetType": {"type": "String"}}
+    "placeholders": {
+      "targetType": {
+        "type": "String"
+      }
+    }
   },
-
   "notifNewVotesMultiple": "{count} new upvotes on your {targetType}",
   "@notifNewVotesMultiple": {
     "placeholders": {
-      "count": {"type": "int"},
-      "targetType": {"type": "String"}
+      "count": {
+        "type": "int"
+      },
+      "targetType": {
+        "type": "String"
+      }
     }
   },
-
   "notifDeletedPost": "Your post was removed by moderators",
   "@notifDeletedPost": {},
-
   "notifModAdd": "You were added as a moderator in {community}",
   "@notifModAdd": {
-    "placeholders": {"community": {"type": "String"}}
+    "placeholders": {
+      "community": {
+        "type": "String"
+      }
+    }
   },
-
   "notifNewBadge": "You earned a new badge",
   "@notifNewBadge": {},
-
   "communitiesTabAll": "All",
   "@communitiesTabAll": {},
-
   "communitiesTabJoined": "Joined",
   "@communitiesTabJoined": {},
-
   "communitiesSearchHint": "Search",
   "@communitiesSearchHint": {},
-
   "communitiesEmpty": "No communities found",
   "@communitiesEmpty": {},
-
   "communitiesJoinedEmpty": "You haven't joined any communities yet",
   "@communitiesJoinedEmpty": {},
-
   "communitiesSelectTitle": "Select Community",
   "@communitiesSelectTitle": {},
-
   "listsEmpty": "You haven't created any lists yet",
   "@listsEmpty": {},
-
   "listsCreateTitle": "New list",
   "@listsCreateTitle": {},
-
   "listsEditTitle": "Edit list",
   "@listsEditTitle": {},
-
   "listsDisplayNameLabel": "Name",
   "@listsDisplayNameLabel": {},
-
   "listsDisplayNameRequired": "Name is required",
   "@listsDisplayNameRequired": {},
-
   "listsDescriptionLabel": "Description (optional)",
   "@listsDescriptionLabel": {},
-
   "listsPublicToggle": "Public",
   "@listsPublicToggle": {},
-
   "listsDeleteTooltip": "Delete list",
   "@listsDeleteTooltip": {},
-
   "listsDeleteConfirmTitle": "Delete list?",
   "@listsDeleteConfirmTitle": {},
-
   "listsDeleteConfirmBody": "All saved items will be permanently lost.",
   "@listsDeleteConfirmBody": {},
-
   "listItemCount": "{count, plural, =0{Empty} =1{1 item} other{{count} items}}",
   "@listItemCount": {
-    "placeholders": {"count": {"type": "int"}}
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "listItemsEmpty": "No saved items",
   "@listItemsEmpty": {},
-
   "listItemRemove": "Remove",
   "@listItemRemove": {},
-
   "saveButton": "Save",
   "@saveButton": {},
-
   "postMenuOpenInBrowser": "Open in browser",
   "@postMenuOpenInBrowser": {},
-
   "postMenuSaveToList": "Save to list",
   "@postMenuSaveToList": {},
-
   "postMenuRemoveFromList": "Remove from list",
   "@postMenuRemoveFromList": {},
-
   "postMenuHide": "Hide post",
   "@postMenuHide": {},
-
   "postMenuMuteUser": "Mute user",
   "@postMenuMuteUser": {},
-
   "postMenuMuteCommunity": "Mute community",
   "@postMenuMuteCommunity": {},
-
   "postHiddenLabel": "Post hidden",
   "@postHiddenLabel": {},
-
   "undoButton": "Undo",
   "@undoButton": {},
-
   "postSavedToList": "Saved to \"{name}\"",
   "@postSavedToList": {
-    "placeholders": {"name": {"type": "String"}}
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
-
   "editProfileTitle": "Edit Profile",
   "@editProfileTitle": {},
-
   "editProfilePictureLabel": "Change photo",
   "@editProfilePictureLabel": {},
-
   "editProfileDescriptionLabel": "About me",
   "@editProfileDescriptionLabel": {},
-
   "editProfileDescriptionHint": "Tell people about yourself",
   "@editProfileDescriptionHint": {},
-
   "profileSaved": "Profile saved",
   "@profileSaved": {},
-
   "composeScreenTitle": "New post",
   "@composeScreenTitle": {},
-
   "composeCommunityHint": "Select a community",
   "@composeCommunityHint": {},
-
   "composeTitleHint": "Post Title",
   "@composeTitleHint": {},
-
   "composeTypeText": "Text / Link",
   "@composeTypeText": {},
-
   "composeTypeImage": "Image",
   "@composeTypeImage": {},
-
   "composeBodyHint": "Text or link (optional)",
   "@composeBodyHint": {},
-
   "composeUrlDetected": "Will be posted as a link",
   "@composeUrlDetected": {},
-
   "composeAddImage": "Add image",
   "@composeAddImage": {},
-
   "composeAltTextHint": "Alt text (optional)",
   "@composeAltTextHint": {},
-
   "composeSubmitButton": "Post",
   "@composeSubmitButton": {},
-
   "composePreviewTitle": "Preview",
   "@composePreviewTitle": {},
-
   "composePreviewEmpty": "Nothing to preview yet",
   "@composePreviewEmpty": {},
-
   "composeMarkdownGuideTitle": "Markdown guide",
   "@composeMarkdownGuideTitle": {},
-
   "deleteButton": "Delete",
   "@deleteButton": {},
-
   "communityModTools": "Mod tools",
   "@communityModTools": {},
-
   "modToolsScreenTitle": "Mod tools",
   "@modToolsScreenTitle": {},
-
   "modToolsTabSettings": "Settings",
   "@modToolsTabSettings": {},
-
   "modToolsTabRules": "Rules",
   "@modToolsTabRules": {},
-
   "modToolsDescriptionLabel": "Description",
   "@modToolsDescriptionLabel": {},
-
   "modToolsDescriptionHint": "Community description (supports markdown)",
   "@modToolsDescriptionHint": {},
-
   "modToolsNsfwLabel": "NSFW community",
   "@modToolsNsfwLabel": {},
-
   "modToolsPostingRestrictedLabel": "Restrict posting to moderators",
   "@modToolsPostingRestrictedLabel": {},
-
   "modToolsSaved": "Settings saved",
   "@modToolsSaved": {},
-
   "modToolsAddRule": "Add rule",
   "@modToolsAddRule": {},
-
   "modToolsRuleLabel": "Rule",
   "@modToolsRuleLabel": {},
-
   "modToolsRuleRequired": "Rule text is required",
   "@modToolsRuleRequired": {},
-
   "modToolsRuleDescriptionLabel": "Description (optional)",
   "@modToolsRuleDescriptionLabel": {},
-
   "modToolsNewRuleTitle": "New rule",
   "@modToolsNewRuleTitle": {},
-
   "modToolsEditRuleTitle": "Edit rule",
   "@modToolsEditRuleTitle": {},
-
   "modToolsNoRules": "No rules yet",
   "@modToolsNoRules": {},
-
   "modToolsDeleteRuleTitle": "Delete rule",
   "@modToolsDeleteRuleTitle": {},
-
   "modToolsDeleteRuleConfirm": "This rule will be permanently deleted.",
   "@modToolsDeleteRuleConfirm": {},
-
   "postMenuEdit": "Edit post",
   "@postMenuEdit": {},
-
   "postMenuDelete": "Delete post",
   "@postMenuDelete": {},
-
   "postMenuReport": "Report",
   "@postMenuReport": {},
-
   "reportTitle": "Select reason",
   "@reportTitle": {},
-
   "reportReasons": "Breaks community rules\nCopyright violation\nSpam\nPornography",
   "@reportReasons": {},
-
   "postReportSuccess": "Post reported",
   "@postReportSuccess": {},
-
   "commentReportSuccess": "Comment reported",
   "@commentReportSuccess": {},
-
   "reportFail": "Report failed, please try again later.",
   "@reportFail": {},
-
   "postDeleteTitle": "Delete post",
   "@postDeleteTitle": {},
-
   "postDeleteConfirm": "This will permanently delete your post.",
   "@postDeleteConfirm": {},
-
   "composeEditTitle": "Edit post",
   "@composeEditTitle": {},
-
   "commentMenuEdit": "Edit comment",
   "@commentMenuEdit": {},
-
   "commentMenuDelete": "Delete comment",
   "@commentMenuDelete": {},
-
   "commentDeleteTitle": "Delete comment",
   "@commentDeleteTitle": {},
-
   "commentDeleteConfirm": "This will permanently delete your comment.",
   "@commentDeleteConfirm": {},
-
   "commentEditTitle": "Edit comment",
   "@commentEditTitle": {},
-
   "imageViewerAltText": "Alt text",
   "@imageViewerAltText": {},
-
   "imageViewerSave": "Save image",
   "@imageViewerSave": {}
 }
