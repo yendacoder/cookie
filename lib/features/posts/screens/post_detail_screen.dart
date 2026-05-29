@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -242,9 +243,7 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
               switch (action) {
                 case .openInBrowser:
                   launchUrl(
-                    Uri.parse(
-                      'https://discuit.org/${post.communityName}/post/${post.publicId}',
-                    ),
+                    post.postWebUrl,
                     mode: LaunchMode.externalApplication,
                   );
                 case .saveToList:
@@ -346,10 +345,7 @@ class _PostDetailBody extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: _PostDetailContent(post: post),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(10, 16, 16, 10),
-          child: _PostDetailFooter(post: post),
-        ),
+        _PostDetailFooter(post: post),
         const Divider(),
       ],
     );
@@ -563,35 +559,55 @@ class _PostDetailFooter extends ConsumerWidget {
     final total = upvotes + downvotes;
     final pct = total > 0 ? (upvotes / total * 100).round() : null;
 
-    return Row(
-      children: [
-        _DetailVoteButton(
-          icon: Icons.arrow_upward_rounded,
-          isActive: votedUp,
-          activeColor: AppTheme.kUpvoteColor,
-          showSpinner: showUpSpinner,
-          muted: muted,
-          onTap: () => ref.read(postVotesProvider.notifier).vote(post, true),
-        ),
-        Text('$score', style: style?.copyWith(color: scoreColor)),
-        _DetailVoteButton(
-          icon: Icons.arrow_downward_rounded,
-          isActive: votedDown,
-          activeColor: AppTheme.kDownvoteColor,
-          showSpinner: showDownSpinner,
-          muted: muted,
-          onTap: () => ref.read(postVotesProvider.notifier).vote(post, false),
-        ),
-        if (pct != null) ...[
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 6, 6, 0),
+      child: Row(
+        children: [
+          _DetailVoteButton(
+            icon: Icons.arrow_upward_rounded,
+            isActive: votedUp,
+            activeColor: AppTheme.kUpvoteColor,
+            showSpinner: showUpSpinner,
+            muted: muted,
+            onTap: () => ref.read(postVotesProvider.notifier).vote(post, true),
+          ),
+          Text('$score', style: style?.copyWith(color: scoreColor)),
+          _DetailVoteButton(
+            icon: Icons.arrow_downward_rounded,
+            isActive: votedDown,
+            activeColor: AppTheme.kDownvoteColor,
+            showSpinner: showDownSpinner,
+            muted: muted,
+            onTap: () => ref.read(postVotesProvider.notifier).vote(post, false),
+          ),
+          if (pct != null) ...[
+            const SizedBox(width: 6),
+            Text('$pct%', style: style),
+            const SizedBox(width: 6),
+          ],
+          const SizedBox(width: 10),
+          Icon(Icons.mode_comment_outlined, size: 16, color: muted),
           const SizedBox(width: 6),
-          Text('$pct%', style: style),
-          const SizedBox(width: 6),
+          Text(context.l10n.commentsLabel(post.noComments), style: style),
+          const Spacer(),
+          InkWell(
+            onTap: () => SharePlus.instance.share(
+              ShareParams(uri: post.postWebUrl, subject: post.title),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  const SizedBox(width: 12),
+                  Icon(Icons.share, size: 14, color: muted),
+                  const SizedBox(width: 6),
+                  Text(context.l10n.share, style: style),
+                ],
+              ),
+            ),
+          ),
         ],
-        const SizedBox(width: 10),
-        Icon(Icons.mode_comment_outlined, size: 16, color: muted),
-        const SizedBox(width: 6),
-        Text(context.l10n.commentsLabel(post.noComments), style: style),
-      ],
+      ),
     );
   }
 }

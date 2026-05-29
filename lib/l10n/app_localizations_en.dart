@@ -220,6 +220,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get downvote => 'Downvote';
 
   @override
+  String get share => 'Share';
+
+  @override
   String commentsLabel(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

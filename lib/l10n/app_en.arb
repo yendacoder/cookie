@@ -177,6 +177,9 @@
   "downvote": "Downvote",
   "@downvote": {},
 
+  "share": "Share",
+  "@share": {},
+
   "commentsLabel": "{count, plural, =0{No comments} =1{1 comment} other{{count} comments}}",
   "@commentsLabel": {
     "placeholders": {

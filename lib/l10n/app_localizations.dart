@@ -406,6 +406,12 @@ abstract class AppLocalizations {
   /// **'Downvote'**
   String get downvote;
 
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
   /// No description provided for @commentsLabel.
   ///
   /// In en, this message translates to:

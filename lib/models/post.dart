@@ -6,6 +6,7 @@ import 'discuit_image.dart';
 import 'user.dart';
 
 part 'post.freezed.dart';
+
 part 'post.g.dart';
 
 @freezed
@@ -71,4 +72,9 @@ abstract class PostLink with _$PostLink {
 
   factory PostLink.fromJson(Map<String, dynamic> json) =>
       _$PostLinkFromJson(json);
+}
+
+extension PostExt on Post {
+  Uri get postWebUrl =>
+      Uri.parse('https://discuit.org/$communityName/post/$publicId');
 }
