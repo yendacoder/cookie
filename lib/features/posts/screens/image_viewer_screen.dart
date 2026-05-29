@@ -52,7 +52,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
     setState(() {
       _isSaving = true;
     });
-    await ImageDownloader().shareOrSave(url);
+    await ImageDownloader().downloadWithSaveDialog(url);
     if (mounted) {
       setState(() {
         _isSaving = false;
