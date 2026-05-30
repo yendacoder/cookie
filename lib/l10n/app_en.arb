@@ -560,5 +560,9 @@
   "imageViewerAltText": "Alt text",
   "@imageViewerAltText": {},
   "imageViewerSave": "Save image",
-  "@imageViewerSave": {}
+  "@imageViewerSave": {},
+  "settingsScreenTitle": "Settings",
+  "@settingsScreenTitle": {},
+  "textScaleSetting": "Text size",
+  "@textScaleSetting": {}
 }

@@ -1,3 +1,4 @@
+import 'package:cookie/features/shell/providers/text_scale_provider.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,10 +13,7 @@ import 'features/shell/providers/package_info_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  SystemChrome.setPreferredOrientations([.portraitUp, .portraitDown]);
 
   final appDocDir = await getApplicationDocumentsDirectory();
   final jar = PersistCookieJar(
@@ -25,7 +23,10 @@ void main() async {
   // already carries the stored SID and csrftoken without an extra disk read.
   await jar.forceInit();
 
-  final savedTab = await SharedPreferencesAsync().getInt('last_tab') ?? 0;
+  final savedTab =
+      await SharedPreferencesAsync().getInt(LastTab.kPrefsName) ?? 0;
+  final textScale =
+      await SharedPreferencesAsync().getDouble(TextScale.kPrefsName) ?? 1.0;
 
   final packageInfo = await PackageInfo.fromPlatform();
 
@@ -35,6 +36,9 @@ void main() async {
         packageInfoProvider.overrideWithValue(packageInfo),
         cookieJarProvider.overrideWith((_) => jar),
         lastTabProvider.overrideWith(() => _SavedLastTab(savedTab)),
+        textScaleProvider.overrideWith(
+          () => _SavedTextScale(textScale.clamp(1.0, 3.0)),
+        ),
       ],
       child: const CookieApp(),
     ),
@@ -50,4 +54,13 @@ class _SavedLastTab extends LastTab {
 
   @override
   int build() => _saved;
+}
+
+class _SavedTextScale extends TextScale {
+  _SavedTextScale(this._saved);
+
+  final double _saved;
+
+  @override
+  double build() => _saved;
 }

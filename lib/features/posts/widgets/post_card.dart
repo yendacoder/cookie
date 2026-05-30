@@ -136,59 +136,58 @@ class _PostHeader extends StatelessWidget {
     final muted = Theme.of(context).colorScheme.onSurfaceVariant;
 
     return Row(
+      mainAxisAlignment: .spaceBetween,
       children: [
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => context.push('/u/${post.username}'),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Avatar(
-                imageUrl: post.author?.proPic?.fullUrl,
-                fallback: post.username,
-                radius: 10,
-              ),
-              const SizedBox(width: 6),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 120),
-                child: Text(
-                  post.username,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelSmall?.copyWith(color: muted),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const Spacer(),
-        if (showCommunity) ...[
-          const SizedBox(width: 8),
-          GestureDetector(
-            // Intercepts before the outer InkWell so this tap opens the
-            // community screen rather than the post detail.
+        Flexible(
+          child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () => context.push('/c/${post.communityName}'),
+            onTap: () => context.push('/u/${post.username}'),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  post.communityName,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelSmall?.copyWith(color: muted),
-                  overflow: .ellipsis,
-                ),
-                const SizedBox(width: 6),
                 Avatar(
-                  imageUrl: post.communityProPic?.fullUrl,
-                  fallback: post.communityName,
+                  imageUrl: post.author?.proPic?.fullUrl,
+                  fallback: post.username,
                   radius: 10,
                 ),
+                const SizedBox(width: 6),
+                Text(
+                    post.username,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelSmall?.copyWith(color: muted),
+                    overflow: TextOverflow.ellipsis,
+                  ),
               ],
             ),
           ),
+        ),
+        if (showCommunity) ...[
+          const SizedBox(width: 8),
+          GestureDetector(
+              // Intercepts before the outer InkWell so this tap opens the
+              // community screen rather than the post detail.
+              behavior: HitTestBehavior.opaque,
+              onTap: () => context.push('/c/${post.communityName}'),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    post.communityName,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelSmall?.copyWith(color: muted),
+                    overflow: .ellipsis,
+                  ),
+                  const SizedBox(width: 6),
+                  Avatar(
+                    imageUrl: post.communityProPic?.fullUrl,
+                    fallback: post.communityName,
+                    radius: 10,
+                  ),
+                ],
+              ),
+            ),
         ],
       ],
     );

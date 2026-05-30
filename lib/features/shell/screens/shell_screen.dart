@@ -3,7 +3,6 @@ import 'package:cookie/features/subscriptions/providers/subscriptions_feed_provi
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -67,7 +66,6 @@ class ShellScreen extends ConsumerWidget {
                       // do not save profile tab as last as it feels unexpected
                       if (index < 2) {
                         ref.read(lastTabProvider.notifier).set(index);
-                        SharedPreferencesAsync().setInt('last_tab', index);
                       }
                     },
                     destinations: [

@@ -14,6 +14,7 @@ import '../../features/posts/screens/youtube_player_screen.dart';
 import '../../features/profile/screens/edit_profile_screen.dart';
 import '../../features/lists/screens/list_detail_screen.dart';
 import '../../features/lists/screens/lists_screen.dart';
+import '../../features/profile/screens/settings_screen.dart';
 import '../../models/user_list.dart';
 import '../../features/posts/screens/image_viewer_screen.dart';
 import '../../features/posts/screens/post_detail_screen.dart';
@@ -138,6 +139,10 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/profile/edit',
         builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(

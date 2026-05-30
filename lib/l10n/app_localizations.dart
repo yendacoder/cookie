@@ -1245,6 +1245,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save image'**
   String get imageViewerSave;
+
+  /// No description provided for @settingsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsScreenTitle;
+
+  /// No description provided for @textScaleSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Text size'**
+  String get textScaleSetting;
 }
 
 class _AppLocalizationsDelegate

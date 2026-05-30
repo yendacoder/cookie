@@ -229,7 +229,7 @@ final class CommunityFeedNotifierProvider
 }
 
 String _$communityFeedNotifierHash() =>
-    r'e46afcbf1a8d1871eff0e6fc5a87d69db63ad67e';
+    r'4c4513979c697aa72fdc8878a0b2393ae7069d3b';
 
 final class CommunityFeedNotifierFamily extends $Family
     with

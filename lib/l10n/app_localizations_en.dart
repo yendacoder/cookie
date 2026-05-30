@@ -713,4 +713,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get imageViewerSave => 'Save image';
+
+  @override
+  String get settingsScreenTitle => 'Settings';
+
+  @override
+  String get textScaleSetting => 'Text size';
 }

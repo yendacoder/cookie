@@ -106,6 +106,12 @@ class ProfileScreen extends ConsumerWidget {
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => context.push('/muted-communities'),
                   ),
+                  ListTile(
+                    leading: const Icon(Icons.settings),
+                    title: Text(context.l10n.settingsScreenTitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push('/settings'),
+                  ),
                 ],
               ],
             ),

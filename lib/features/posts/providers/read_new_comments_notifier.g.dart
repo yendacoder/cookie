@@ -48,7 +48,7 @@ final class ReadNewCommentsNotifierProvider
 }
 
 String _$readNewCommentsNotifierHash() =>
-    r'20a9dbcc1ae5e16e2f6f28b79503f2bb2501fb08';
+    r'd4faea4de28c86eb41e02844813fcf42c70d08f1';
 
 /// When a post detail screen loads successfully, it might want to
 /// update all lists that all new comments have been loaded

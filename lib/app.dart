@@ -1,3 +1,4 @@
+import 'package:cookie/features/shell/providers/text_scale_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:cookie/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +12,7 @@ class CookieApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final scale = ref.watch(textScaleProvider);
     return MaterialApp.router(
       title: 'Cookie',
       debugShowCheckedModeBanner: false,
@@ -20,6 +22,14 @@ class CookieApp extends ConsumerWidget {
       routerConfig: router,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.linear(scale),
+          ),
+          child: child!,
+        );
+      },
     );
   }
 }

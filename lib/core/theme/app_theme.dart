@@ -8,13 +8,12 @@ abstract final class AppTheme {
   static const _seed = Color(0xFFD97040);
 
   static ThemeData light() => ThemeData(
-        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: _seed,
-          brightness: Brightness.light,
+          brightness: .light,
         ),
         navigationBarTheme: const NavigationBarThemeData(
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          labelBehavior: .alwaysShow,
         ),
         cardTheme: const CardThemeData(
           elevation: 0,
@@ -27,13 +26,12 @@ abstract final class AppTheme {
       );
 
   static ThemeData dark() => ThemeData(
-        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: _seed,
-          brightness: Brightness.dark,
+          brightness: .dark,
         ),
         navigationBarTheme: const NavigationBarThemeData(
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          labelBehavior: .alwaysShow,
         ),
         cardTheme: const CardThemeData(
           elevation: 0,
