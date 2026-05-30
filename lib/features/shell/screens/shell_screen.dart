@@ -18,11 +18,14 @@ class ShellScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isAuthLoading = ref.watch(authProvider).isLoading;
-    final isNavBarVisible = ref.watch(navBarVisibilityProvider);
+    bool isNavBarVisible = ref.watch(navBarVisibilityProvider);
     final hasUnread = ref.watch(
       authProvider.select((s) => (s.value?.notificationsNewCount ?? 0) > 0),
     );
-
+    if (navigationShell.currentIndex >= 2 && !isNavBarVisible) {
+      ref.read(navBarVisibilityProvider.notifier).hide();
+      isNavBarVisible = true;
+    }
     return Scaffold(
       body: MediaQuery(
         data: MediaQuery.of(context).copyWith(
