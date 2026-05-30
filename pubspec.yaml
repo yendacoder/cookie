@@ -1,7 +1,7 @@
 name: cookie
 description: Client application for Discuit social platform.
 publish_to: 'none'
-version: 2.0.5+200050
+version: 2.0.6+200060
 
 environment:
   sdk: ^3.11.4
@@ -32,6 +32,7 @@ dependencies:
   # UI
   cached_network_image: ^3.4.1
   url_launcher: ^6.3.1
+  path_provider: ^2.1.0
   shared_preferences: ^2.5.5
   image_picker: ^1.2.2
   flutter_markdown_plus: ^1.0.7
