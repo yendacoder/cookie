@@ -99,15 +99,33 @@ class MarkdownText extends StatelessWidget {
           final username = href.substring('mention://'.length);
           context.push('/u/$username');
         } else {
-          final uri = Uri.tryParse(href);
+          Uri? uri = Uri.tryParse(href);
           if (uri != null) {
-            if (uri.isAbsolute) {
-              launchUrl(uri, mode: LaunchMode.externalApplication);
-            } else {
-              final uri = Uri.tryParse('https://discuit.org/$href');
-              if (uri != null) {
-                launchUrl(uri, mode: LaunchMode.externalApplication);
+            if (!uri.isAbsolute || uri.host.endsWith('discuit.org')) {
+              if (uri.pathSegments.length == 1) {
+                // user or community
+                final segment = uri.pathSegments.first;
+                if (segment.startsWith('@')) {
+                  context.push('/u/${segment.substring(1)}');
+                } else {
+                  context.push('/c/$segment');
+                }
+              } else if (uri.pathSegments.length == 3) {
+                // post
+                context.push(
+                  '/c/${uri.pathSegments.first}/post/${uri.pathSegments.last}',
+                );
+              } else {
+                // God knows what
+                if (!uri.isAbsolute) {
+                  uri = Uri.tryParse('https://discuit.org/$href');
+                }
+                if (uri != null) {
+                  launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
               }
+            } else {
+              launchUrl(uri, mode: LaunchMode.externalApplication);
             }
           }
         }
