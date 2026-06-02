@@ -152,12 +152,12 @@ class _PostHeader extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                    post.username,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.labelSmall?.copyWith(color: muted),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  post.username,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall?.copyWith(color: muted),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           ),
@@ -165,29 +165,29 @@ class _PostHeader extends StatelessWidget {
         if (showCommunity) ...[
           const SizedBox(width: 8),
           GestureDetector(
-              // Intercepts before the outer InkWell so this tap opens the
-              // community screen rather than the post detail.
-              behavior: HitTestBehavior.opaque,
-              onTap: () => context.push('/c/${post.communityName}'),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    post.communityName,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.labelSmall?.copyWith(color: muted),
-                    overflow: .ellipsis,
-                  ),
-                  const SizedBox(width: 6),
-                  Avatar(
-                    imageUrl: post.communityProPic?.fullUrl,
-                    fallback: post.communityName,
-                    radius: 10,
-                  ),
-                ],
-              ),
+            // Intercepts before the outer InkWell so this tap opens the
+            // community screen rather than the post detail.
+            behavior: HitTestBehavior.opaque,
+            onTap: () => context.push('/c/${post.communityName}'),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  post.communityName,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall?.copyWith(color: muted),
+                  overflow: .ellipsis,
+                ),
+                const SizedBox(width: 6),
+                Avatar(
+                  imageUrl: post.communityProPic?.fullUrl,
+                  fallback: post.communityName,
+                  radius: 10,
+                ),
+              ],
             ),
+          ),
         ],
       ],
     );
@@ -427,33 +427,36 @@ class _PostFooter extends ConsumerWidget {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: onDetailTap,
-              child: Row(
-                children: [
-                  const SizedBox(width: 12),
-                  Icon(Icons.mode_comment_outlined, size: 14, color: muted),
-                  const SizedBox(width: 6),
-                  Text('${post.noComments}', style: base),
-                  if (!ref.watch(readNewCommentsProvider).contains(post.id) &&
-                      (post.newComments ?? 0) > 0)
-                    Tooltip(
-                      message: context.l10n.commentsNewCountTooltip(
-                        post.newComments!,
-                        post.noComments,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Text(
-                          '+${post.newComments}',
-                          style: base!.copyWith(color: AppTheme.kUpvoteColor),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 12),
+                    Icon(Icons.mode_comment_outlined, size: 14, color: muted),
+                    const SizedBox(width: 6),
+                    Text('${post.noComments}', style: base),
+                    if (!ref.watch(readNewCommentsProvider).contains(post.id) &&
+                        (post.newComments ?? 0) > 0)
+                      Tooltip(
+                        message: context.l10n.commentsNewCountTooltip(
+                          post.newComments!,
+                          post.noComments,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: Text(
+                            '+${post.newComments}',
+                            style: base!.copyWith(color: AppTheme.kUpvoteColor),
+                          ),
                         ),
                       ),
+                    const Spacer(),
+                    Text(
+                      post.createdAt.toRelativeString(context.l10n),
+                      style: base,
                     ),
-                  const Spacer(),
-                  Text(
-                    post.createdAt.toRelativeString(context.l10n),
-                    style: base,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
