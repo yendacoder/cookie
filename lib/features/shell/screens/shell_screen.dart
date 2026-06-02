@@ -1,5 +1,6 @@
 import 'package:cookie/features/home/providers/home_feed_provider.dart';
 import 'package:cookie/features/subscriptions/providers/subscriptions_feed_provider.dart';
+import 'package:cookie/features/update/providers/update_check_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +22,10 @@ class ShellScreen extends ConsumerWidget {
     final hasUnread = ref.watch(
       authProvider.select((s) => (s.value?.notificationsNewCount ?? 0) > 0),
     );
+    final hasUpdate = ref.watch(
+      updateCheckProvider.select((s) => s.value != null),
+    );
+    final colorScheme = Theme.of(context).colorScheme;
     if (navigationShell.currentIndex >= 2 && !isNavBarVisible) {
       ref.read(navBarVisibilityProvider.notifier).hide();
       isNavBarVisible = true;
@@ -81,11 +86,13 @@ class ShellScreen extends ConsumerWidget {
                       ),
                       NavigationDestination(
                         icon: Badge(
-                          isLabelVisible: hasUnread,
+                          isLabelVisible: hasUnread || hasUpdate,
+                          backgroundColor: hasUnread ? colorScheme.primary : colorScheme.tertiary,
                           child: const Icon(Icons.person_outline),
                         ),
                         selectedIcon: Badge(
-                          isLabelVisible: hasUnread,
+                          isLabelVisible: hasUnread || hasUpdate,
+                          backgroundColor: hasUnread ? colorScheme.primary : colorScheme.tertiary,
                           child: const Icon(Icons.person),
                         ),
                         label: context.l10n.navProfile,

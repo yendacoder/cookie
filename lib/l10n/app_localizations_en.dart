@@ -719,4 +719,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get textScaleSetting => 'Text size';
+
+  @override
+  String get updateAvailableTitle => 'Update available';
+
+  @override
+  String updateAvailableSubtitle(String version) {
+    return 'v$version is out';
+  }
+
+  @override
+  String get updateDownloadButton => 'Download';
 }

@@ -1257,6 +1257,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Text size'**
   String get textScaleSetting;
+
+  /// No description provided for @updateAvailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get updateAvailableTitle;
+
+  /// No description provided for @updateAvailableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'v{version} is out'**
+  String updateAvailableSubtitle(String version);
+
+  /// No description provided for @updateDownloadButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get updateDownloadButton;
 }
 
 class _AppLocalizationsDelegate

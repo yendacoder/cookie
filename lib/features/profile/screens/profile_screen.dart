@@ -2,12 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
 import '../../../models/discuit_image.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../communities/providers/muted_communities_list_provider.dart';
 import '../../shell/providers/package_info_provider.dart';
+import '../../update/providers/update_check_provider.dart';
 import '../../user/providers/muted_users_list_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -18,6 +20,7 @@ class ProfileScreen extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     final user = authState.value;
     final packageInfo = ref.watch(packageInfoProvider);
+    final update = ref.watch(updateCheckProvider).value;
 
     return Scaffold(
       appBar: AppBar(
@@ -111,6 +114,26 @@ class ProfileScreen extends ConsumerWidget {
                     title: Text(context.l10n.settingsScreenTitle),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => context.push('/settings'),
+                  ),
+                ],
+                if (update != null) ...[
+                  ListTile(
+                    leading: Badge(
+                      isLabelVisible: true,
+                      backgroundColor: Theme.of(context).colorScheme.tertiary,
+                      child: const Icon(Icons.download),
+                    ),
+                    title: Text(context.l10n.updateAvailableTitle),
+                    subtitle: Text(
+                      context.l10n.updateAvailableSubtitle(update.version),
+                    ),
+                    trailing: FilledButton(
+                      onPressed: () => launchUrl(
+                        Uri.parse(update.downloadUrl),
+                        mode: LaunchMode.externalApplication,
+                      ),
+                      child: Text(context.l10n.updateDownloadButton),
+                    ),
                   ),
                 ],
               ],

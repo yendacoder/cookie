@@ -46,8 +46,8 @@ jobs:
       - name: Build application
         run: |
           flutter pub get
-          flutter build apk
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/cookie.apk
+          flutter build apk --flavor github -t lib/main_github.dart
+          mv build/app/outputs/flutter-apk/app-github-release.apk build/app/outputs/flutter-apk/cookie.apk
 
       - name: Upload apk
         uses: actions/upload-artifact@v4
@@ -94,5 +94,3 @@ jobs:
           tag_name: ${{ inputs.VERSION_TAG }}
           body: ${{ steps.generate_changelog.outputs.changelog }}
           files: cookie.apk
-          prerelease: true
-

@@ -564,5 +564,17 @@
   "settingsScreenTitle": "Settings",
   "@settingsScreenTitle": {},
   "textScaleSetting": "Text size",
-  "@textScaleSetting": {}
+  "@textScaleSetting": {},
+  "updateAvailableTitle": "Update available",
+  "@updateAvailableTitle": {},
+  "updateAvailableSubtitle": "v{version} is out",
+  "@updateAvailableSubtitle": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updateDownloadButton": "Download",
+  "@updateDownloadButton": {}
 }

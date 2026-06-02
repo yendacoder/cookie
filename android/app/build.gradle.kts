@@ -46,6 +46,16 @@ android {
             storePassword = keystoreProperties["storePassword"] as String
         }
     }
+    flavorDimensions += "distribution"
+    productFlavors {
+        create("github") {
+            dimension = "distribution"
+        }
+        create("store") {
+            dimension = "distribution"
+        }
+    }
+
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")
