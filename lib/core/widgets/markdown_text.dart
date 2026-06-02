@@ -101,7 +101,9 @@ class MarkdownText extends StatelessWidget {
         } else {
           Uri? uri = Uri.tryParse(href);
           if (uri != null) {
-            if (!uri.isAbsolute || uri.host.endsWith('discuit.org')) {
+            if (!uri.isAbsolute ||
+                uri.host.endsWith('discuit.org') ||
+                uri.host.endsWith('discuit.net')) {
               if (uri.pathSegments.length == 1) {
                 // user or community
                 final segment = uri.pathSegments.first;
