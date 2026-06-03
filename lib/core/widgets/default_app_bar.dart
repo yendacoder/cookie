@@ -22,7 +22,11 @@ class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class DefaultSliverAppBar extends StatelessWidget {
-  const DefaultSliverAppBar({super.key, required this.title, this.pinned = true});
+  const DefaultSliverAppBar({
+    super.key,
+    required this.title,
+    this.pinned = true,
+  });
 
   final String title;
   final bool pinned;

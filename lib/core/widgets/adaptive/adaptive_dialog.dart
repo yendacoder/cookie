@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../providers/platform_style_provider.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
 
 Future<T?> showPlatformDialog<T>({
   required BuildContext context,
@@ -40,11 +40,7 @@ class AdaptiveAlertDialog extends StatelessWidget {
         actions: actions ?? const [],
       );
     }
-    return AlertDialog(
-      title: title,
-      content: content,
-      actions: actions,
-    );
+    return AlertDialog(title: title, content: content, actions: actions);
   }
 }
 
@@ -63,8 +59,10 @@ class AdaptiveDialogAction extends StatelessWidget {
 
   final VoidCallback? onPressed;
   final Widget child;
+
   /// Primary action — bold on iOS, [FilledButton] on Android.
   final bool isDefault;
+
   /// Destructive action — red on iOS, error-coloured [TextButton] on Android.
   final bool isDestructive;
 

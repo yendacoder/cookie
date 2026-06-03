@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:liquid_glass_widgets/widgets/shared/glass_page.dart';
 
-import '../../providers/platform_style_provider.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
 
 class AdaptiveScaffold extends ConsumerWidget {
   const AdaptiveScaffold({

@@ -6,19 +6,19 @@ import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/consts.dart';
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../core/widgets/default_app_bar.dart';
-import '../../../core/widgets/error_view.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../../auth/widgets/auth_gate.dart';
-import '../../home/providers/home_feed_provider.dart'
+import 'package:cookie/core/consts.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/default_app_bar.dart';
+import 'package:cookie/core/widgets/error_view.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/auth/widgets/auth_gate.dart';
+import 'package:cookie/features/home/providers/home_feed_provider.dart'
     show PostFeedState, PostSort;
-import '../../posts/widgets/post_card.dart';
-import '../../posts/widgets/post_card_skeleton.dart';
-import '../../shell/providers/nav_bar_visibility_provider.dart';
-import '../providers/subscriptions_feed_provider.dart';
+import 'package:cookie/features/posts/widgets/post_card.dart';
+import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
+import 'package:cookie/features/shell/providers/nav_bar_visibility_provider.dart';
+import 'package:cookie/features/subscriptions/providers/subscriptions_feed_provider.dart';
 
 class SubscriptionsScreen extends ConsumerStatefulWidget {
   const SubscriptionsScreen({super.key});
@@ -129,7 +129,10 @@ class _FeedView extends ConsumerWidget {
         controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
-          DefaultSliverAppBar(title: context.l10n.subscriptionsScreenTitle, pinned: false),
+          DefaultSliverAppBar(
+            title: context.l10n.subscriptionsScreenTitle,
+            pinned: false,
+          ),
           SliverToBoxAdapter(child: _SortChips()),
           feedState.when(
             loading: () => const SliverToBoxAdapter(child: PostFeedSkeleton()),

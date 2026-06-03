@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../errors/app_exception.dart';
-import '../extensions/build_context_ext.dart';
+import 'package:cookie/core/errors/app_exception.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
 
 /// A full-area error display that classifies the error and shows an appropriate
 /// title, description, and optional field path for parse failures.
 class ErrorView extends StatelessWidget {
-  const ErrorView({
-    super.key,
-    required this.error,
-    required this.onRetry,
-  });
+  const ErrorView({super.key, required this.error, required this.onRetry});
 
   final Object error;
   final VoidCallback onRetry;
@@ -41,15 +37,20 @@ class ErrorView extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               _body(context, appError),
-              style: textTheme.bodyMedium
-                  ?.copyWith(color: colorScheme.onSurfaceVariant),
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
               textAlign: TextAlign.center,
             ),
-            if (appError case ParseException(:final String offendingField?)) ...[
+            if (appError case ParseException(
+              :final String offendingField?,
+            )) ...[
               const SizedBox(height: 12),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(8),
@@ -76,20 +77,20 @@ class ErrorView extends StatelessWidget {
   }
 
   IconData _icon(AppException error) => switch (error) {
-        NetworkException() => Icons.wifi_off_rounded,
-        ParseException() => Icons.sync_problem_rounded,
-        UnknownException() => Icons.error_outline_rounded,
-      };
+    NetworkException() => Icons.wifi_off_rounded,
+    ParseException() => Icons.sync_problem_rounded,
+    UnknownException() => Icons.error_outline_rounded,
+  };
 
   String _title(BuildContext context, AppException error) => switch (error) {
-        NetworkException() => context.l10n.errorNetworkTitle,
-        ParseException() => context.l10n.errorParseTitle,
-        UnknownException() => context.l10n.errorUnknownTitle,
-      };
+    NetworkException() => context.l10n.errorNetworkTitle,
+    ParseException() => context.l10n.errorParseTitle,
+    UnknownException() => context.l10n.errorUnknownTitle,
+  };
 
   String _body(BuildContext context, AppException error) => switch (error) {
-        NetworkException() => context.l10n.errorNetworkBody,
-        ParseException() => context.l10n.errorParseBody,
-        UnknownException() => context.l10n.errorUnknownBody,
-      };
+    NetworkException() => context.l10n.errorNetworkBody,
+    ParseException() => context.l10n.errorParseBody,
+    UnknownException() => context.l10n.errorUnknownBody,
+  };
 }

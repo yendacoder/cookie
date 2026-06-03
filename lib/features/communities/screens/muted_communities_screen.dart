@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
-import '../../../models/discuit_image.dart';
-import '../providers/community_mutes_provider.dart';
-import '../providers/muted_communities_list_provider.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/models/discuit_image.dart';
+import 'package:cookie/features/communities/providers/community_mutes_provider.dart';
+import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
 
 class MutedCommunitiesScreen extends ConsumerWidget {
   const MutedCommunitiesScreen({super.key});
@@ -29,8 +29,8 @@ class MutedCommunitiesScreen extends ConsumerWidget {
               child: Text(
                 context.l10n.mutedCommunitiesEmpty,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             )
           : ListView.separated(

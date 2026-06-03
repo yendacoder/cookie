@@ -55,8 +55,9 @@ abstract final class AppTheme {
     final cs = ColorScheme.fromSeed(seedColor: _seed, brightness: .light);
     return ThemeData(
       colorScheme: cs,
-      pageTransitionsTheme:
-          useIos ? _cupertinoTransitions : const PageTransitionsTheme(),
+      pageTransitionsTheme: useIos
+          ? _cupertinoTransitions
+          : const PageTransitionsTheme(),
       splashFactory: useIos ? NoSplash.splashFactory : null,
       inputDecorationTheme: _inputDecorationTheme(cs, useIos),
       navigationBarTheme: const NavigationBarThemeData(
@@ -71,8 +72,9 @@ abstract final class AppTheme {
     final cs = ColorScheme.fromSeed(seedColor: _seed, brightness: .dark);
     return ThemeData(
       colorScheme: cs,
-      pageTransitionsTheme:
-          useIos ? _cupertinoTransitions : const PageTransitionsTheme(),
+      pageTransitionsTheme: useIos
+          ? _cupertinoTransitions
+          : const PageTransitionsTheme(),
       splashFactory: useIos ? NoSplash.splashFactory : null,
       inputDecorationTheme: _inputDecorationTheme(cs, useIos),
       navigationBarTheme: const NavigationBarThemeData(

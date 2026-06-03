@@ -1,7 +1,6 @@
 import 'package:cookie/core/widgets/adaptive/adaptive_fab.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
@@ -11,13 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/providers/platform_style_provider.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../core/widgets/error_view.dart';
-import '../../../models/community.dart';
-import '../providers/community_provider.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/error_view.dart';
+import 'package:cookie/models/community.dart';
+import 'package:cookie/features/communities/providers/community_provider.dart';
 
 class ModToolsScreen extends ConsumerWidget {
   const ModToolsScreen({super.key, required this.communityName});
@@ -353,11 +352,7 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
               key: ValueKey(rule.id),
               title: Text('${i + 1}. ${rule.rule}'),
               subtitle: (rule.description?.isNotEmpty ?? false)
-                  ? Text(
-                      rule.description!,
-                      maxLines: 2,
-                      overflow: .ellipsis,
-                    )
+                  ? Text(rule.description!, maxLines: 2, overflow: .ellipsis)
                   : null,
               trailing: Row(
                 mainAxisSize: .min,

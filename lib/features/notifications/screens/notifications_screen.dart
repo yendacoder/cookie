@@ -7,18 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/providers/platform_style_provider.dart';
-import '../../../core/utils/relative_time.dart';
-import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../core/widgets/error_view.dart';
-import '../../../l10n/app_localizations.dart';
-import '../../../models/notification.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../../auth/widgets/auth_gate.dart';
-import '../providers/notifications_provider.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/utils/relative_time.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/error_view.dart';
+import 'package:cookie/l10n/app_localizations.dart';
+import 'package:cookie/models/notification.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/auth/widgets/auth_gate.dart';
+import 'package:cookie/features/notifications/providers/notifications_provider.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
@@ -73,14 +73,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             slivers: [
               switch (feedState) {
                 AsyncLoading() => const SliverFillRemaining(
-                    child: Center(child: AdaptiveProgressIndicator()),
-                  ),
+                  child: Center(child: AdaptiveProgressIndicator()),
+                ),
                 AsyncError(:final error) => SliverFillRemaining(
-                    child: ErrorView(
-                      error: error,
-                      onRetry: () => ref.invalidate(notificationsProvider),
-                    ),
+                  child: ErrorView(
+                    error: error,
+                    onRetry: () => ref.invalidate(notificationsProvider),
                   ),
+                ),
                 AsyncData(:final value) => _NotificationsList(feed: value),
               },
             ],
@@ -107,8 +107,8 @@ class _NotificationsList extends ConsumerWidget {
           child: Text(
             context.l10n.notificationsEmpty,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       );
@@ -164,8 +164,8 @@ class _NotificationsFooter extends ConsumerWidget {
               child: Text(
                 context.l10n.feedLoadMoreError,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+                  color: Theme.of(context).colorScheme.error,
+                ),
               ),
             ),
             AdaptiveTextButton(
@@ -185,8 +185,8 @@ class _NotificationsFooter extends ConsumerWidget {
           child: Text(
             context.l10n.feedEndOfContent,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ),
       );
@@ -235,8 +235,7 @@ class _NotificationTile extends StatelessWidget {
                     Text(
                       _title(context.l10n, notification),
                       style: textTheme.bodyMedium?.copyWith(
-                        fontWeight:
-                            isNew ? FontWeight.w500 : FontWeight.normal,
+                        fontWeight: isNew ? FontWeight.w500 : FontWeight.normal,
                       ),
                     ),
                     if (_subtitle(notification) case final String sub) ...[
@@ -313,34 +312,35 @@ class _NotificationTile extends StatelessWidget {
   }
 
   IconData _icon(BuildContext context, String type) => switch (type) {
-        'new_comment' => Icons.mode_comment_outlined,
-        'comment_reply' => Icons.reply_outlined,
-        'new_votes' => Icons.arrow_upward_outlined,
-        'deleted_post' => context.deleteIcon,
-        'mod_add' => Icons.shield_outlined,
-        'new_badge' => Icons.stars_outlined,
-        _ => context.notificationsIcon,
-      };
+    'new_comment' => Icons.mode_comment_outlined,
+    'comment_reply' => Icons.reply_outlined,
+    'new_votes' => Icons.arrow_upward_outlined,
+    'deleted_post' => context.deleteIcon,
+    'mod_add' => Icons.shield_outlined,
+    'new_badge' => Icons.stars_outlined,
+    _ => context.notificationsIcon,
+  };
 
   String _title(AppLocalizations l10n, AppNotification n) {
     final notif = n.notif;
     return switch (n.type) {
       'new_comment' => () {
-          final author = notif['commentAuthor'] as String? ?? 'Someone';
-          final count = notif['noComments'] as int? ?? 1;
-          return count > 1
-              ? l10n.notifNewCommentMultiple(author, count - 1)
-              : l10n.notifNewComment(author);
-        }(),
-      'comment_reply' =>
-        l10n.notifCommentReply(notif['commentAuthor'] as String? ?? 'Someone'),
+        final author = notif['commentAuthor'] as String? ?? 'Someone';
+        final count = notif['noComments'] as int? ?? 1;
+        return count > 1
+            ? l10n.notifNewCommentMultiple(author, count - 1)
+            : l10n.notifNewComment(author);
+      }(),
+      'comment_reply' => l10n.notifCommentReply(
+        notif['commentAuthor'] as String? ?? 'Someone',
+      ),
       'new_votes' => () {
-          final count = notif['noVotes'] as int? ?? 0;
-          final raw = notif['targetType'] as String? ?? 'post';
-          return count == 1
-              ? l10n.notifNewVotesSingle(raw)
-              : l10n.notifNewVotesMultiple(count, raw);
-        }(),
+        final count = notif['noVotes'] as int? ?? 0;
+        final raw = notif['targetType'] as String? ?? 'post';
+        return count == 1
+            ? l10n.notifNewVotesSingle(raw)
+            : l10n.notifNewVotesMultiple(count, raw);
+      }(),
       'deleted_post' => l10n.notifDeletedPost,
       'mod_add' => l10n.notifModAdd(notif['communityName'] as String? ?? ''),
       'new_badge' => l10n.notifNewBadge,
@@ -351,10 +351,7 @@ class _NotificationTile extends StatelessWidget {
   String? _subtitle(AppNotification n) {
     final notif = n.notif;
     return switch (n.type) {
-      'new_comment' ||
-      'comment_reply' ||
-      'new_votes' ||
-      'deleted_post' =>
+      'new_comment' || 'comment_reply' || 'new_votes' || 'deleted_post' =>
         (notif['post'] as Map<String, dynamic>?)?['title'] as String?,
       _ => null,
     };

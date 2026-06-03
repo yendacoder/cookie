@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../models/user_list.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/models/user_list.dart';
 
 part 'list_items_provider.g.dart';
 
@@ -27,10 +27,9 @@ class ListItemsNotifier extends _$ListItemsNotifier {
   Future<ListItemFeedState> build(int listId) => _loadPage(null);
 
   Future<ListItemFeedState> _loadPage(String? cursor) async {
-    final response = await ref.read(apiClientProvider).get(
-      'lists/$listId/items',
-      queryParameters: {'next': ?cursor},
-    );
+    final response = await ref
+        .read(apiClientProvider)
+        .get('lists/$listId/items', queryParameters: {'next': ?cursor});
     final data = response.data as Map<String, dynamic>;
     return ListItemFeedState(
       items: (data['items'] as List)
@@ -46,29 +45,37 @@ class ListItemsNotifier extends _$ListItemsNotifier {
     if (current == null || current.isLoadingMore || !current.hasMore) return;
 
     final cursor = current.nextCursor!;
-    state = AsyncData(ListItemFeedState(
-      items: current.items,
-      nextCursor: cursor,
-      isLoadingMore: true,
-    ));
+    state = AsyncData(
+      ListItemFeedState(
+        items: current.items,
+        nextCursor: cursor,
+        isLoadingMore: true,
+      ),
+    );
 
     try {
       final page = await _loadPage(cursor);
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.nextCursor == cursor) {
-        state = AsyncData(ListItemFeedState(
-          items: [...value.items, ...page.items],
-          nextCursor: page.nextCursor,
-        ));
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.nextCursor == cursor) {
+        state = AsyncData(
+          ListItemFeedState(
+            items: [...value.items, ...page.items],
+            nextCursor: page.nextCursor,
+          ),
+        );
       }
     } catch (e) {
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.nextCursor == cursor) {
-        state = AsyncData(ListItemFeedState(
-          items: value.items,
-          nextCursor: value.nextCursor,
-          loadMoreError: e,
-        ));
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.nextCursor == cursor) {
+        state = AsyncData(
+          ListItemFeedState(
+            items: value.items,
+            nextCursor: value.nextCursor,
+            loadMoreError: e,
+          ),
+        );
       }
     }
   }
@@ -76,14 +83,14 @@ class ListItemsNotifier extends _$ListItemsNotifier {
   Future<void> removeItem(int itemId) async {
     final current = state.value;
     if (current == null) return;
-    state = AsyncData(ListItemFeedState(
-      items: current.items.where((i) => i.id != itemId).toList(),
-      nextCursor: current.nextCursor,
-    ));
+    state = AsyncData(
+      ListItemFeedState(
+        items: current.items.where((i) => i.id != itemId).toList(),
+        nextCursor: current.nextCursor,
+      ),
+    );
     try {
-      await ref
-          .read(apiClientProvider)
-          .delete('lists/$listId/items/$itemId');
+      await ref.read(apiClientProvider).delete('lists/$listId/items/$itemId');
     } catch (_) {
       state = AsyncData(current);
       rethrow;

@@ -1,7 +1,7 @@
 import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/api/api_client.dart';
+import 'package:cookie/core/api/api_client.dart';
 
 part 'user_mutes_provider.g.dart';
 

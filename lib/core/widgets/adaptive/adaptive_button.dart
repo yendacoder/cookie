@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../providers/platform_style_provider.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
 
 // ---------------------------------------------------------------------------
 // Shared helpers

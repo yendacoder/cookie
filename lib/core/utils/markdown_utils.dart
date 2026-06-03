@@ -2,7 +2,7 @@ import 'package:markdown/markdown.dart' as md;
 
 class _HtmlCommentBlockSyntax extends md.BlockSyntax {
   static final _startPattern = RegExp(r'^\s*<!--');
-  static final _endPattern   = RegExp(r'-->');
+  static final _endPattern = RegExp(r'-->');
 
   @override
   RegExp get pattern => _startPattern;
@@ -33,7 +33,7 @@ class _HtmlCommentBlockSyntax extends md.BlockSyntax {
 String markdownToPlainText(String source) {
   final nodes = md.Document(
     blockSyntaxes: [
-      _HtmlCommentBlockSyntax(),          // <-- runs first
+      _HtmlCommentBlockSyntax(), // <-- runs first
       ...md.ExtensionSet.gitHubFlavored.blockSyntaxes,
     ],
     inlineSyntaxes: md.ExtensionSet.gitHubFlavored.inlineSyntaxes,

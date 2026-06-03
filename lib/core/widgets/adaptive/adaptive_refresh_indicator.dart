@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:flutter/material.dart';
 
-import '../../providers/platform_style_provider.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
 
 /// Platform-adaptive pull-to-refresh wrapper for a [CustomScrollView].
 ///
@@ -38,9 +38,7 @@ class AdaptiveRefreshIndicator extends StatelessWidget {
     // it so refresh still triggers even when the list is shorter than the
     // viewport.
     final physics = context.useIos
-        ? const AlwaysScrollableScrollPhysics(
-            parent: BouncingScrollPhysics(),
-          )
+        ? const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics())
         : (child.physics ?? const AlwaysScrollableScrollPhysics());
     final slivers = context.useIos
         ? [

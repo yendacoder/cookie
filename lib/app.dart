@@ -28,9 +28,9 @@ class CookieApp extends ConsumerWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.linear(scale),
-          ),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(scale)),
           child: child!,
         );
       },

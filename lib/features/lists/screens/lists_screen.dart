@@ -10,16 +10,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/providers/platform_style_provider.dart';
-import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../core/widgets/error_view.dart';
-import '../../../models/user_list.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../../auth/widgets/auth_gate.dart';
-import '../providers/user_lists_provider.dart';
-import '../widgets/list_form_sheet.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/error_view.dart';
+import 'package:cookie/models/user_list.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/auth/widgets/auth_gate.dart';
+import 'package:cookie/features/lists/providers/user_lists_provider.dart';
+import 'package:cookie/features/lists/widgets/list_form_sheet.dart';
 
 class ListsScreen extends ConsumerWidget {
   const ListsScreen({super.key});
@@ -27,9 +27,7 @@ class ListsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AdaptiveScaffold(
-      appBar: AdaptiveAppBar(
-        title: Text(context.l10n.listsScreenTitle),
-      ),
+      appBar: AdaptiveAppBar(title: Text(context.l10n.listsScreenTitle)),
       body: AuthGate(child: _ListsBody()),
       floatingActionButton: _CreateFab(),
     );
@@ -41,8 +39,9 @@ class ListsScreen extends ConsumerWidget {
 class _CreateFab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isAuthenticated =
-        ref.watch(authProvider.select((s) => s.value != null));
+    final isAuthenticated = ref.watch(
+      authProvider.select((s) => s.value != null),
+    );
     if (!isAuthenticated) return const SizedBox.shrink();
 
     return AdaptiveFab(
@@ -57,13 +56,15 @@ void _showCreateSheet(BuildContext context, WidgetRef ref) {
   showPlatformSheet(
     context: context,
     builder: (_) => ListFormSheet(
-      onSave: ({
-        required name,
-        required displayName,
-        description,
-        required public,
-      }) =>
-          ref.read(userListsProvider.notifier).create(
+      onSave:
+          ({
+            required name,
+            required displayName,
+            description,
+            required public,
+          }) => ref
+              .read(userListsProvider.notifier)
+              .create(
                 name: name,
                 displayName: displayName,
                 description: description,
@@ -83,9 +84,9 @@ class _ListsBody extends ConsumerWidget {
     return switch (listsState) {
       AsyncLoading() => const Center(child: AdaptiveProgressIndicator()),
       AsyncError(:final error) => ErrorView(
-          error: error,
-          onRetry: () => ref.invalidate(userListsProvider),
-        ),
+        error: error,
+        onRetry: () => ref.invalidate(userListsProvider),
+      ),
       AsyncData(:final value) => _ListsLoaded(lists: value),
     };
   }
@@ -103,8 +104,8 @@ class _ListsLoaded extends ConsumerWidget {
         child: Text(
           context.l10n.listsEmpty,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
       );
     }

@@ -28,13 +28,12 @@ final class NetworkException extends AppException {
   final DioException cause;
 
   bool get isOffline => switch (cause.type) {
-        DioExceptionType.connectionError ||
-        DioExceptionType.connectionTimeout ||
-        DioExceptionType.receiveTimeout ||
-        DioExceptionType.sendTimeout =>
-          true,
-        _ => false,
-      };
+    DioExceptionType.connectionError ||
+    DioExceptionType.connectionTimeout ||
+    DioExceptionType.receiveTimeout ||
+    DioExceptionType.sendTimeout => true,
+    _ => false,
+  };
 }
 
 /// A JSON parsing failure.

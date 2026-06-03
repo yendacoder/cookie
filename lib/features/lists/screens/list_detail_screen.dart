@@ -7,22 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/providers/platform_style_provider.dart';
-import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../core/widgets/markdown_text.dart';
-import '../../../core/utils/relative_time.dart';
-import '../../../core/widgets/error_view.dart';
-import '../../../models/comment.dart';
-import '../../../models/post.dart';
-import '../../../models/user_list.dart';
-import '../../posts/widgets/post_card.dart';
-import '../../posts/widgets/post_card_skeleton.dart';
-import '../providers/list_items_provider.dart';
-import '../providers/user_lists_provider.dart';
-import '../widgets/list_form_sheet.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/markdown_text.dart';
+import 'package:cookie/core/utils/relative_time.dart';
+import 'package:cookie/core/widgets/error_view.dart';
+import 'package:cookie/models/comment.dart';
+import 'package:cookie/models/post.dart';
+import 'package:cookie/models/user_list.dart';
+import 'package:cookie/features/posts/widgets/post_card.dart';
+import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
+import 'package:cookie/features/lists/providers/list_items_provider.dart';
+import 'package:cookie/features/lists/providers/user_lists_provider.dart';
+import 'package:cookie/features/lists/widgets/list_form_sheet.dart';
 
 class ListDetailScreen extends ConsumerStatefulWidget {
   const ListDetailScreen({super.key, required this.listId, this.initialList});

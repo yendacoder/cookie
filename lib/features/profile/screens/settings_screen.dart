@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/widgets/adaptive/adaptive_segmented_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_segmented_button.dart';
 
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
-import '../../../core/widgets/adaptive/adaptive_scaffold.dart';
-import '../../shell/providers/text_scale_provider.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
+import 'package:cookie/features/shell/providers/text_scale_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});

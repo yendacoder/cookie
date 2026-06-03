@@ -1,4 +1,4 @@
-import '../../l10n/app_localizations.dart';
+import 'package:cookie/l10n/app_localizations.dart';
 
 extension RelativeTime on DateTime {
   String toRelativeString(AppLocalizations l10n) {

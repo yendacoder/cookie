@@ -10,16 +10,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/providers/platform_style_provider.dart';
-import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../models/discuit_image.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../../communities/providers/muted_communities_list_provider.dart';
-import '../../shell/providers/package_info_provider.dart';
-import '../../update/providers/update_check_provider.dart';
-import '../../user/providers/muted_users_list_provider.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/models/discuit_image.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
+import 'package:cookie/features/shell/providers/package_info_provider.dart';
+import 'package:cookie/features/update/providers/update_check_provider.dart';
+import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});

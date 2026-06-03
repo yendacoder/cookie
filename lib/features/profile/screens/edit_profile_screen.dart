@@ -6,15 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
-import '../../../core/widgets/adaptive/adaptive_button.dart';
-import '../../../core/widgets/adaptive/adaptive_ink_well.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../core/widgets/adaptive/adaptive_scaffold.dart';
-import '../../../core/widgets/adaptive/adaptive_snackbar.dart';
-import '../../../models/discuit_image.dart';
-import '../../auth/providers/auth_provider.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
+import 'package:cookie/models/discuit_image.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});

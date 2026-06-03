@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/api/api_client.dart';
+import 'package:cookie/core/api/api_client.dart';
 import 'muted_communities_list_provider.dart';
 
 part 'community_mutes_provider.g.dart';

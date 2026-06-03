@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../models/discuit_image.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/models/discuit_image.dart';
 
 /// Navigation argument bag — passed as `extra` to the `/image-viewer` route.
 class ImageViewerArgs {

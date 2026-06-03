@@ -34,8 +34,9 @@ final updateCheckProvider = FutureProvider<UpdateInfo?>((ref) async {
     final tagName = data['tag_name'] as String?;
     if (tagName == null) return null;
 
-    final latestVersion =
-        tagName.startsWith('v') ? tagName.substring(1) : tagName;
+    final latestVersion = tagName.startsWith('v')
+        ? tagName.substring(1)
+        : tagName;
     if (!_isNewer(latestVersion, currentVersion)) return null;
 
     final assets =

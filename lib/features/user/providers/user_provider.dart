@@ -1,10 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../models/comment.dart';
-import '../../../models/post.dart';
-import '../../../models/public_user.dart';
-import '../../../models/user_feed_item.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/models/comment.dart';
+import 'package:cookie/models/post.dart';
+import 'package:cookie/models/public_user.dart';
+import 'package:cookie/models/user_feed_item.dart';
 
 part 'user_provider.g.dart';
 
@@ -56,10 +56,9 @@ class UserActivityNotifier extends _$UserActivityNotifier {
   }
 
   Future<UserActivityState> _loadPage({required String? cursor}) async {
-    final response = await ref.read(apiClientProvider).get(
-      'users/$_username/feed',
-      queryParameters: {'next': ?cursor},
-    );
+    final response = await ref
+        .read(apiClientProvider)
+        .get('users/$_username/feed', queryParameters: {'next': ?cursor});
     final data = response.data as Map<String, dynamic>;
     final rawItems = (data['items'] as List).cast<Map<String, dynamic>>();
 
@@ -100,30 +99,38 @@ class UserActivityNotifier extends _$UserActivityNotifier {
 
     final cursorToLoad = current.nextCursor!;
 
-    state = AsyncData(UserActivityState(
-      items: current.items,
-      nextCursor: cursorToLoad,
-      isLoadingMore: true,
-    ));
+    state = AsyncData(
+      UserActivityState(
+        items: current.items,
+        nextCursor: cursorToLoad,
+        isLoadingMore: true,
+      ),
+    );
 
     try {
       final page = await _loadPage(cursor: cursorToLoad);
 
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.nextCursor == cursorToLoad) {
-        state = AsyncData(UserActivityState(
-          items: [...value.items, ...page.items],
-          nextCursor: page.nextCursor,
-        ));
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.nextCursor == cursorToLoad) {
+        state = AsyncData(
+          UserActivityState(
+            items: [...value.items, ...page.items],
+            nextCursor: page.nextCursor,
+          ),
+        );
       }
     } catch (e) {
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.nextCursor == cursorToLoad) {
-        state = AsyncData(UserActivityState(
-          items: value.items,
-          nextCursor: value.nextCursor,
-          loadMoreError: e,
-        ));
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.nextCursor == cursorToLoad) {
+        state = AsyncData(
+          UserActivityState(
+            items: value.items,
+            nextCursor: value.nextCursor,
+            loadMoreError: e,
+          ),
+        );
       }
     }
   }

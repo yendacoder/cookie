@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
-import '../../providers/platform_style_provider.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
 
 class AdaptiveFab extends StatelessWidget {
   const AdaptiveFab({
@@ -20,10 +20,7 @@ class AdaptiveFab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (context.useIos) {
-      return GlassButton(
-        icon: Icon(icon),
-        onTap: onPressed,
-      );
+      return GlassButton(icon: Icon(icon), onTap: onPressed);
     }
     return FloatingActionButton(
       onPressed: onPressed,

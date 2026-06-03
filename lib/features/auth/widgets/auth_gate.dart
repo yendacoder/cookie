@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/widgets/adaptive/adaptive_button.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../core/widgets/error_view.dart';
-import '../providers/auth_provider.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/error_view.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
 
 /// Wraps [child] and shows a sign-in prompt when the user is not authenticated.
 /// Shows a typed [ErrorView] with a retry option for genuine errors.
@@ -22,10 +22,8 @@ class AuthGate extends ConsumerWidget {
 
     return auth.when(
       loading: () => const Center(child: AdaptiveProgressIndicator()),
-      error: (error, _) => ErrorView(
-        error: error,
-        onRetry: () => ref.invalidate(authProvider),
-      ),
+      error: (error, _) =>
+          ErrorView(error: error, onRetry: () => ref.invalidate(authProvider)),
       data: (user) {
         if (user == null) return const _SignInPrompt();
         return child;
@@ -61,8 +59,8 @@ class _SignInPrompt extends StatelessWidget {
               context.l10n.errorAuthRequiredBody,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 32),
             AdaptiveFilledButton(

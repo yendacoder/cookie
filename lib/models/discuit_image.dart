@@ -73,9 +73,7 @@ extension DiscuitImageExt on DiscuitImage {
 
     // Candidates: copies at least as wide as the physical pixel target.
     // Sort ascending so we pick the smallest sufficient copy.
-    final candidates = copies
-        .where((c) => c.width >= physicalTarget)
-        .toList()
+    final candidates = copies.where((c) => c.width >= physicalTarget).toList()
       ..sort((a, b) => a.width.compareTo(b.width));
 
     if (candidates.isNotEmpty) return _resolveUrl(candidates.first.url);

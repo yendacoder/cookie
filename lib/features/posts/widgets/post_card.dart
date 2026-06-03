@@ -16,21 +16,21 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/utils/markdown_utils.dart';
-import '../../../core/utils/relative_time.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../core/widgets/avatar.dart';
-import '../../../models/discuit_image.dart';
-import '../../../models/post.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../../communities/providers/community_mutes_provider.dart';
-import '../../user/providers/muted_users_list_provider.dart';
-import '../../user/providers/user_mutes_provider.dart';
-import '../../voting/providers/voting_provider.dart';
-import '../providers/hidden_posts_provider.dart';
-import '../screens/image_viewer_screen.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/utils/markdown_utils.dart';
+import 'package:cookie/core/utils/relative_time.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/avatar.dart';
+import 'package:cookie/models/discuit_image.dart';
+import 'package:cookie/models/post.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/communities/providers/community_mutes_provider.dart';
+import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
+import 'package:cookie/features/user/providers/user_mutes_provider.dart';
+import 'package:cookie/features/voting/providers/voting_provider.dart';
+import 'package:cookie/features/posts/providers/hidden_posts_provider.dart';
+import 'package:cookie/features/posts/screens/image_viewer_screen.dart';
 import 'post_image_carousel.dart';
 import 'post_save_to_list_sheet.dart';
 
@@ -470,7 +470,9 @@ class _PostFooter extends ConsumerWidget {
           ),
           Padding(
             // ios menu button has outline and needs to be aligned differently
-            padding: context.useIos ? const EdgeInsets.symmetric(horizontal: 8) : EdgeInsets.zero,
+            padding: context.useIos
+                ? const EdgeInsets.symmetric(horizontal: 8)
+                : EdgeInsets.zero,
             child: _PostMenuButton(
               post: post,
               muted: muted,

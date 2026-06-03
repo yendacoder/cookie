@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../providers/platform_style_provider.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'adaptive_divider.dart';
 
 /// Consistent title area for bottom sheets.

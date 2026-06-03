@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/discuit_image.dart';
+import 'package:cookie/models/discuit_image.dart';
 
 class PostImageCarousel extends StatefulWidget {
   const PostImageCarousel({
@@ -68,7 +68,8 @@ class _PostImageCarouselState extends State<PostImageCarousel> {
             },
             itemBuilder: (context, i) {
               final image = widget.images[i % count];
-              final bg = image.averageColorValue ??
+              final bg =
+                  image.averageColorValue ??
                   Theme.of(context).colorScheme.surfaceContainerHighest;
               return LayoutBuilder(
                 builder: (context, constraints) {

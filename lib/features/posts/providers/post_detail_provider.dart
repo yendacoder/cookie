@@ -1,9 +1,9 @@
 import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../models/comment.dart';
-import '../../../models/post.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/models/comment.dart';
+import 'package:cookie/models/post.dart';
 
 part 'post_detail_provider.g.dart';
 

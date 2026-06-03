@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/api/api_client.dart';
+import 'package:cookie/core/api/api_client.dart';
 
 part 'hidden_posts_provider.g.dart';
 
@@ -12,10 +12,9 @@ class HiddenPosts extends _$HiddenPosts {
   Future<void> hide(String postId) async {
     state = {...state, postId};
     try {
-      await ref.read(apiClientProvider).post(
-        'hidden_posts',
-        data: {'postId': postId},
-      );
+      await ref
+          .read(apiClientProvider)
+          .post('hidden_posts', data: {'postId': postId});
     } catch (_) {
       state = state.difference({postId});
       rethrow;

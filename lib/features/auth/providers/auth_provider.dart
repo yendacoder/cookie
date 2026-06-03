@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../models/initial_response.dart';
-import '../../../models/user.dart';
-import '../../communities/providers/community_mutes_provider.dart';
-import '../../communities/providers/muted_communities_list_provider.dart';
-import '../../user/providers/muted_users_list_provider.dart';
-import '../../user/providers/user_mutes_provider.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/models/initial_response.dart';
+import 'package:cookie/models/user.dart';
+import 'package:cookie/features/communities/providers/community_mutes_provider.dart';
+import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
+import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
+import 'package:cookie/features/user/providers/user_mutes_provider.dart';
 
 part 'auth_provider.g.dart';
 
@@ -36,24 +36,19 @@ class AuthNotifier extends _$AuthNotifier {
         .map((m) => m.mutedCommunityId)
         .toSet();
     ref.read(communityMutesProvider.notifier).initialize(communityIds);
-    ref.read(mutedCommunitiesListProvider.notifier).initialize(
-      data.mutes.communityMutes,
-    );
+    ref
+        .read(mutedCommunitiesListProvider.notifier)
+        .initialize(data.mutes.communityMutes);
 
-    final userIds = data.mutes.userMutes
-        .map((m) => m.mutedUserId)
-        .toSet();
+    final userIds = data.mutes.userMutes.map((m) => m.mutedUserId).toSet();
     ref.read(userMutesProvider.notifier).initialize(userIds);
-    ref.read(mutedUsersListProvider.notifier).initialize(
-      data.mutes.userMutes,
-    );
+    ref.read(mutedUsersListProvider.notifier).initialize(data.mutes.userMutes);
   }
 
   Future<void> login(String username, String password) async {
-    await ref.read(apiClientProvider).post(
-      '_login',
-      data: {'username': username, 'password': password},
-    );
+    await ref
+        .read(apiClientProvider)
+        .post('_login', data: {'username': username, 'password': password});
     // Re-fetch _initial to get fresh session data including mutes.
     final response = await ref.read(apiClientProvider).get('_initial');
     final data = InitialResponse.fromJson(
@@ -66,20 +61,22 @@ class AuthNotifier extends _$AuthNotifier {
   Future<void> updateProfile({required String aboutMe}) async {
     final user = state.value;
     if (user == null) return;
-    final response = await ref.read(apiClientProvider).post(
-      '_settings',
-      queryParameters: {'action': 'updateProfile'},
-      data: {
-        'aboutMe': aboutMe,
-        'upvoteNotificationsOff': user.upvoteNotificationsOff,
-        'replyNotificationsOff': user.replyNotificationsOff,
-        'homeFeed': user.homeFeed,
-        'rememberFeedSort': user.rememberFeedSort,
-        'embedsOff': user.embedsOff,
-        'email': user.email ?? '',
-        'hideUserProfilePictures': user.hideUserProfilePictures,
-      },
-    );
+    final response = await ref
+        .read(apiClientProvider)
+        .post(
+          '_settings',
+          queryParameters: {'action': 'updateProfile'},
+          data: {
+            'aboutMe': aboutMe,
+            'upvoteNotificationsOff': user.upvoteNotificationsOff,
+            'replyNotificationsOff': user.replyNotificationsOff,
+            'homeFeed': user.homeFeed,
+            'rememberFeedSort': user.rememberFeedSort,
+            'embedsOff': user.embedsOff,
+            'email': user.email ?? '',
+            'hideUserProfilePictures': user.hideUserProfilePictures,
+          },
+        );
     state = AsyncData(User.fromJson(response.data as Map<String, dynamic>));
   }
 
@@ -90,11 +87,13 @@ class AuthNotifier extends _$AuthNotifier {
         filename: imagePath.split('/').last,
       ),
     });
-    final response = await ref.read(apiClientProvider).post(
-      '_settings',
-      queryParameters: {'action': 'updateProPic'},
-      data: formData,
-    );
+    final response = await ref
+        .read(apiClientProvider)
+        .post(
+          '_settings',
+          queryParameters: {'action': 'updateProPic'},
+          data: formData,
+        );
     state = AsyncData(User.fromJson(response.data as Map<String, dynamic>));
   }
 
@@ -106,10 +105,9 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<void> logout() async {
     try {
-      await ref.read(apiClientProvider).post(
-        '_login',
-        queryParameters: {'action': 'logout'},
-      );
+      await ref
+          .read(apiClientProvider)
+          .post('_login', queryParameters: {'action': 'logout'});
     } finally {
       ref.read(communityMutesProvider.notifier).clear();
       ref.read(mutedCommunitiesListProvider.notifier).clear();

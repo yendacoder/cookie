@@ -1,12 +1,11 @@
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
 
 class PostButton extends ConsumerWidget {
   const PostButton({super.key});

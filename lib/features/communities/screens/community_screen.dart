@@ -4,28 +4,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/providers/platform_style_provider.dart';
-import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
-import '../../../core/widgets/adaptive/adaptive_button.dart';
-import '../../../core/widgets/adaptive/adaptive_dialog.dart';
-import '../../../core/widgets/adaptive/adaptive_divider.dart';
-import '../../../core/widgets/adaptive/adaptive_filter_chip.dart';
-import '../../../core/widgets/adaptive/adaptive_list_tile.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../core/widgets/adaptive/adaptive_scaffold.dart';
-import '../../../core/widgets/error_view.dart';
-import '../../../core/widgets/markdown_text.dart';
-import '../../../models/community.dart';
-import '../../../models/discuit_image.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../../home/providers/home_feed_provider.dart';
-import '../../posts/widgets/post_card.dart';
-import '../../posts/widgets/post_card_skeleton.dart';
-import '../../home/providers/home_feed_provider.dart'
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_filter_chip.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
+import 'package:cookie/core/widgets/error_view.dart';
+import 'package:cookie/core/widgets/markdown_text.dart';
+import 'package:cookie/models/community.dart';
+import 'package:cookie/models/discuit_image.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/home/providers/home_feed_provider.dart';
+import 'package:cookie/features/posts/widgets/post_card.dart';
+import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
+import 'package:cookie/features/home/providers/home_feed_provider.dart'
     show PostFeedState, PostSort;
-import '../providers/community_mutes_provider.dart';
-import '../providers/community_provider.dart';
+import 'package:cookie/features/communities/providers/community_mutes_provider.dart';
+import 'package:cookie/features/communities/providers/community_provider.dart';
 
 class CommunityScreen extends ConsumerWidget {
   const CommunityScreen({super.key, required this.communityName});
@@ -308,7 +308,8 @@ class _CommunityHeader extends ConsumerWidget {
                     child: mods[i].proPic != null
                         ? ClipOval(
                             child: CachedNetworkImage(
-                              imageUrl: (mods[i].proPic as DiscuitImage).fullUrl,
+                              imageUrl:
+                                  (mods[i].proPic as DiscuitImage).fullUrl,
                               width: 36,
                               height: 36,
                               fit: BoxFit.cover,

@@ -16,32 +16,32 @@ import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
-import '../../../core/providers/platform_style_provider.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
-import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
-import '../../../core/widgets/avatar.dart';
-import '../../../core/widgets/comment_gif.dart';
-import '../../../core/widgets/youtube_content.dart';
-import '../../voting/providers/voting_provider.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/theme/app_theme.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/avatar.dart';
+import 'package:cookie/core/widgets/comment_gif.dart';
+import 'package:cookie/core/widgets/youtube_content.dart';
+import 'package:cookie/features/voting/providers/voting_provider.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../core/extensions/build_context_ext.dart';
-import '../../../core/utils/relative_time.dart';
-import '../../../core/widgets/error_view.dart';
-import '../../../core/widgets/markdown_text.dart';
-import '../../../models/comment.dart';
-import '../../../models/discuit_image.dart';
-import '../../../models/post.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../providers/hidden_posts_provider.dart';
-import '../providers/post_detail_provider.dart';
-import '../widgets/post_card.dart';
-import '../widgets/post_card_skeleton.dart';
-import '../widgets/post_image_carousel.dart';
-import '../widgets/post_save_to_list_sheet.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/utils/relative_time.dart';
+import 'package:cookie/core/widgets/error_view.dart';
+import 'package:cookie/core/widgets/markdown_text.dart';
+import 'package:cookie/models/comment.dart';
+import 'package:cookie/models/discuit_image.dart';
+import 'package:cookie/models/post.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/posts/providers/hidden_posts_provider.dart';
+import 'package:cookie/features/posts/providers/post_detail_provider.dart';
+import 'package:cookie/features/posts/widgets/post_card.dart';
+import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
+import 'package:cookie/features/posts/widgets/post_image_carousel.dart';
+import 'package:cookie/features/posts/widgets/post_save_to_list_sheet.dart';
 import 'image_viewer_screen.dart';
 
 class PostDetailScreen extends ConsumerStatefulWidget {
@@ -238,15 +238,24 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 label: l10n.postMenuSaveToList,
               ),
               if (isAuthor) ...[
-                AdaptiveMenuItem(value: _PostMenuAction.editPost, label: l10n.postMenuEdit),
+                AdaptiveMenuItem(
+                  value: _PostMenuAction.editPost,
+                  label: l10n.postMenuEdit,
+                ),
                 AdaptiveMenuItem(
                   value: _PostMenuAction.deletePost,
                   label: l10n.postMenuDelete,
                   isDestructive: true,
                 ),
               ],
-              AdaptiveMenuItem(value: _PostMenuAction.hide, label: l10n.postMenuHide),
-              AdaptiveMenuItem(value: _PostMenuAction.report, label: l10n.postMenuReport),
+              AdaptiveMenuItem(
+                value: _PostMenuAction.hide,
+                label: l10n.postMenuHide,
+              ),
+              AdaptiveMenuItem(
+                value: _PostMenuAction.report,
+                label: l10n.postMenuReport,
+              ),
             ],
             onSelected: (action) async {
               switch (action) {
@@ -642,12 +651,12 @@ class _DetailVoteButton extends StatelessWidget {
         padding: EdgeInsetsGeometry.all(6),
         child: showSpinner
             ? SizedBox.square(
-          dimension: 16,
-          child: AdaptiveProgressIndicator(
-            strokeWidth: 1.5,
-            color: muted,
-          ),
-        )
+                dimension: 16,
+                child: AdaptiveProgressIndicator(
+                  strokeWidth: 1.5,
+                  color: muted,
+                ),
+              )
             : Icon(icon, size: 16, color: isActive ? activeColor : muted),
       ),
     );
@@ -732,12 +741,12 @@ class _CommentComposer extends StatelessWidget {
                         child: IconButton(
                           icon: isSubmitting
                               ? SizedBox.square(
-                            dimension: 20,
-                            child: AdaptiveProgressIndicator(
-                              strokeWidth: 2,
-                              color: colorScheme.primary,
-                            ),
-                          )
+                                  dimension: 20,
+                                  child: AdaptiveProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: colorScheme.primary,
+                                  ),
+                                )
                               : Icon(
                                   Icons.send_rounded,
                                   color: canSend
@@ -1199,14 +1208,20 @@ class _CommentMenuButton extends ConsumerWidget {
       ),
       items: [
         if (isOwn) ...[
-          AdaptiveMenuItem(value: _CommentMenuAction.edit, label: l10n.commentMenuEdit),
+          AdaptiveMenuItem(
+            value: _CommentMenuAction.edit,
+            label: l10n.commentMenuEdit,
+          ),
           AdaptiveMenuItem(
             value: _CommentMenuAction.delete,
             label: l10n.commentMenuDelete,
             isDestructive: true,
           ),
         ],
-        AdaptiveMenuItem(value: _CommentMenuAction.report, label: l10n.postMenuReport),
+        AdaptiveMenuItem(
+          value: _CommentMenuAction.report,
+          label: l10n.postMenuReport,
+        ),
       ],
       onSelected: (action) async {
         switch (action) {
@@ -1294,8 +1309,7 @@ class _CommentEditSheetState extends ConsumerState<_CommentEditSheet> {
               children: [
                 TextField(
                   controller: _ctrl,
-                  decoration: InputDecoration(
-                  ),
+                  decoration: InputDecoration(),
                   maxLines: 6,
                   minLines: 3,
                   autofocus: true,
@@ -1306,9 +1320,9 @@ class _CommentEditSheetState extends ConsumerState<_CommentEditSheet> {
                   onPressed: _saving ? null : _submit,
                   child: _saving
                       ? const SizedBox.square(
-                    dimension: 20,
-                    child: AdaptiveProgressIndicator(strokeWidth: 2),
-                  )
+                          dimension: 20,
+                          child: AdaptiveProgressIndicator(strokeWidth: 2),
+                        )
                       : Text(l10n.saveButton),
                 ),
                 const SizedBox(height: 8),
@@ -1348,12 +1362,12 @@ class _CommentVoteButton extends StatelessWidget {
         padding: EdgeInsetsGeometry.all(6),
         child: showSpinner
             ? SizedBox.square(
-          dimension: 16,
-          child: AdaptiveProgressIndicator(
-            strokeWidth: 1.5,
-            color: muted,
-          ),
-        )
+                dimension: 16,
+                child: AdaptiveProgressIndicator(
+                  strokeWidth: 1.5,
+                  color: muted,
+                ),
+              )
             : Icon(icon, size: 16, color: isActive ? activeColor : muted),
       ),
     );

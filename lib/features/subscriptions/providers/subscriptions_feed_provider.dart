@@ -1,11 +1,11 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../models/post.dart';
-import '../../home/providers/home_feed_provider.dart'
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/models/post.dart';
+import 'package:cookie/features/home/providers/home_feed_provider.dart'
     show PostFeedState, PostSort;
-import '../../posts/providers/read_new_comments_notifier.dart';
+import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
 
 part 'subscriptions_feed_provider.g.dart';
 
@@ -64,10 +64,7 @@ class SubscriptionsFeedNotifier extends _$SubscriptionsFeedNotifier {
         .toList();
 
     ref.read(readNewCommentsProvider.notifier).clear();
-    return PostFeedState(
-      posts: posts,
-      nextCursor: data['next']?.toString(),
-    );
+    return PostFeedState(posts: posts, nextCursor: data['next']?.toString());
   }
 
   Future<void> loadMore() async {

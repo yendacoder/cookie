@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
-import '../../providers/platform_style_provider.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
 
 class AdaptiveAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const AdaptiveAppBar({
@@ -26,6 +26,7 @@ class AdaptiveAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final EdgeInsetsGeometry? actionsPadding;
   final Color? backgroundColor;
   final Color? foregroundColor;
+
   /// Android only — controls the status bar icon brightness.
   final SystemUiOverlayStyle? systemOverlayStyle;
 
@@ -82,6 +83,7 @@ class AdaptiveSliverAppBar extends ConsumerWidget {
   final Widget title;
   final List<Widget>? actions;
   final EdgeInsetsGeometry? actionsPadding;
+
   /// Whether the bar stays pinned when scrolled on iOS.
   /// Android always uses floating+snap regardless of this value.
   final bool pinned;

@@ -1,8 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../models/notification.dart';
-import '../../auth/providers/auth_provider.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/models/notification.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
 
 part 'notifications_provider.g.dart';
 
@@ -28,10 +28,9 @@ class NotificationsNotifier extends _$NotificationsNotifier {
   Future<NotificationFeedState> build() => _loadPage(null);
 
   Future<NotificationFeedState> _loadPage(String? cursor) async {
-    final response = await ref.read(apiClientProvider).get(
-      'notifications',
-      queryParameters: {'next': ?cursor},
-    );
+    final response = await ref
+        .read(apiClientProvider)
+        .get('notifications', queryParameters: {'next': ?cursor});
     final data = response.data as Map<String, dynamic>;
     final newCount = data['newCount'] as int? ?? 0;
     ref.read(authProvider.notifier).setNotificationCount(newCount);
@@ -49,29 +48,37 @@ class NotificationsNotifier extends _$NotificationsNotifier {
     if (current == null || current.isLoadingMore || !current.hasMore) return;
 
     final cursor = current.nextCursor!;
-    state = AsyncData(NotificationFeedState(
-      items: current.items,
-      nextCursor: cursor,
-      isLoadingMore: true,
-    ));
+    state = AsyncData(
+      NotificationFeedState(
+        items: current.items,
+        nextCursor: cursor,
+        isLoadingMore: true,
+      ),
+    );
 
     try {
       final page = await _loadPage(cursor);
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.nextCursor == cursor) {
-        state = AsyncData(NotificationFeedState(
-          items: [...value.items, ...page.items],
-          nextCursor: page.nextCursor,
-        ));
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.nextCursor == cursor) {
+        state = AsyncData(
+          NotificationFeedState(
+            items: [...value.items, ...page.items],
+            nextCursor: page.nextCursor,
+          ),
+        );
       }
     } catch (e) {
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.nextCursor == cursor) {
-        state = AsyncData(NotificationFeedState(
-          items: value.items,
-          nextCursor: value.nextCursor,
-          loadMoreError: e,
-        ));
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.nextCursor == cursor) {
+        state = AsyncData(
+          NotificationFeedState(
+            items: value.items,
+            nextCursor: value.nextCursor,
+            loadMoreError: e,
+          ),
+        );
       }
     }
   }

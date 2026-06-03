@@ -1,8 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/api/api_client.dart';
-import '../../../models/comment.dart';
-import '../../../models/post.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/models/comment.dart';
+import 'package:cookie/models/post.dart';
 
 part 'voting_provider.g.dart';
 
@@ -36,13 +36,13 @@ class VoteState {
   final bool? pendingVoteUp;
 
   VoteState _withLoading(bool up) => VoteState(
-        userVoted: userVoted,
-        userVotedUp: userVotedUp,
-        upvotes: upvotes,
-        downvotes: downvotes,
-        isLoading: true,
-        pendingVoteUp: up,
-      );
+    userVoted: userVoted,
+    userVotedUp: userVotedUp,
+    upvotes: upvotes,
+    downvotes: downvotes,
+    isLoading: true,
+    pendingVoteUp: up,
+  );
 }
 
 // ── Shared computation ────────────────────────────────────────────────────────
@@ -66,15 +66,27 @@ VoteState _optimistic({
     // Tapping the same direction toggles the vote off.
     userVoted = false;
     userVotedUp = null;
-    if (newUp) { upvotes--; } else { downvotes--; }
+    if (newUp) {
+      upvotes--;
+    } else {
+      downvotes--;
+    }
   } else {
     // Switch direction or cast a fresh vote.
     if (wasVoted) {
-      if (wasUp) { upvotes--; } else { downvotes--; }
+      if (wasUp) {
+        upvotes--;
+      } else {
+        downvotes--;
+      }
     }
     userVoted = true;
     userVotedUp = newUp;
-    if (newUp) { upvotes++; } else { downvotes++; }
+    if (newUp) {
+      upvotes++;
+    } else {
+      downvotes++;
+    }
   }
 
   return VoteState(

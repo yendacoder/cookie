@@ -38,10 +38,7 @@ abstract class User with _$User {
 
 @freezed
 abstract class Badge with _$Badge {
-  const factory Badge({
-    required int id,
-    required String type,
-  }) = _Badge;
+  const factory Badge({required int id, required String type}) = _Badge;
 
   factory Badge.fromJson(Map<String, dynamic> json) => _$BadgeFromJson(json);
 }
