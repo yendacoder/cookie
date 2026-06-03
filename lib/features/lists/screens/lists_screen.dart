@@ -1,8 +1,19 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_fab.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/providers/platform_style_provider.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../models/user_list.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -15,8 +26,8 @@ class ListsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         title: Text(context.l10n.listsScreenTitle),
       ),
       body: AuthGate(child: _ListsBody()),
@@ -34,18 +45,17 @@ class _CreateFab extends ConsumerWidget {
         ref.watch(authProvider.select((s) => s.value != null));
     if (!isAuthenticated) return const SizedBox.shrink();
 
-    return FloatingActionButton(
+    return AdaptiveFab(
       onPressed: () => _showCreateSheet(context, ref),
+      icon: Icons.add,
       tooltip: context.l10n.listsCreateTitle,
-      child: const Icon(Icons.add),
     );
   }
 }
 
 void _showCreateSheet(BuildContext context, WidgetRef ref) {
-  showModalBottomSheet(
+  showPlatformSheet(
     context: context,
-    isScrollControlled: true,
     builder: (_) => ListFormSheet(
       onSave: ({
         required name,
@@ -71,7 +81,7 @@ class _ListsBody extends ConsumerWidget {
     final listsState = ref.watch(userListsProvider);
 
     return switch (listsState) {
-      AsyncLoading() => const Center(child: CircularProgressIndicator()),
+      AsyncLoading() => const Center(child: AdaptiveProgressIndicator()),
       AsyncError(:final error) => ErrorView(
           error: error,
           onRetry: () => ref.invalidate(userListsProvider),
@@ -99,17 +109,20 @@ class _ListsLoaded extends ConsumerWidget {
       );
     }
 
-    return RefreshIndicator(
+    return AdaptiveRefreshIndicator(
       onRefresh: () async {
         ref.invalidate(userListsProvider);
         await ref.read(userListsProvider.future);
       },
-      child: ListView.separated(
+      child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: lists.length,
-        separatorBuilder: (_, _) => const Divider(height: 1),
-        itemBuilder: (context, index) =>
-            _ListTile(list: lists[index]),
+        slivers: [
+          SliverList.separated(
+            itemCount: lists.length,
+            separatorBuilder: (_, _) => const AdaptiveDivider(height: 1),
+            itemBuilder: (context, index) => _ListTile(list: lists[index]),
+          ),
+        ],
       ),
     );
   }
@@ -126,15 +139,15 @@ class _ListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return ListTile(
+    return AdaptiveListTile(
       leading: Icon(
-        list.public ? Icons.bookmark_outlined : Icons.lock_outline,
+        list.public ? context.bookmarkIcon : Icons.lock_outline,
         color: colorScheme.onSurfaceVariant,
       ),
       title: Text(list.displayName),
       subtitle: Text(context.l10n.listItemCount(list.numItems)),
       trailing: IconButton(
-        icon: const Icon(Icons.delete_outline),
+        icon: Icon(context.deleteIcon),
         tooltip: context.l10n.listsDeleteTooltip,
         onPressed: () => _confirmDelete(context, ref),
       ),
@@ -143,20 +156,19 @@ class _ListTile extends ConsumerWidget {
   }
 
   Future<void> _confirmDelete(BuildContext context, WidgetRef ref) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showPlatformDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => AdaptiveAlertDialog(
         title: Text(ctx.l10n.listsDeleteConfirmTitle),
         content: Text(ctx.l10n.listsDeleteConfirmBody),
         actions: [
-          TextButton(
+          AdaptiveDialogAction(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(ctx.l10n.cancelButton),
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(ctx).colorScheme.error,
-            ),
+          AdaptiveDialogAction(
+            isDefault: true,
+            isDestructive: true,
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(ctx.l10n.listsDeleteConfirmTitle),
           ),
@@ -168,9 +180,7 @@ class _ListTile extends ConsumerWidget {
         await ref.read(userListsProvider.notifier).delete(list.id);
       } catch (_) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.l10n.errorGeneric)),
-          );
+          showPlatformSnackBar(context, context.l10n.errorGeneric);
         }
       }
     }

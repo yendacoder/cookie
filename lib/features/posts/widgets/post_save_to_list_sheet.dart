@@ -1,9 +1,16 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_sheet_header.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/providers/platform_style_provider.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../models/post.dart';
 import '../../lists/providers/user_lists_provider.dart';
 
@@ -29,11 +36,7 @@ class _PostSaveToListSheetState extends ConsumerState<PostSaveToListSheet> {
       );
       if (!mounted) return;
       Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.postSavedToList(listDisplayName)),
-        ),
-      );
+      showPlatformSnackBar(context, context.l10n.postSavedToList(listDisplayName));
     } catch (_) {
       if (mounted) setState(() => _savingListId = null);
     }
@@ -48,18 +51,11 @@ class _PostSaveToListSheetState extends ConsumerState<PostSaveToListSheet> {
         mainAxisSize: .min,
         crossAxisAlignment: .stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: Text(
-              context.l10n.postMenuSaveToList,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-          ),
-          const Divider(height: 1),
+          AdaptiveSheetHeader(title: context.l10n.postMenuSaveToList),
           switch (listsState) {
             AsyncLoading() => const Padding(
                 padding: EdgeInsets.all(32),
-                child: Center(child: CircularProgressIndicator()),
+                child: Center(child: AdaptiveProgressIndicator()),
               ),
             AsyncError() => Padding(
                 padding: const EdgeInsets.all(16),
@@ -77,7 +73,7 @@ class _PostSaveToListSheetState extends ConsumerState<PostSaveToListSheet> {
                                 Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                     ),
-                    TextButton(
+                    AdaptiveTextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                         context.push('/lists');
@@ -94,14 +90,14 @@ class _PostSaveToListSheetState extends ConsumerState<PostSaveToListSheet> {
                 child: ListView.separated(
                   shrinkWrap: true,
                   itemCount: value.length,
-                  separatorBuilder: (_, _) => const Divider(height: 1),
+                  separatorBuilder: (_, _) => const AdaptiveDivider(height: 1),
                   itemBuilder: (context, index) {
                     final list = value[index];
                     final saving = _savingListId == list.id;
-                    return ListTile(
+                    return AdaptiveListTile(
                       leading: Icon(
                         list.public
-                            ? Icons.bookmark_outlined
+                            ? context.bookmarkIcon
                             : Icons.lock_outline,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
@@ -110,7 +106,7 @@ class _PostSaveToListSheetState extends ConsumerState<PostSaveToListSheet> {
                       trailing: saving
                           ? const SizedBox.square(
                               dimension: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              child: AdaptiveProgressIndicator(strokeWidth: 2),
                             )
                           : null,
                       onTap: saving

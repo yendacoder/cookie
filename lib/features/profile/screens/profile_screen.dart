@@ -1,3 +1,9 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +11,9 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/providers/platform_style_provider.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../models/discuit_image.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../communities/providers/muted_communities_list_provider.dart';
@@ -22,13 +31,13 @@ class ProfileScreen extends ConsumerWidget {
     final packageInfo = ref.watch(packageInfoProvider);
     final update = ref.watch(updateCheckProvider).value;
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         title: Text(context.l10n.profileScreenTitle),
         actions: [
           if (user != null) ...[
             IconButton(
-              icon: const Icon(Icons.edit_outlined),
+              icon: Icon(context.editIcon),
               tooltip: context.l10n.editProfileTitle,
               onPressed: () => context.push('/profile/edit'),
             ),
@@ -40,111 +49,103 @@ class ProfileScreen extends ConsumerWidget {
           ],
         ],
       ),
-      body: Column(
-        crossAxisAlignment: .stretch,
+      body: ListView(
         children: [
-          Expanded(
-            child: ListView(
-              children: [
-                // Auth section
-                authState.when(
-                  loading: () => const Padding(
-                    padding: EdgeInsets.all(32),
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
-                  error: (_, _) =>
-                      _SignInTile(message: context.l10n.errorGeneric),
-                  data: (u) => u != null
-                      ? _UserTile(
-                          username: u.username,
-                          points: u.points,
-                          proPic: u.proPic,
-                          onTap: () => context.push('/u/${u.username}'),
-                        )
-                      : _SignInTile(
-                          message: context.l10n.errorAuthRequiredBody,
-                        ),
-                ),
-                const Divider(height: 1),
-                // Navigation
-                ListTile(
-                  leading: const Icon(Icons.explore_outlined),
-                  title: Text(context.l10n.communitiesScreenTitle),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/communities'),
-                ),
-                if (user != null) ...[
-                  ListTile(
-                    leading: const Icon(Icons.bookmark_outline),
-                    title: Text(context.l10n.listsScreenTitle),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.push('/lists'),
-                  ),
-                  ListTile(
-                    leading: Badge(
-                      isLabelVisible: user.notificationsNewCount > 0,
-                      child: const Icon(Icons.notifications_outlined),
-                    ),
-                    title: Text(
-                      user.notificationsNewCount > 0
-                          ? '${context.l10n.notificationsScreenTitle} [${user.notificationsNewCount}]'
-                          : context.l10n.notificationsScreenTitle,
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.push('/notifications'),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.voice_over_off_outlined),
-                    title: Text(
-                      '${context.l10n.mutedUsersScreenTitle} [${ref.watch(mutedUsersListProvider).length}]',
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.push('/muted-users'),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.comments_disabled_outlined),
-                    title: Text(
-                      '${context.l10n.mutedCommunitiesScreenTitle} [${ref.watch(mutedCommunitiesListProvider).length}]',
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.push('/muted-communities'),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.settings),
-                    title: Text(context.l10n.settingsScreenTitle),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.push('/settings'),
-                  ),
-                ],
-                if (update != null) ...[
-                  ListTile(
-                    leading: Badge(
-                      isLabelVisible: true,
-                      backgroundColor: Theme.of(context).colorScheme.tertiary,
-                      child: const Icon(Icons.download),
-                    ),
-                    title: Text(context.l10n.updateAvailableTitle),
-                    subtitle: Text(
-                      context.l10n.updateAvailableSubtitle(update.version),
-                    ),
-                    trailing: FilledButton(
-                      onPressed: () => launchUrl(
-                        Uri.parse(update.downloadUrl),
-                        mode: LaunchMode.externalApplication,
-                      ),
-                      child: Text(context.l10n.updateDownloadButton),
-                    ),
-                  ),
-                ],
-              ],
+          // Auth section
+          authState.when(
+            loading: () => const Padding(
+              padding: EdgeInsets.all(32),
+              child: Center(child: AdaptiveProgressIndicator()),
             ),
+            error: (_, _) => _SignInTile(message: context.l10n.errorGeneric),
+            data: (u) => u != null
+                ? _UserTile(
+                    username: u.username,
+                    points: u.points,
+                    proPic: u.proPic,
+                    onTap: () => context.push('/u/${u.username}'),
+                  )
+                : _SignInTile(message: context.l10n.errorAuthRequiredBody),
           ),
-          Container(
-            alignment: .bottomRight,
-            padding: EdgeInsets.all(16),
-            child: Text(
-              context.l10n.appNameVersion(packageInfo.version),
-              style: Theme.of(context).textTheme.labelMedium,
+          const AdaptiveDivider(height: 1),
+          // Navigation
+          AdaptiveListTile(
+            leading: const Icon(Icons.explore_outlined),
+            title: Text(context.l10n.communitiesScreenTitle),
+            trailing: Icon(context.chevronRightIcon),
+            onTap: () => context.push('/communities'),
+          ),
+          if (user != null) ...[
+            AdaptiveListTile(
+              leading: Icon(context.bookmarkIcon),
+              title: Text(context.l10n.listsScreenTitle),
+              trailing: Icon(context.chevronRightIcon),
+              onTap: () => context.push('/lists'),
+            ),
+            AdaptiveListTile(
+              leading: Badge(
+                isLabelVisible: user.notificationsNewCount > 0,
+                child: Icon(context.notificationsIcon),
+              ),
+              title: Text(
+                user.notificationsNewCount > 0
+                    ? '${context.l10n.notificationsScreenTitle} [${user.notificationsNewCount}]'
+                    : context.l10n.notificationsScreenTitle,
+              ),
+              trailing: Icon(context.chevronRightIcon),
+              onTap: () => context.push('/notifications'),
+            ),
+            AdaptiveListTile(
+              leading: const Icon(Icons.voice_over_off_outlined),
+              title: Text(
+                '${context.l10n.mutedUsersScreenTitle} [${ref.watch(mutedUsersListProvider).length}]',
+              ),
+              trailing: Icon(context.chevronRightIcon),
+              onTap: () => context.push('/muted-users'),
+            ),
+            AdaptiveListTile(
+              leading: const Icon(Icons.comments_disabled_outlined),
+              title: Text(
+                '${context.l10n.mutedCommunitiesScreenTitle} [${ref.watch(mutedCommunitiesListProvider).length}]',
+              ),
+              trailing: Icon(context.chevronRightIcon),
+              onTap: () => context.push('/muted-communities'),
+            ),
+            AdaptiveListTile(
+              leading: Icon(context.settingsIcon),
+              title: Text(context.l10n.settingsScreenTitle),
+              trailing: Icon(context.chevronRightIcon),
+              onTap: () => context.push('/settings'),
+            ),
+          ],
+          if (update != null) ...[
+            AdaptiveListTile(
+              leading: Badge(
+                isLabelVisible: true,
+                backgroundColor: Theme.of(context).colorScheme.tertiary,
+                child: const Icon(Icons.download),
+              ),
+              title: Text(context.l10n.updateAvailableTitle),
+              subtitle: Text(
+                context.l10n.updateAvailableSubtitle(update.version),
+              ),
+              trailing: AdaptiveFilledButton(
+                onPressed: () => launchUrl(
+                  Uri.parse(update.downloadUrl),
+                  mode: LaunchMode.externalApplication,
+                ),
+                child: Text(context.l10n.updateDownloadButton),
+              ),
+            ),
+          ],
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: .centerRight,
+              child: Text(
+                context.l10n.appNameVersion(packageInfo.version),
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
             ),
           ),
         ],
@@ -153,17 +154,18 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Future<void> _confirmLogout(BuildContext context, WidgetRef ref) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showPlatformDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => AdaptiveAlertDialog(
         title: Text(ctx.l10n.logoutConfirmTitle),
         content: Text(ctx.l10n.logoutConfirmBody),
         actions: [
-          TextButton(
+          AdaptiveDialogAction(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(ctx.l10n.cancelButton),
           ),
-          FilledButton(
+          AdaptiveDialogAction(
+            isDefault: true,
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(ctx.l10n.logoutButton),
           ),
@@ -194,7 +196,7 @@ class _UserTile extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    return InkWell(
+    return AdaptiveInkWell(
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -234,8 +236,8 @@ class _UserTile extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
-            SizedBox(width: 8),
+            Icon(context.chevronRightIcon, color: colorScheme.onSurfaceVariant),
+            if (!context.useIos) SizedBox(width: 8),
           ],
         ),
       ),
@@ -283,8 +285,9 @@ class _SignInTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          FilledButton.tonal(
+          AdaptiveFilledButton(
             onPressed: () => context.push('/login'),
+            tonal: true,
             child: Text(context.l10n.signInButton),
           ),
         ],

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/widgets/adaptive/adaptive_button.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../core/widgets/error_view.dart';
 import '../providers/auth_provider.dart';
 
@@ -19,7 +21,7 @@ class AuthGate extends ConsumerWidget {
     final auth = ref.watch(authProvider);
 
     return auth.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: AdaptiveProgressIndicator()),
       error: (error, _) => ErrorView(
         error: error,
         onRetry: () => ref.invalidate(authProvider),
@@ -63,10 +65,10 @@ class _SignInPrompt extends StatelessWidget {
                   ),
             ),
             const SizedBox(height: 32),
-            FilledButton.icon(
+            AdaptiveFilledButton(
               onPressed: () => context.push('/login'),
               icon: const Icon(Icons.login),
-              label: Text(context.l10n.signInButton),
+              child: Text(context.l10n.signInButton),
             ),
           ],
         ),

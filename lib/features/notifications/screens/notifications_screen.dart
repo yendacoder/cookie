@@ -1,10 +1,18 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/providers/platform_style_provider.dart';
 import '../../../core/utils/relative_time.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../models/notification.dart';
@@ -50,12 +58,12 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   Widget build(BuildContext context) {
     final feedState = ref.watch(notificationsProvider);
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         title: Text(context.l10n.notificationsScreenTitle),
       ),
       body: AuthGate(
-        child: RefreshIndicator(
+        child: AdaptiveRefreshIndicator(
           onRefresh: () async {
             ref.invalidate(notificationsProvider);
             await ref.read(notificationsProvider.future);
@@ -65,7 +73,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             slivers: [
               switch (feedState) {
                 AsyncLoading() => const SliverFillRemaining(
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(child: AdaptiveProgressIndicator()),
                   ),
                 AsyncError(:final error) => SliverFillRemaining(
                     child: ErrorView(
@@ -110,7 +118,7 @@ class _NotificationsList extends ConsumerWidget {
       slivers: [
         SliverList.separated(
           itemCount: feed.items.length + 1,
-          separatorBuilder: (_, _) => const Divider(height: 1),
+          separatorBuilder: (_, _) => const AdaptiveDivider(height: 1),
           itemBuilder: (context, index) {
             if (index == feed.items.length) {
               return _NotificationsFooter(feed: feed);
@@ -143,7 +151,7 @@ class _NotificationsFooter extends ConsumerWidget {
     if (feed.isLoadingMore) {
       return const Padding(
         padding: EdgeInsets.all(24),
-        child: Center(child: CircularProgressIndicator()),
+        child: Center(child: AdaptiveProgressIndicator()),
       );
     }
 
@@ -160,7 +168,7 @@ class _NotificationsFooter extends ConsumerWidget {
                     ),
               ),
             ),
-            TextButton(
+            AdaptiveTextButton(
               onPressed: () =>
                   ref.read(notificationsProvider.notifier).loadMore(),
               child: Text(context.l10n.retryButton),
@@ -201,7 +209,7 @@ class _NotificationTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final isNew = !notification.seen;
 
-    return InkWell(
+    return AdaptiveInkWell(
       onTap: () => _navigate(context),
       child: ColoredBox(
         color: isNew
@@ -213,7 +221,7 @@ class _NotificationTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
-                _icon(notification.type),
+                _icon(context, notification.type),
                 size: 20,
                 color: isNew
                     ? colorScheme.primary
@@ -304,14 +312,14 @@ class _NotificationTile extends StatelessWidget {
     }
   }
 
-  IconData _icon(String type) => switch (type) {
+  IconData _icon(BuildContext context, String type) => switch (type) {
         'new_comment' => Icons.mode_comment_outlined,
         'comment_reply' => Icons.reply_outlined,
         'new_votes' => Icons.arrow_upward_outlined,
-        'deleted_post' => Icons.delete_outline,
+        'deleted_post' => context.deleteIcon,
         'mod_add' => Icons.shield_outlined,
         'new_badge' => Icons.stars_outlined,
-        _ => Icons.notifications_outlined,
+        _ => context.notificationsIcon,
       };
 
   String _title(AppLocalizations l10n, AppNotification n) {

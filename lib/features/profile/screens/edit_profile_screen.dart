@@ -7,6 +7,12 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
+import '../../../core/widgets/adaptive/adaptive_button.dart';
+import '../../../core/widgets/adaptive/adaptive_ink_well.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
+import '../../../core/widgets/adaptive/adaptive_scaffold.dart';
+import '../../../core/widgets/adaptive/adaptive_snackbar.dart';
 import '../../../models/discuit_image.dart';
 import '../../auth/providers/auth_provider.dart';
 
@@ -55,14 +61,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             .read(authProvider.notifier)
             .updateProfilePicture(_selectedImage!.path);
       }
-      await ref.read(authProvider.notifier).updateProfile(
-            aboutMe: _aboutMeCtrl.text.trim(),
-          );
+      await ref
+          .read(authProvider.notifier)
+          .updateProfile(aboutMe: _aboutMeCtrl.text.trim());
       if (mounted) {
         context.pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.profileSaved)),
-        );
+        showPlatformSnackBar(context, context.l10n.profileSaved);
       }
     } catch (_) {
       if (mounted) setState(() => _saving = false);
@@ -77,8 +81,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         title: Text(context.l10n.editProfileTitle),
         actions: [
           Padding(
@@ -87,10 +91,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 ? const Center(
                     child: SizedBox.square(
                       dimension: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: AdaptiveProgressIndicator(strokeWidth: 2),
                     ),
                   )
-                : TextButton(
+                : AdaptiveTextButton(
                     onPressed: _save,
                     child: Text(context.l10n.saveButton),
                   ),
@@ -102,16 +106,21 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         children: [
           // ── Profile picture ──────────────────────────────────────────────
           Center(
-            child: GestureDetector(
+            child: AdaptiveInkWell(
               onTap: _picking ? null : _pickImage,
+              customBorder: const CircleBorder(),
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
                   CircleAvatar(
                     radius: 52,
                     backgroundColor: colorScheme.primaryContainer,
-                    child: _avatarChild(user.proPic, colorScheme, textTheme,
-                        user.username),
+                    child: _avatarChild(
+                      user.proPic,
+                      colorScheme,
+                      textTheme,
+                      user.username,
+                    ),
                   ),
                   Positioned(
                     bottom: 0,
@@ -141,8 +150,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           Center(
             child: Text(
               context.l10n.editProfilePictureLabel,
-              style: textTheme.labelSmall
-                  ?.copyWith(color: colorScheme.onSurfaceVariant),
+              style: textTheme.labelSmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
           const SizedBox(height: 32),
@@ -153,7 +163,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             decoration: InputDecoration(
               labelText: context.l10n.editProfileDescriptionLabel,
               hintText: context.l10n.editProfileDescriptionHint,
-              border: const OutlineInputBorder(),
               alignLabelWithHint: true,
             ),
             maxLines: 6,
@@ -195,8 +204,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     }
     return Text(
       username.isNotEmpty ? username[0].toUpperCase() : '?',
-      style: textTheme.headlineMedium
-          ?.copyWith(color: colorScheme.onPrimaryContainer),
+      style: textTheme.headlineMedium?.copyWith(
+        color: colorScheme.onPrimaryContainer,
+      ),
     );
   }
 }

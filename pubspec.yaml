@@ -30,6 +30,8 @@ dependencies:
   json_annotation: ^4.11.0
 
   # UI
+  cupertino_icons: ^1.0.9
+  liquid_glass_widgets: ^0.13.0
   cached_network_image: ^3.4.1
   url_launcher: ^6.3.1
   path_provider: ^2.1.0

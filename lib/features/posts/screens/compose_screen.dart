@@ -1,3 +1,10 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_segmented_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'dart:io';
 
 import 'package:cookie/features/communities/providers/community_provider.dart';
@@ -9,6 +16,9 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/providers/platform_style_provider.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../core/widgets/avatar.dart';
 import '../../../core/widgets/markdown_text.dart';
 import '../../../models/community.dart';
@@ -96,9 +106,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
       } catch (e) {
         setState(() => _loadingCommunity = false);
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(e.toString())));
+          showPlatformSnackBar(context, e.toString());
         }
       }
     }
@@ -118,7 +126,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
   }
 
   void _showPreview() {
-    showDialog<void>(
+    showPlatformDialog<void>(
       context: context,
       builder: (ctx) => _PreviewDialog(body: _bodyCtrl.text),
     );
@@ -212,9 +220,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _submitting = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        showPlatformSnackBar(context, e.toString());
       }
     }
   }
@@ -235,8 +241,8 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         title: Text(
           _isEditing ? l10n.composeEditTitle : l10n.composeScreenTitle,
         ),
@@ -247,12 +253,12 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
               child: Center(
                 child: SizedBox.square(
                   dimension: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: AdaptiveProgressIndicator(strokeWidth: 2),
                 ),
               ),
             )
           else
-            TextButton(
+            AdaptiveTextButton(
               onPressed: _canSubmit ? _submit : null,
               child: Text(l10n.composeSubmitButton),
             ),
@@ -263,7 +269,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
         children: [
           // ── Community selector ────────────────────────────────────────
           if (_isEditing)
-            ListTile(
+            AdaptiveListTile(
               leading: Avatar(
                 radius: 16,
                 imageUrl: widget.editingPost!.communityProPic?.fullUrl,
@@ -275,11 +281,11 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
               ),
             )
           else
-            ListTile(
+            AdaptiveListTile(
               leading: _loadingCommunity
                   ? SizedBox.square(
                       dimension: 16,
-                      child: CircularProgressIndicator(),
+                      child: AdaptiveProgressIndicator(),
                     )
                   : Avatar(
                       radius: 16,
@@ -294,7 +300,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                       )
                     : textTheme.bodyMedium,
               ),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: Icon(context.chevronRightIcon),
               onTap: _selectCommunity,
             ),
 
@@ -302,24 +308,24 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
           if (!_isEditing && _community != null && _community!.rules.isNotEmpty)
             _RulesSection(rules: _community!.rules),
 
-          const Divider(height: 1),
+          const AdaptiveDivider(height: 1),
 
           // ── Type toggle (hidden when editing) ────────────────────────
           if (!_isEditing) ...[
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SegmentedButton<_PostType>(
+              child: AdaptiveSegmentedButton<_PostType>(
                 segments: [
-                  ButtonSegment(
+                  AdaptiveButtonSegment(
                     value: _PostType.text,
-                    icon: const Icon(Icons.text_fields_outlined),
-                    label: Text(l10n.composeTypeText),
+                    label: l10n.composeTypeText,
+                    androidIcon: const Icon(Icons.text_fields_outlined),
                   ),
-                  ButtonSegment(
+                  AdaptiveButtonSegment(
                     value: _PostType.image,
-                    icon: const Icon(Icons.image_outlined),
-                    label: Text(l10n.composeTypeImage),
+                    label: l10n.composeTypeImage,
+                    androidIcon: const Icon(Icons.image_outlined),
                   ),
                 ],
                 selected: {_type},
@@ -336,7 +342,6 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
               controller: _titleCtrl,
               decoration: InputDecoration(
                 labelText: l10n.composeTitleHint,
-                border: const OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
               style: textTheme.titleMedium,
@@ -359,7 +364,6 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                   controller: _bodyCtrl,
                   decoration: InputDecoration(
                     labelText: l10n.composeBodyHint,
-                    border: const OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
                   style: textTheme.bodyMedium,
@@ -372,10 +376,10 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton.icon(
+                    AdaptiveTextButton(
                       onPressed: _showPreview,
-                      label: Text(l10n.composePreviewTitle),
                       icon: const Icon(Icons.preview_outlined),
+                      child: Text(l10n.composePreviewTitle),
                     ),
                   ],
                 ),
@@ -389,7 +393,6 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                 controller: _bodyCtrl,
                 decoration: InputDecoration(
                   labelText: l10n.composeBodyHint,
-                  border: const OutlineInputBorder(),
                   alignLabelWithHint: true,
                 ),
                 style: textTheme.bodyMedium,
@@ -423,10 +426,10 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton.icon(
+                  AdaptiveTextButton(
                     onPressed: _showPreview,
-                    label: Text(l10n.composePreviewTitle),
                     icon: const Icon(Icons.preview_outlined),
+                    child: Text(l10n.composePreviewTitle),
                   ),
                 ],
               ),
@@ -444,10 +447,10 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                       onRemove: () => _removeImage(i),
                     ),
                   if (_images.length < 10)
-                    OutlinedButton.icon(
+                    AdaptiveOutlinedButton(
                       onPressed: _addImage,
                       icon: const Icon(Icons.add_photo_alternate_outlined),
-                      label: Text(l10n.composeAddImage),
+                      child: Text(l10n.composeAddImage),
                     ),
                 ],
               ),
@@ -476,7 +479,7 @@ class _RulesSection extends StatelessWidget {
       title: Text(context.l10n.communityRulesTitle),
       children: [
         for (int i = 0; i < rules.length; i++)
-          ListTile(
+          AdaptiveListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16),
             dense: true,
             title: Text(
@@ -530,9 +533,6 @@ class _ImageEntryTile extends StatelessWidget {
             decoration: InputDecoration(
               hintText: context.l10n.composeAltTextHint,
               isDense: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
             ),
             style: Theme.of(context).textTheme.bodySmall,
             maxLines: 5,
@@ -540,14 +540,11 @@ class _ImageEntryTile extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.centerRight,
-            child: TextButton.icon(
+            child: AdaptiveTextButton(
               onPressed: onRemove,
-              icon: const Icon(Icons.delete_outline, size: 16),
-              label: Text(context.l10n.listItemRemove),
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.error,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-              ),
+              icon: Icon(context.deleteIcon, size: 16),
+              foregroundColor: Theme.of(context).colorScheme.error,
+              child: Text(context.l10n.listItemRemove),
             ),
           ),
         ],
@@ -568,7 +565,7 @@ class _PreviewDialog extends StatelessWidget {
     final l10n = context.l10n;
     final isEmpty = body.trim().isEmpty;
 
-    return AlertDialog(
+    return AdaptiveAlertDialog(
       title: Text(l10n.composePreviewTitle),
       content: SizedBox(
         width: double.maxFinite,
@@ -584,7 +581,8 @@ class _PreviewDialog extends StatelessWidget {
         ),
       ),
       actions: [
-        TextButton(
+        AdaptiveDialogAction(
+          isDefault: true,
           onPressed: () => Navigator.pop(context),
           child: Text(l10n.confirmButton),
         ),
@@ -631,7 +629,7 @@ class _MarkdownGuide extends StatelessWidget {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: _entries.length,
-            separatorBuilder: (_, _) => const Divider(height: 12),
+            separatorBuilder: (_, _) => const AdaptiveDivider(height: 12),
             itemBuilder: (_, i) {
               final (syntax, description) = _entries[i];
               return Row(

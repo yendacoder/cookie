@@ -1,9 +1,20 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_fab.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_sheet_header.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/providers/platform_style_provider.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../models/community.dart';
 import '../providers/community_provider.dart';
@@ -21,12 +32,12 @@ class ModToolsScreen extends ConsumerWidget {
     // Keep showing content during background refreshes — only gate on initial load.
     if (communityAsync.value == null) {
       if (communityAsync.isLoading) {
-        return Scaffold(
+        return AdaptiveScaffold(
           appBar: AppBar(title: Text(l10n.modToolsScreenTitle)),
-          body: const Center(child: CircularProgressIndicator()),
+          body: const Center(child: AdaptiveProgressIndicator()),
         );
       }
-      return Scaffold(
+      return AdaptiveScaffold(
         appBar: AppBar(title: Text(l10n.modToolsScreenTitle)),
         body: ErrorView(
           error: communityAsync.error!,
@@ -39,7 +50,7 @@ class ModToolsScreen extends ConsumerWidget {
 
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
+      child: AdaptiveScaffold(
         appBar: AppBar(
           title: Text(l10n.modToolsScreenTitle),
           bottom: TabBar(
@@ -121,15 +132,11 @@ class _MetaTabState extends ConsumerState<_MetaTab> {
           .read(communityDetailProvider(widget.communityName).notifier)
           .replace(updated);
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(context.l10n.modToolsSaved)));
+        showPlatformSnackBar(context, context.l10n.modToolsSaved);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        showPlatformSnackBar(context, e.toString());
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -148,32 +155,29 @@ class _MetaTabState extends ConsumerState<_MetaTab> {
           decoration: InputDecoration(
             labelText: l10n.modToolsDescriptionLabel,
             hintText: l10n.modToolsDescriptionHint,
-            border: const OutlineInputBorder(),
             alignLabelWithHint: true,
           ),
           maxLines: 8,
           minLines: 3,
           textCapitalization: TextCapitalization.sentences,
         ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
+        AdaptiveSwitchListTile(
           title: Text(l10n.modToolsNsfwLabel),
           value: _nsfw,
           onChanged: (v) => setState(() => _nsfw = v),
         ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
+        AdaptiveSwitchListTile(
           title: Text(l10n.modToolsPostingRestrictedLabel),
           value: _postingRestricted,
           onChanged: (v) => setState(() => _postingRestricted = v),
         ),
         const SizedBox(height: 8),
-        FilledButton(
+        AdaptiveFilledButton(
           onPressed: _saving ? null : _save,
           child: _saving
               ? const SizedBox.square(
                   dimension: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: AdaptiveProgressIndicator(strokeWidth: 2),
                 )
               : Text(l10n.saveButton),
         ),
@@ -250,9 +254,7 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
       // Revert to the pre-reorder order.
       if (mounted) {
         setState(() => _rules = _sorted(widget.community.rules));
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        showPlatformSnackBar(context, e.toString());
       }
     } finally {
       if (mounted) setState(() => _reordering = false);
@@ -261,21 +263,20 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
 
   Future<void> _deleteRule(CommunityRule rule) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showPlatformDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => AdaptiveAlertDialog(
         title: Text(l10n.modToolsDeleteRuleTitle),
         content: Text(l10n.modToolsDeleteRuleConfirm),
         actions: [
-          TextButton(
+          AdaptiveDialogAction(
             onPressed: () => ctx.pop(false),
             child: Text(l10n.cancelButton),
           ),
-          TextButton(
+          AdaptiveDialogAction(
+            isDefault: true,
+            isDestructive: true,
             onPressed: () => ctx.pop(true),
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-            ),
             child: Text(l10n.deleteButton),
           ),
         ],
@@ -292,17 +293,14 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
       _pushRules(updated);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        showPlatformSnackBar(context, e.toString());
       }
     }
   }
 
   void _showRuleSheet([CommunityRule? existing]) {
-    showModalBottomSheet<void>(
+    showPlatformSheet<void>(
       context: context,
-      isScrollControlled: true,
       builder: (_) => _RuleSheet(
         communityId: widget.community.id,
         existing: existing,
@@ -333,10 +331,10 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
               ),
             ),
             const SizedBox(height: 16),
-            FilledButton.icon(
+            AdaptiveFilledButton(
               onPressed: () => _showRuleSheet(),
               icon: const Icon(Icons.add),
-              label: Text(l10n.modToolsAddRule),
+              child: Text(l10n.modToolsAddRule),
             ),
           ],
         ),
@@ -351,7 +349,7 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
           onReorder: _onReorder,
           itemBuilder: (_, i) {
             final rule = _rules[i];
-            return ListTile(
+            return AdaptiveListTile(
               key: ValueKey(rule.id),
               title: Text('${i + 1}. ${rule.rule}'),
               subtitle: (rule.description?.isNotEmpty ?? false)
@@ -365,12 +363,12 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
                 mainAxisSize: .min,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.edit_outlined),
+                    icon: Icon(context.editIcon),
                     onPressed: () => _showRuleSheet(rule),
                     tooltip: context.l10n.communityRulesTitle,
                   ),
                   IconButton(
-                    icon: Icon(Icons.delete_outline, color: colorScheme.error),
+                    icon: Icon(context.deleteIcon, color: colorScheme.error),
                     onPressed: () => _deleteRule(rule),
                   ),
                 ],
@@ -381,10 +379,10 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
         Positioned(
           bottom: 16,
           right: 16,
-          child: FloatingActionButton(
-            heroTag: 'mod-tools-add-rule',
+          child: AdaptiveFab(
             onPressed: () => _showRuleSheet(),
-            child: const Icon(Icons.add),
+            icon: Icons.add,
+            heroTag: 'mod-tools-add-rule',
           ),
         ),
       ],
@@ -454,9 +452,7 @@ class _RuleSheetState extends ConsumerState<_RuleSheet> {
     } catch (e) {
       if (mounted) {
         setState(() => _saving = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.toString())));
+        showPlatformSnackBar(context, e.toString());
       }
     }
   }
@@ -471,16 +467,11 @@ class _RuleSheetState extends ConsumerState<_RuleSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: Text(
-              widget.existing != null
-                  ? l10n.modToolsEditRuleTitle
-                  : l10n.modToolsNewRuleTitle,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+          AdaptiveSheetHeader(
+            title: widget.existing != null
+                ? l10n.modToolsEditRuleTitle
+                : l10n.modToolsNewRuleTitle,
           ),
-          const Divider(height: 1),
           Form(
             key: _formKey,
             child: Padding(
@@ -492,7 +483,6 @@ class _RuleSheetState extends ConsumerState<_RuleSheet> {
                     controller: _ruleCtrl,
                     decoration: InputDecoration(
                       labelText: l10n.modToolsRuleLabel,
-                      border: const OutlineInputBorder(),
                     ),
                     textCapitalization: TextCapitalization.sentences,
                     autofocus: true,
@@ -506,18 +496,17 @@ class _RuleSheetState extends ConsumerState<_RuleSheet> {
                     decoration: InputDecoration(
                       labelText: l10n.modToolsRuleDescriptionLabel,
                       alignLabelWithHint: true,
-                      border: const OutlineInputBorder(),
                     ),
                     maxLines: 3,
                     textCapitalization: TextCapitalization.sentences,
                   ),
                   const SizedBox(height: 16),
-                  FilledButton(
+                  AdaptiveFilledButton(
                     onPressed: _saving ? null : _submit,
                     child: _saving
                         ? const SizedBox.square(
                             dimension: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            child: AdaptiveProgressIndicator(strokeWidth: 2),
                           )
                         : Text(l10n.saveButton),
                   ),

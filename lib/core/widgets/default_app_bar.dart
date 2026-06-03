@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 
+import 'adaptive/adaptive_app_bar.dart';
 import 'post_button.dart';
 
 class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
   const DefaultAppBar({super.key, required this.title});
 
   @override
-  get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   final String title;
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return AdaptiveAppBar(
       title: Text(title),
       actions: [PostButton()],
       actionsPadding: const EdgeInsets.all(8),
@@ -21,18 +22,18 @@ class DefaultAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class DefaultSliverAppBar extends StatelessWidget {
-  const DefaultSliverAppBar({super.key, required this.title});
+  const DefaultSliverAppBar({super.key, required this.title, this.pinned = true});
 
   final String title;
+  final bool pinned;
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
+    return AdaptiveSliverAppBar(
       title: Text(title),
       actions: [PostButton()],
       actionsPadding: const EdgeInsets.all(8),
-      floating: true,
-      snap: true,
+      pinned: pinned,
     );
   }
 }

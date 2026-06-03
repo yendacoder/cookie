@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/widgets/adaptive/adaptive_segmented_button.dart';
+
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
+import '../../../core/widgets/adaptive/adaptive_scaffold.dart';
 import '../../shell/providers/text_scale_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -12,33 +16,33 @@ class SettingsScreen extends ConsumerWidget {
     final textScale = ref.watch(textScaleProvider);
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(context.l10n.settingsScreenTitle)),
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(title: Text(context.l10n.settingsScreenTitle)),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
           Text(context.l10n.textScaleSetting, style: textTheme.titleMedium),
-          SegmentedButton<double>(
-            multiSelectionEnabled: false,
-            emptySelectionAllowed: false,
+          AdaptiveSegmentedButton<double>(
             showSelectedIcon: false,
+            emptySelectionAllowed: false,
             segments: [
-              for (final (label, scale) in [
-                ('A', 1.0),
-                ('A', 1.15),
-                ('A', 1.3),
-                ('A', 1.5),
+              for (final (iosLabel, scale) in [
+                ('100%', 1.0),
+                ('115%', 1.15),
+                ('130%', 1.3),
+                ('150%', 1.5),
               ])
-                ButtonSegment(
+                AdaptiveButtonSegment(
                   value: scale,
-                  label: Container(
+                  label: iosLabel,
+                  androidWidget: Container(
                     alignment: .center,
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     child: Column(
                       mainAxisSize: .min,
                       children: [
                         Text(
-                          label,
+                          'A',
                           textScaler: TextScaler.linear(1.0),
                           style: textTheme.bodyMedium!.copyWith(
                             fontSize: textTheme.bodyMedium!.fontSize! * scale,

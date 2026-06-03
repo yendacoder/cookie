@@ -1,3 +1,9 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cookie/core/utils/markdown_utils.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +13,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/providers/platform_style_provider.dart';
 import '../../../core/utils/relative_time.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../core/widgets/markdown_text.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../models/comment.dart';
@@ -65,12 +74,12 @@ class _UserScreenState extends ConsumerState<UserScreen> {
     final userState = ref.watch(userDetailProvider(widget.username));
 
     return userState.when(
-      loading: () => Scaffold(
-        appBar: AppBar(title: Text(widget.username)),
+      loading: () => AdaptiveScaffold(
+        appBar: AdaptiveAppBar(title: Text(widget.username)),
         body: const PostFeedSkeleton(showCommunity: false),
       ),
-      error: (error, _) => Scaffold(
-        appBar: AppBar(title: Text(widget.username)),
+      error: (error, _) => AdaptiveScaffold(
+        appBar: AdaptiveAppBar(title: Text(widget.username)),
         body: ErrorView(
           error: error,
           onRetry: () => ref.invalidate(userDetailProvider(widget.username)),
@@ -99,8 +108,8 @@ class _UserLoadedState extends ConsumerState<_UserLoaded> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: RefreshIndicator(
+    return AdaptiveScaffold(
+      body: AdaptiveRefreshIndicator(
         onRefresh: () async {
           ref.invalidate(userDetailProvider(widget.user.username));
           ref.invalidate(userActivityProvider(widget.user.username));
@@ -110,7 +119,7 @@ class _UserLoadedState extends ConsumerState<_UserLoaded> {
           controller: widget.scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            SliverAppBar(pinned: true, title: Text('@${widget.user.username}')),
+            AdaptiveSliverAppBar(title: Text('@${widget.user.username}')),
             SliverToBoxAdapter(child: _UserHeader(user: widget.user)),
             SliverToBoxAdapter(
               child: _FilterChips(
@@ -229,7 +238,7 @@ class _UserHeader extends ConsumerWidget {
             ],
           ),
         ),
-        const Divider(height: 1),
+        const AdaptiveDivider(height: 1),
       ],
     );
   }
@@ -267,7 +276,7 @@ class _UserMuteButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final muted = ref.watch(userMutesProvider).contains(user.id);
 
-    return OutlinedButton.icon(
+    return AdaptiveOutlinedButton(
       onPressed: () {
         final notifier = ref.read(userMutesProvider.notifier);
         if (muted) {
@@ -280,7 +289,7 @@ class _UserMuteButton extends ConsumerWidget {
         muted ? Icons.volume_up_outlined : Icons.volume_off_outlined,
         size: 18,
       ),
-      label: Text(muted ? context.l10n.userUnmute : context.l10n.userMute),
+      child: Text(muted ? context.l10n.userUnmute : context.l10n.userMute),
     );
   }
 }
@@ -295,6 +304,21 @@ class _FilterChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (context.useIos) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: GlassSegmentedControl(
+          segments: [
+            context.l10n.userTabAll,
+            context.l10n.userTabPosts,
+            context.l10n.userTabComments,
+          ],
+          selectedIndex: filter.index,
+          onSegmentSelected: (i) =>
+              onFilterChanged(UserActivityFilter.values[i]),
+        ),
+      );
+    }
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -424,7 +448,7 @@ class _UserCommentCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final muted = colorScheme.onSurfaceVariant;
 
-    return InkWell(
+    return AdaptiveInkWell(
       onTap: () => context.push(
         '/c/${comment.communityName}/post/${comment.postPublicId}',
       ),
@@ -496,7 +520,7 @@ class _ActivityFooter extends ConsumerWidget {
     if (activity.isLoadingMore) {
       return const Padding(
         padding: EdgeInsets.all(24),
-        child: Center(child: CircularProgressIndicator()),
+        child: Center(child: AdaptiveProgressIndicator()),
       );
     }
 
@@ -513,7 +537,7 @@ class _ActivityFooter extends ConsumerWidget {
                 ),
               ),
             ),
-            TextButton(
+            AdaptiveTextButton(
               onPressed: () =>
                   ref.read(userActivityProvider(username).notifier).loadMore(),
               child: Text(context.l10n.retryButton),

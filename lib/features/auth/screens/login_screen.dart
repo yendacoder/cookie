@@ -1,10 +1,16 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/providers/platform_style_provider.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
+import '../../../core/widgets/adaptive/adaptive_button.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -30,16 +36,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
+    final valid = context.useIos
+        ? _usernameController.text.trim().isNotEmpty &&
+              _passwordController.text.isNotEmpty
+        : _formKey.currentState!.validate();
+    if (!valid) return;
     setState(() {
       _isSubmitting = true;
       _errorText = null;
     });
     try {
-      await ref.read(authProvider.notifier).login(
-            _usernameController.text.trim(),
-            _passwordController.text,
-          );
+      await ref
+          .read(authProvider.notifier)
+          .login(_usernameController.text.trim(), _passwordController.text);
       if (!mounted) return;
       // If pushed on top of another screen (e.g. from AuthGate), pop back.
       // Otherwise navigate to home.
@@ -75,10 +84,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.loginTitle),
-      ),
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(title: Text(l10n.loginTitle)),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -95,52 +102,77 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       _ErrorBanner(message: _errorText!),
                       const SizedBox(height: 24),
                     ],
-                    TextFormField(
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                        labelText: l10n.loginUsernameLabel,
-                        border: const OutlineInputBorder(),
+                    if (context.useIos) ...[
+                      GlassTextField(
+                        controller: _usernameController,
+                        placeholder: l10n.loginUsernameLabel,
                         prefixIcon: const Icon(Icons.person_outline),
+                        textInputAction: TextInputAction.next,
+                        onChanged: (_) => setState(() => _errorText = null),
                       ),
-                      textInputAction: TextInputAction.next,
-                      autofillHints: const [AutofillHints.username],
-                      onChanged: (_) => setState(() => _errorText = null),
-                      validator: (v) =>
-                          (v == null || v.trim().isEmpty) ? ' ' : null,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                        labelText: l10n.loginPasswordLabel,
-                        border: const OutlineInputBorder(),
+                      const SizedBox(height: 16),
+                      GlassTextField(
+                        controller: _passwordController,
+                        placeholder: l10n.loginPasswordLabel,
                         prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                          ),
-                          onPressed: () => setState(
-                            () => _obscurePassword = !_obscurePassword,
+                        suffixIcon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                        onSuffixTap: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
+                        obscureText: _obscurePassword,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _submit(),
+                        onChanged: (_) => setState(() => _errorText = null),
+                      ),
+                    ] else ...[
+                      TextFormField(
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          labelText: l10n.loginUsernameLabel,
+                          prefixIcon: const Icon(Icons.person_outline),
+                        ),
+                        textInputAction: TextInputAction.next,
+                        autofillHints: const [AutofillHints.username],
+                        onChanged: (_) => setState(() => _errorText = null),
+                        validator: (v) =>
+                            (v == null || v.trim().isEmpty) ? ' ' : null,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          labelText: l10n.loginPasswordLabel,
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                            ),
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
                           ),
                         ),
+                        obscureText: _obscurePassword,
+                        textInputAction: TextInputAction.done,
+                        autofillHints: const [AutofillHints.password],
+                        onFieldSubmitted: (_) => _submit(),
+                        onChanged: (_) => setState(() => _errorText = null),
+                        validator: (v) => (v == null || v.isEmpty) ? ' ' : null,
                       ),
-                      obscureText: _obscurePassword,
-                      textInputAction: TextInputAction.done,
-                      autofillHints: const [AutofillHints.password],
-                      onFieldSubmitted: (_) => _submit(),
-                      onChanged: (_) => setState(() => _errorText = null),
-                      validator: (v) =>
-                          (v == null || v.isEmpty) ? ' ' : null,
-                    ),
+                    ],
                     const SizedBox(height: 16),
-                    FilledButton(
+                    AdaptiveFilledButton(
                       onPressed: _isSubmitting ? null : _submit,
                       child: _isSubmitting
                           ? const SizedBox.square(
                               dimension: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              child: AdaptiveProgressIndicator(strokeWidth: 2),
                             )
                           : Text(l10n.loginButton),
                     ),
@@ -150,7 +182,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       children: [
                         Text(l10n.loginRegisterPrompt),
                         const SizedBox(width: 4),
-                        TextButton(
+                        AdaptiveTextButton(
                           onPressed: () => launchUrl(
                             Uri.parse('https://discuit.org/'),
                             mode: LaunchMode.externalApplication,

@@ -1,3 +1,6 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_filter_chip.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/consts.dart';
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../core/widgets/default_app_bar.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -78,7 +82,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return authState.when(
       loading: () => Scaffold(
         appBar: DefaultAppBar(title: context.l10n.homeScreenTitle),
-        body: const Center(child: CircularProgressIndicator()),
+        body: const Center(child: AdaptiveProgressIndicator()),
       ),
       error: (error, _) => Scaffold(
         appBar: DefaultAppBar(title: context.l10n.homeScreenTitle),
@@ -113,7 +117,7 @@ class _FeedView extends ConsumerWidget {
         );
       }
     });
-    return RefreshIndicator(
+    return AdaptiveRefreshIndicator(
       onRefresh: () async {
         ref.invalidate(homeFeedProvider);
         await ref.read(homeFeedProvider.future);
@@ -122,7 +126,7 @@ class _FeedView extends ConsumerWidget {
         controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
-          DefaultSliverAppBar(title: context.l10n.homeScreenTitle),
+          DefaultSliverAppBar(title: context.l10n.homeScreenTitle, pinned: false),
           SliverToBoxAdapter(child: _SortChips()),
           feedState.when(
             loading: () => const SliverToBoxAdapter(child: PostFeedSkeleton()),
@@ -174,10 +178,9 @@ class _SortChips extends ConsumerWidget {
         spacing: 8,
         children: [
           for (final sort in PostSort.values)
-            FilterChip(
-              label: Text(sort.label(context.l10n)),
+            AdaptiveFilterChip(
+              label: sort.label(context.l10n),
               selected: sort == current,
-              showCheckmark: false,
               onSelected: (_) =>
                   ref.read(homeFeedSortProvider.notifier).setSort(sort),
             ),
@@ -200,7 +203,7 @@ class _FeedFooter extends StatelessWidget {
     if (feed.isLoadingMore) {
       return const Padding(
         padding: EdgeInsets.all(24),
-        child: Center(child: CircularProgressIndicator()),
+        child: Center(child: AdaptiveProgressIndicator()),
       );
     }
 
@@ -217,7 +220,7 @@ class _FeedFooter extends StatelessWidget {
                 ),
               ),
             ),
-            TextButton(
+            AdaptiveTextButton(
               onPressed: () => ref.read(homeFeedProvider.notifier).loadMore(),
               child: Text(context.l10n.retryButton),
             ),

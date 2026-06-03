@@ -1,3 +1,4 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
 import 'package:flutter/material.dart';
 
 /// Wraps [child] in a repeating fade so all skeleton elements inside pulse
@@ -213,7 +214,7 @@ class CommentListSkeleton extends StatelessWidget {
       child: Column(
         children: [
           for (var i = 0; i < count; i++) ...[
-            if (i > 0) const Divider(height: 1),
+            if (i > 0) const AdaptiveDivider(height: 1),
             CommentCardSkeleton(),
           ],
         ],

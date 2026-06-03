@@ -1,9 +1,17 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/api/api_client.dart';
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/providers/platform_style_provider.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../core/widgets/markdown_text.dart';
 import '../../../core/utils/relative_time.dart';
 import '../../../core/widgets/error_view.dart';
@@ -37,9 +45,8 @@ class _ListDetailScreenState extends ConsumerState<ListDetailScreen> {
 
   Future<void> _showEditSheet() async {
     if (_list == null) return;
-    await showModalBottomSheet(
+    await showPlatformSheet(
       context: context,
-      isScrollControlled: true,
       builder: (_) => ListFormSheet(
         initial: _list,
         onSave:
@@ -74,13 +81,13 @@ class _ListDetailScreenState extends ConsumerState<ListDetailScreen> {
   Widget build(BuildContext context) {
     final title = _list?.displayName ?? '';
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         title: Text(title),
         actions: [
           if (_list != null)
             IconButton(
-              icon: const Icon(Icons.edit_outlined),
+              icon: Icon(context.editIcon),
               tooltip: context.l10n.listsEditTitle,
               onPressed: _showEditSheet,
             ),
@@ -103,7 +110,7 @@ class _ListDetailBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final feedState = ref.watch(listItemsProvider(listId));
 
-    return RefreshIndicator(
+    return AdaptiveRefreshIndicator(
       onRefresh: () async {
         ref.invalidate(listItemsProvider(listId));
         await ref.read(listItemsProvider(listId).future);
@@ -213,7 +220,7 @@ class _ItemTile extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.delete_outline, color: colorScheme.onError),
+                Icon(context.deleteIcon, color: colorScheme.onError),
                 const SizedBox(height: 4),
                 Text(
                   context.l10n.listItemRemove,
@@ -267,7 +274,7 @@ class _CommentItem extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final muted = colorScheme.onSurfaceVariant;
 
-    return InkWell(
+    return AdaptiveInkWell(
       onTap: () => context.push(
         '/c/${comment.communityName}/post/${comment.postPublicId}',
       ),
@@ -328,7 +335,7 @@ class _ItemsFooter extends ConsumerWidget {
     if (feed.isLoadingMore) {
       return const Padding(
         padding: EdgeInsets.all(24),
-        child: Center(child: CircularProgressIndicator()),
+        child: Center(child: AdaptiveProgressIndicator()),
       );
     }
 
@@ -345,7 +352,7 @@ class _ItemsFooter extends ConsumerWidget {
                 ),
               ),
             ),
-            TextButton(
+            AdaptiveTextButton(
               onPressed: () =>
                   ref.read(listItemsProvider(listId).notifier).loadMore(),
               child: Text(context.l10n.retryButton),

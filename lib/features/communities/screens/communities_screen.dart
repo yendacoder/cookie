@@ -1,10 +1,18 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_segmented_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/providers/platform_style_provider.dart';
 import '../../../core/utils/markdown_utils.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../models/community.dart';
 import '../../../models/discuit_image.dart';
@@ -75,8 +83,8 @@ class _CommunitiesScreenState extends ConsumerState<CommunitiesScreen> {
         ? ref.watch(allCommunitiesProvider)
         : ref.watch(subscribedCommunitiesProvider);
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         title: Text(
           widget.selectMode
               ? l10n.communitiesSelectTitle
@@ -88,15 +96,15 @@ class _CommunitiesScreenState extends ConsumerState<CommunitiesScreen> {
           if (isAuthenticated)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              child: SegmentedButton<_Tab>(
+              child: AdaptiveSegmentedButton<_Tab>(
                 segments: [
-                  ButtonSegment(
+                  AdaptiveButtonSegment(
                     value: _Tab.all,
-                    label: Text(l10n.communitiesTabAll),
+                    label: l10n.communitiesTabAll,
                   ),
-                  ButtonSegment(
+                  AdaptiveButtonSegment(
                     value: _Tab.joined,
-                    label: Text(l10n.communitiesTabJoined),
+                    label: l10n.communitiesTabJoined,
                   ),
                 ],
                 selected: {_tab},
@@ -112,7 +120,7 @@ class _CommunitiesScreenState extends ConsumerState<CommunitiesScreen> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: l10n.communitiesSearchHint,
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: Icon(context.searchIcon),
                 suffixIcon: _filter.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear),
@@ -131,7 +139,7 @@ class _CommunitiesScreenState extends ConsumerState<CommunitiesScreen> {
           Expanded(
             child: switch (feedState) {
               AsyncLoading() => const Center(
-                child: CircularProgressIndicator(),
+                child: AdaptiveProgressIndicator(),
               ),
               AsyncError(:final error) => ErrorView(
                 error: error,
@@ -185,16 +193,20 @@ class _CommunitiesList extends StatelessWidget {
       );
     }
 
-    return RefreshIndicator(
+    return AdaptiveRefreshIndicator(
       onRefresh: onRefresh,
-      child: ListView.separated(
+      child: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: communities.length,
-        separatorBuilder: (_, _) => const Divider(height: 1),
-        itemBuilder: (context, index) => _CommunityTile(
-          community: communities[index],
-          selectMode: selectMode,
-        ),
+        slivers: [
+          SliverList.separated(
+            itemCount: communities.length,
+            separatorBuilder: (_, _) => const AdaptiveDivider(height: 1),
+            itemBuilder: (context, index) => _CommunityTile(
+              community: communities[index],
+              selectMode: selectMode,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -213,7 +225,7 @@ class _CommunityTile extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    return InkWell(
+    return AdaptiveInkWell(
       onTap: () {
         if (selectMode) {
           context.pop(community);
@@ -266,7 +278,7 @@ class _CommunityTile extends StatelessWidget {
           if (!selectMode)
             Padding(
               padding: const EdgeInsets.only(right: 16),
-              child: const Icon(Icons.chevron_right),
+              child: Icon(context.chevronRightIcon),
             ),
         ],
       ),

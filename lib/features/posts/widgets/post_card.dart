@@ -1,5 +1,12 @@
+import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_menu_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cookie/core/theme/app_theme.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'package:cookie/core/widgets/youtube_content.dart';
 import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
 import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
@@ -13,6 +20,7 @@ import '../../../core/api/api_client.dart';
 import '../../../core/extensions/build_context_ext.dart';
 import '../../../core/utils/markdown_utils.dart';
 import '../../../core/utils/relative_time.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../core/widgets/avatar.dart';
 import '../../../models/discuit_image.dart';
 import '../../../models/post.dart';
@@ -80,7 +88,7 @@ class PostCard extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // Tappable area — navigates to post detail.
-        InkWell(
+        AdaptiveInkWell(
           onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
@@ -460,12 +468,16 @@ class _PostFooter extends ConsumerWidget {
               ),
             ),
           ),
-          _PostMenuButton(
-            post: post,
-            muted: muted,
-            muteUser: muteUser,
-            muteCommunity: muteCommunity,
-            onRemoveFromList: onRemoveFromList,
+          Padding(
+            // ios menu button has outline and needs to be aligned differently
+            padding: context.useIos ? const EdgeInsets.symmetric(horizontal: 8) : EdgeInsets.zero,
+            child: _PostMenuButton(
+              post: post,
+              muted: muted,
+              muteUser: muteUser,
+              muteCommunity: muteCommunity,
+              onRemoveFromList: onRemoveFromList,
+            ),
           ),
         ],
       ),
@@ -494,15 +506,15 @@ class _VoteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return AdaptiveInkWell(
       onTap: showSpinner ? null : onTap,
+      borderRadius: BorderRadius.circular(6),
       child: Padding(
         padding: EdgeInsetsGeometry.all(6),
         child: showSpinner
             ? SizedBox.square(
                 dimension: size,
-                child: CircularProgressIndicator(
+                child: AdaptiveProgressIndicator(
                   strokeWidth: 1.5,
                   color: muted,
                 ),
@@ -548,7 +560,7 @@ class _HiddenPlaceholder extends ConsumerWidget {
           ),
           const Spacer(),
           if (withUndo)
-            TextButton(
+            AdaptiveTextButton(
               onPressed: () =>
                   ref.read(hiddenPostsProvider.notifier).unhide(post.id),
               child: Text(context.l10n.undoButton),
@@ -584,46 +596,50 @@ class _PostMenuButton extends ConsumerWidget {
     final isAuthor = currentUser.username == post.username;
     final l10n = context.l10n;
 
-    return PopupMenuButton<_PostMenuAction>(
-      iconSize: 16,
-      icon: Icon(Icons.more_horiz, size: 16, color: muted),
-      padding: EdgeInsets.zero,
-      itemBuilder: (_) => [
+    return AdaptiveMenuButton<_PostMenuAction>(
+      androidIcon: Icon(Icons.more_horiz, size: 16, color: muted),
+      iconSize: 14,
+      iosButtonSize: 28,
+      androidPadding: EdgeInsets.zero,
+      items: [
         if (onRemoveFromList != null)
-          PopupMenuItem(
+          AdaptiveMenuItem(
             value: _PostMenuAction.removeFromList,
-            child: Text(l10n.postMenuRemoveFromList),
+            label: l10n.postMenuRemoveFromList,
           )
         else
-          PopupMenuItem(
-            value: .saveToList,
-            child: Text(l10n.postMenuSaveToList),
+          AdaptiveMenuItem(
+            value: _PostMenuAction.saveToList,
+            label: l10n.postMenuSaveToList,
           ),
         if (isAuthor) ...[
-          PopupMenuItem(value: .editPost, child: Text(l10n.postMenuEdit)),
-          PopupMenuItem(
-            value: .deletePost,
-            child: Text(
-              l10n.postMenuDelete,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
+          AdaptiveMenuItem(
+            value: _PostMenuAction.editPost,
+            label: l10n.postMenuEdit,
+          ),
+          AdaptiveMenuItem(
+            value: _PostMenuAction.deletePost,
+            label: l10n.postMenuDelete,
+            isDestructive: true,
           ),
         ],
-        PopupMenuItem(value: .hide, child: Text(l10n.postMenuHide)),
+        AdaptiveMenuItem(value: _PostMenuAction.hide, label: l10n.postMenuHide),
         if (muteUser)
-          PopupMenuItem(value: .muteUser, child: Text(l10n.postMenuMuteUser)),
+          AdaptiveMenuItem(
+            value: _PostMenuAction.muteUser,
+            label: l10n.postMenuMuteUser,
+          ),
         if (muteCommunity)
-          PopupMenuItem(
-            value: .muteCommunity,
-            child: Text(l10n.postMenuMuteCommunity),
+          AdaptiveMenuItem(
+            value: _PostMenuAction.muteCommunity,
+            label: l10n.postMenuMuteCommunity,
           ),
       ],
       onSelected: (action) async {
         switch (action) {
           case .saveToList:
-            showModalBottomSheet(
+            showPlatformSheet(
               context: context,
-              isScrollControlled: true,
               builder: (_) => PostSaveToListSheet(post: post),
             );
           case .removeFromList:
@@ -631,21 +647,20 @@ class _PostMenuButton extends ConsumerWidget {
           case .editPost:
             context.push('/compose', extra: post);
           case .deletePost:
-            final confirmed = await showDialog<bool>(
+            final confirmed = await showPlatformDialog<bool>(
               context: context,
-              builder: (ctx) => AlertDialog(
+              builder: (ctx) => AdaptiveAlertDialog(
                 title: Text(l10n.postDeleteTitle),
                 content: Text(l10n.postDeleteConfirm),
                 actions: [
-                  TextButton(
+                  AdaptiveDialogAction(
                     onPressed: () => ctx.pop(false),
                     child: Text(l10n.cancelButton),
                   ),
-                  TextButton(
+                  AdaptiveDialogAction(
+                    isDefault: true,
+                    isDestructive: true,
                     onPressed: () => ctx.pop(true),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Theme.of(context).colorScheme.error,
-                    ),
                     child: Text(l10n.deleteButton),
                   ),
                 ],
@@ -663,9 +678,7 @@ class _PostMenuButton extends ConsumerWidget {
               }
             } catch (e) {
               if (context.mounted) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(e.toString())));
+                showPlatformSnackBar(context, e.toString());
               }
             }
           case .hide:

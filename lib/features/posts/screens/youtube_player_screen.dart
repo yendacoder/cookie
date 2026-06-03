@@ -1,3 +1,5 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
@@ -25,13 +27,12 @@ class _YoutubePlayerScreenState extends State<YoutubePlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AdaptiveScaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
+      appBar: AdaptiveAppBar(
         backgroundColor: Colors.black54,
         foregroundColor: Colors.white,
-        elevation: 0,
       ),
       body: Center(
         child: YoutubePlayer(controller: _controller, autoFullScreen: false),

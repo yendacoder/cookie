@@ -1,9 +1,14 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
 import '../../../models/discuit_image.dart';
 import '../providers/community_mutes_provider.dart';
 import '../providers/muted_communities_list_provider.dart';
@@ -15,8 +20,8 @@ class MutedCommunitiesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mutes = ref.watch(mutedCommunitiesListProvider);
 
-    return Scaffold(
-      appBar: AppBar(
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
         title: Text(context.l10n.mutedCommunitiesScreenTitle),
       ),
       body: mutes.isEmpty
@@ -30,7 +35,7 @@ class MutedCommunitiesScreen extends ConsumerWidget {
             )
           : ListView.separated(
               itemCount: mutes.length,
-              separatorBuilder: (_, _) => const Divider(height: 1),
+              separatorBuilder: (_, _) => const AdaptiveDivider(height: 1),
               itemBuilder: (context, index) {
                 final mute = mutes[index];
                 final community = mute.mutedCommunity;
@@ -73,7 +78,7 @@ class _MutedCommunityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return ListTile(
+    return AdaptiveListTile(
       onTap: () => context.push('/c/$name'),
       leading: CircleAvatar(
         backgroundColor: colorScheme.secondaryContainer,
@@ -97,7 +102,7 @@ class _MutedCommunityTile extends StatelessWidget {
       subtitle: (noMembers ?? 0) > 0
           ? Text(context.l10n.membersLabel(noMembers!))
           : null,
-      trailing: TextButton(
+      trailing: AdaptiveTextButton(
         onPressed: onUnmute,
         child: Text(context.l10n.communityUnmute),
       ),

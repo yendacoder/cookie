@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,7 @@ import 'features/shell/providers/package_info_provider.dart';
 
 Future<void> bootstrap({List<Override> additionalOverrides = const []}) async {
   WidgetsFlutterBinding.ensureInitialized();
+  await LiquidGlassWidgets.initialize();
   SystemChrome.setPreferredOrientations([.portraitUp, .portraitDown]);
 
   final appDocDir = await getApplicationDocumentsDirectory();
@@ -42,7 +44,13 @@ Future<void> bootstrap({List<Override> additionalOverrides = const []}) async {
         ),
         ...additionalOverrides,
       ],
-      child: const CookieApp(),
+      child: LiquidGlassWidgets.wrap(
+        child: const CookieApp(),
+        theme: GlassThemeData(
+          light: GlassThemeVariant(quality: GlassQuality.standard),
+          dark: GlassThemeVariant(quality: GlassQuality.standard),
+        ),
+      ),
     ),
   );
 }

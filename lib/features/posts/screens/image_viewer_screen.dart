@@ -1,3 +1,6 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cookie/core/utils/image_downloader.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
 import '../../../models/discuit_image.dart';
 
 /// Navigation argument bag — passed as `extra` to the `/image-viewer` route.
@@ -70,13 +74,12 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
   Widget build(BuildContext context) {
     final count = widget.images.length;
 
-    return Scaffold(
+    return AdaptiveScaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
+      appBar: AdaptiveAppBar(
         foregroundColor: Colors.white,
         backgroundColor: Colors.transparent,
-        elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
         actions: [
           IconButton(
@@ -84,15 +87,16 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
             tooltip: context.l10n.imageViewerAltText,
             onPressed: widget.images[_currentPage].altText?.isNotEmpty == true
                 ? () {
-                    showDialog<void>(
+                    showPlatformDialog<void>(
                       context: context,
-                      builder: (ctx) => AlertDialog(
+                      builder: (ctx) => AdaptiveAlertDialog(
                         title: Text(context.l10n.imageViewerAltText),
                         content: Text(
                           widget.images[_currentPage].altText ?? '',
                         ),
                         actions: [
-                          TextButton(
+                          AdaptiveDialogAction(
+                            isDefault: true,
                             onPressed: () => ctx.pop(false),
                             child: Text(context.l10n.okayButton),
                           ),
@@ -106,7 +110,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
             icon: _isSaving
                 ? SizedBox.square(
                     dimension: 16,
-                    child: CircularProgressIndicator(strokeWidth: 1.5),
+                    child: AdaptiveProgressIndicator(strokeWidth: 1.5),
                   )
                 : const Icon(Icons.save),
             tooltip: context.l10n.imageViewerSave,
@@ -260,7 +264,7 @@ class _ZoomablePageState extends State<_ZoomablePage>
             imageUrl: widget.image.fullUrl,
             fit: BoxFit.contain,
             placeholder: (_, _) => const Center(
-              child: CircularProgressIndicator(color: Colors.white54),
+              child: AdaptiveProgressIndicator(color: Colors.white54),
             ),
             errorWidget: (_, _, _) => const Center(
               child: Icon(

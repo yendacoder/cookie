@@ -1,9 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/extensions/build_context_ext.dart';
+import '../../../core/providers/platform_style_provider.dart';
+import '../../../core/widgets/adaptive/adaptive_app_bar.dart';
+import '../../../core/widgets/adaptive/adaptive_button.dart';
+import '../../../core/widgets/adaptive/adaptive_dialog.dart';
+import '../../../core/widgets/adaptive/adaptive_divider.dart';
+import '../../../core/widgets/adaptive/adaptive_filter_chip.dart';
+import '../../../core/widgets/adaptive/adaptive_list_tile.dart';
+import '../../../core/widgets/adaptive/adaptive_progress_indicator.dart';
+import '../../../core/widgets/adaptive/adaptive_scaffold.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/markdown_text.dart';
 import '../../../models/community.dart';
@@ -27,12 +37,12 @@ class CommunityScreen extends ConsumerWidget {
     final communityState = ref.watch(communityDetailProvider(communityName));
 
     return communityState.when(
-      loading: () => Scaffold(
-        appBar: AppBar(title: Text(communityName)),
-        body: const Center(child: CircularProgressIndicator()),
+      loading: () => AdaptiveScaffold(
+        appBar: AdaptiveAppBar(title: Text(communityName)),
+        body: const Center(child: AdaptiveProgressIndicator()),
       ),
-      error: (error, _) => Scaffold(
-        appBar: AppBar(title: Text(communityName)),
+      error: (error, _) => AdaptiveScaffold(
+        appBar: AdaptiveAppBar(title: Text(communityName)),
         body: ErrorView(
           error: error,
           onRetry: () => ref.invalidate(communityDetailProvider(communityName)),
@@ -56,8 +66,8 @@ class _CommunityLoaded extends ConsumerWidget {
       communityFeedProvider(community.name, community.id),
     );
 
-    return Scaffold(
-      body: RefreshIndicator(
+    return AdaptiveScaffold(
+      body: AdaptiveRefreshIndicator(
         onRefresh: () async {
           ref.invalidate(communityDetailProvider(community.name));
           ref.invalidate(communityFeedProvider(community.name, community.id));
@@ -67,7 +77,7 @@ class _CommunityLoaded extends ConsumerWidget {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             // Pinned app bar shows the community name once header scrolls away.
-            SliverAppBar(pinned: true, title: Text(community.name)),
+            AdaptiveSliverAppBar(title: Text(community.name)),
             SliverToBoxAdapter(child: _CommunityHeader(community: community)),
             SliverToBoxAdapter(
               child: _SortChips(communityName: community.name),
@@ -193,34 +203,34 @@ class _CommunityHeader extends ConsumerWidget {
                 runSpacing: 8,
                 children: [
                   if (user != null)
-                    FilledButton.icon(
+                    AdaptiveFilledButton(
                       onPressed: () =>
                           context.push('/compose', extra: community),
-                      icon: const Icon(Icons.edit_outlined, size: 18),
-                      label: Text(context.l10n.communityCreatePost),
+                      icon: Icon(context.editIcon, size: 18),
+                      child: Text(context.l10n.communityCreatePost),
                     ),
                   if (community.rules.isNotEmpty)
-                    OutlinedButton.icon(
+                    AdaptiveOutlinedButton(
                       onPressed: () =>
                           _showRulesDialog(context, community.rules),
                       icon: const Icon(Icons.gavel_outlined, size: 18),
-                      label: Text(context.l10n.communityRulesTitle),
+                      child: Text(context.l10n.communityRulesTitle),
                     ),
                   if (community.mods.isNotEmpty)
-                    OutlinedButton.icon(
+                    AdaptiveOutlinedButton(
                       onPressed: () => _showModsDialog(context, community.mods),
                       icon: const Icon(Icons.shield_outlined, size: 18),
-                      label: Text(context.l10n.communityModeratorsTitle),
+                      child: Text(context.l10n.communityModeratorsTitle),
                     ),
                   if (community.userMod == true)
-                    OutlinedButton.icon(
+                    AdaptiveOutlinedButton(
                       onPressed: () =>
                           context.push('/c/${community.name}/mod-tools'),
                       icon: const Icon(
                         Icons.admin_panel_settings_outlined,
                         size: 18,
                       ),
-                      label: Text(context.l10n.communityModTools),
+                      child: Text(context.l10n.communityModTools),
                     ),
                   if (user != null) _MuteButton(community: community),
                 ],
@@ -228,43 +238,42 @@ class _CommunityHeader extends ConsumerWidget {
             ],
           ),
         ),
-        const Divider(height: 1),
+        const AdaptiveDivider(height: 1),
       ],
     );
   }
 
   void _showRulesDialog(BuildContext context, List<CommunityRule> rules) {
-    showDialog<void>(
+    showPlatformDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => AdaptiveAlertDialog(
         title: Text(context.l10n.communityRulesTitle),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.separated(
-            shrinkWrap: true,
-            itemCount: rules.length,
-            separatorBuilder: (_, _) => const Divider(height: 16),
-            itemBuilder: (_, i) {
-              final rule = rules[i];
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${i + 1}. ${rule.rule}',
-                    style: Theme.of(context).textTheme.titleSmall,
+        content: Column(
+          mainAxisSize: .min,
+          crossAxisAlignment: .stretch,
+          children: [
+            for (int i = 0; i < rules.length; i++) ...[
+              if (i > 0) const AdaptiveDivider(height: 16),
+              ...[
+                Text(
+                  '${i + 1}. ${rules[i].rule}',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                if (rules[i].description case final String desc
+                    when desc.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  MarkdownText(
+                    desc,
+                    baseStyle: Theme.of(context).textTheme.bodySmall,
                   ),
-                  if (rule.description case final String desc
-                      when desc.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(desc, style: Theme.of(context).textTheme.bodySmall),
-                  ],
                 ],
-              );
-            },
-          ),
+              ],
+            ],
+          ],
         ),
         actions: [
-          TextButton(
+          AdaptiveDialogAction(
+            isDefault: true,
             onPressed: () => Navigator.pop(ctx),
             child: Text(context.l10n.confirmButton),
           ),
@@ -274,58 +283,60 @@ class _CommunityHeader extends ConsumerWidget {
   }
 
   void _showModsDialog(BuildContext context, List<dynamic> mods) {
-    showDialog<void>(
+    showPlatformDialog<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => AdaptiveAlertDialog(
         title: Text(context.l10n.communityModeratorsTitle),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: mods.length,
-            itemBuilder: (_, i) {
-              final mod = mods[i];
-              return ListTile(
-                contentPadding: EdgeInsets.zero,
-                onTap: () {
-                  context.pop();
-                  context.push('/u/${mod.username}');
-                },
-                leading: CircleAvatar(
-                  radius: 18,
-                  backgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.primaryContainer,
-                  child: mod.proPic != null
-                      ? ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl: (mod.proPic as DiscuitImage).fullUrl,
-                            width: 36,
-                            height: 36,
-                            fit: BoxFit.cover,
+        content: Material(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: .min,
+            crossAxisAlignment: .stretch,
+            children: [
+              for (int i = 0; i < mods.length; i++)
+                AdaptiveListTile(
+                  contentPadding: EdgeInsets.zero,
+                  onTap: () {
+                    context.pop();
+                    context.push('/u/${mods[i].username}');
+                  },
+                  leading: CircleAvatar(
+                    radius: 18,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
+                    child: mods[i].proPic != null
+                        ? ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: (mods[i].proPic as DiscuitImage).fullUrl,
+                              width: 36,
+                              height: 36,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Text(
+                            (mods[i].username as String)[0].toUpperCase(),
+                            style: Theme.of(context).textTheme.labelMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimaryContainer,
+                                ),
                           ),
-                        )
-                      : Text(
-                          (mod.username as String)[0].toUpperCase(),
-                          style: Theme.of(context).textTheme.labelMedium
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onPrimaryContainer,
-                              ),
-                        ),
+                  ),
+                  title: Text(
+                    mods[i].username as String,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  isLast: i == mods.length - 1,
+                  trailing: Icon(context.chevronRightIcon),
                 ),
-                title: Text(
-                  mod.username as String,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                trailing: const Icon(Icons.chevron_right),
-              );
-            },
+            ],
           ),
         ),
         actions: [
-          TextButton(
+          AdaptiveDialogAction(
+            isDefault: true,
             onPressed: () => Navigator.pop(ctx),
             child: Text(context.l10n.okayButton),
           ),
@@ -346,7 +357,7 @@ class _MuteButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final muted = ref.watch(communityMutesProvider).contains(community.id);
 
-    return OutlinedButton.icon(
+    return AdaptiveOutlinedButton(
       onPressed: () {
         final notifier = ref.read(communityMutesProvider.notifier);
         if (muted) {
@@ -359,7 +370,7 @@ class _MuteButton extends ConsumerWidget {
         muted ? Icons.volume_up_outlined : Icons.volume_off_outlined,
         size: 18,
       ),
-      label: Text(
+      child: Text(
         muted ? context.l10n.communityUnmute : context.l10n.communityMute,
       ),
     );
@@ -378,13 +389,13 @@ class _JoinButton extends ConsumerWidget {
     final isJoined = community.userJoined == true;
 
     return isJoined
-        ? OutlinedButton(
+        ? AdaptiveOutlinedButton(
             onPressed: () => ref
                 .read(communityDetailProvider(community.name).notifier)
                 .toggleJoin(),
             child: Text(context.l10n.leaveButton),
           )
-        : FilledButton(
+        : AdaptiveFilledButton(
             onPressed: () => ref
                 .read(communityDetailProvider(community.name).notifier)
                 .toggleJoin(),
@@ -413,10 +424,9 @@ class _SortChips extends ConsumerWidget {
         spacing: 8,
         children: [
           for (final sort in PostSort.values)
-            FilterChip(
-              label: Text(sort.label(context.l10n)),
+            AdaptiveFilterChip(
+              label: sort.label(context.l10n),
               selected: sort == current,
-              showCheckmark: false,
               onSelected: (_) => ref
                   .read(communityFeedSortProvider(communityName).notifier)
                   .setSort(sort),
@@ -508,7 +518,7 @@ class _FeedFooter extends ConsumerWidget {
     if (feed.isLoadingMore) {
       return const Padding(
         padding: EdgeInsets.all(24),
-        child: Center(child: CircularProgressIndicator()),
+        child: Center(child: AdaptiveProgressIndicator()),
       );
     }
 
@@ -525,7 +535,7 @@ class _FeedFooter extends ConsumerWidget {
                 ),
               ),
             ),
-            TextButton(
+            AdaptiveTextButton(
               onPressed: () => ref
                   .read(
                     communityFeedProvider(communityName, communityId).notifier,
