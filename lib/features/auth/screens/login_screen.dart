@@ -103,30 +103,57 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const SizedBox(height: 24),
                     ],
                     if (context.useIos) ...[
-                      GlassTextField(
-                        controller: _usernameController,
-                        placeholder: l10n.loginUsernameLabel,
-                        prefixIcon: const Icon(Icons.person_outline),
-                        textInputAction: TextInputAction.next,
-                        onChanged: (_) => setState(() => _errorText = null),
-                      ),
-                      const SizedBox(height: 16),
-                      GlassTextField(
-                        controller: _passwordController,
-                        placeholder: l10n.loginPasswordLabel,
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
-                        ),
-                        onSuffixTap: () => setState(
-                          () => _obscurePassword = !_obscurePassword,
-                        ),
-                        obscureText: _obscurePassword,
-                        textInputAction: TextInputAction.done,
-                        onSubmitted: (_) => _submit(),
-                        onChanged: (_) => setState(() => _errorText = null),
+                      Builder(
+                        builder: (context) {
+                          final cs = Theme.of(context).colorScheme;
+                          final textStyle = TextStyle(color: cs.onSurface);
+                          final hintStyle = TextStyle(
+                            color: cs.onSurface.withValues(alpha: 0.5),
+                          );
+                          final iconColor = cs.onSurfaceVariant;
+                          return Column(
+                            children: [
+                              GlassTextField(
+                                controller: _usernameController,
+                                placeholder: l10n.loginUsernameLabel,
+                                prefixIcon: Icon(
+                                  Icons.person_outline,
+                                  color: iconColor,
+                                ),
+                                textStyle: textStyle,
+                                placeholderStyle: hintStyle,
+                                textInputAction: TextInputAction.next,
+                                onChanged: (_) =>
+                                    setState(() => _errorText = null),
+                              ),
+                              const SizedBox(height: 16),
+                              GlassTextField(
+                                controller: _passwordController,
+                                placeholder: l10n.loginPasswordLabel,
+                                prefixIcon: Icon(
+                                  Icons.lock_outline,
+                                  color: iconColor,
+                                ),
+                                suffixIcon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility_off_outlined,
+                                  color: iconColor,
+                                ),
+                                onSuffixTap: () => setState(
+                                  () => _obscurePassword = !_obscurePassword,
+                                ),
+                                textStyle: textStyle,
+                                placeholderStyle: hintStyle,
+                                obscureText: _obscurePassword,
+                                textInputAction: TextInputAction.done,
+                                onSubmitted: (_) => _submit(),
+                                onChanged: (_) =>
+                                    setState(() => _errorText = null),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ] else ...[
                       TextFormField(

@@ -51,10 +51,21 @@ class AdaptiveSegmentedButton<T extends Object> extends StatelessWidget {
       final selectedIndex = segments.indexWhere(
         (s) => selected.contains(s.value),
       );
+      final cs = Theme.of(context).colorScheme;
       return GlassSegmentedControl(
         segments: segments.map((s) => s.label).toList(),
         selectedIndex: selectedIndex.clamp(0, segments.length - 1),
         onSegmentSelected: (i) => onSelectionChanged({segments[i].value}),
+        selectedTextStyle: TextStyle(
+          color: cs.onSurface,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedTextStyle: TextStyle(
+          color: cs.onSurface.withValues(alpha: 0.6),
+        ),
+        backgroundColor: cs.onSurface.withValues(alpha: 0.08),
+        indicatorColor: cs.primary.withValues(alpha: 0.25),
+        glowColor: cs.primary,
       );
     }
     return SegmentedButton<T>(

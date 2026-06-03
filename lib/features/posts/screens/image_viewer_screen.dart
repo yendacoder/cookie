@@ -73,7 +73,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
   @override
   Widget build(BuildContext context) {
     final count = widget.images.length;
-
+    final hasAltText = widget.images[_currentPage].altText?.isNotEmpty == true;
     return AdaptiveScaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
@@ -83,9 +83,12 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
         systemOverlayStyle: SystemUiOverlayStyle.light,
         actions: [
           IconButton(
-            icon: const Icon(Icons.text_snippet_rounded),
+            icon: Icon(
+              Icons.text_snippet_rounded,
+              color: hasAltText ? null : Colors.white.withValues(alpha: 0.5),
+            ),
             tooltip: context.l10n.imageViewerAltText,
-            onPressed: widget.images[_currentPage].altText?.isNotEmpty == true
+            onPressed: hasAltText
                 ? () {
                     showPlatformDialog<void>(
                       context: context,

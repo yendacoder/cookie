@@ -37,26 +37,23 @@ class AdaptiveAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (ref.useIos) {
       final canPop = Navigator.of(context).canPop();
-      Widget bar = GlassAppBar(
-        title: title,
-        actions: actions,
-        leading:
-            leading ??
-            (canPop ? const CupertinoNavigationBarBackButton() : null),
-        preferredSize: preferredSize,
-        backgroundColor: backgroundColor ?? Colors.transparent,
-        settings: const LiquidGlassSettings(),
-      );
-      if (foregroundColor != null) {
-        bar = IconTheme(
-          data: IconThemeData(color: foregroundColor),
-          child: DefaultTextStyle(
-            style: TextStyle(color: foregroundColor),
-            child: bar,
+      final fg = foregroundColor ?? Theme.of(context).colorScheme.onSurface;
+      return IconTheme(
+        data: IconThemeData(color: fg),
+        child: DefaultTextStyle(
+          style: TextStyle(color: fg),
+          child: GlassAppBar(
+            title: title,
+            actions: actions,
+            leading:
+                leading ??
+                (canPop ? const CupertinoNavigationBarBackButton() : null),
+            preferredSize: preferredSize,
+            backgroundColor: backgroundColor ?? Colors.transparent,
+            settings: const LiquidGlassSettings(),
           ),
-        );
-      }
-      return bar;
+        ),
+      );
     }
     return AppBar(
       title: title,
@@ -135,12 +132,19 @@ class _GlassAppBarDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     final canPop = Navigator.of(context).canPop();
-    return GlassAppBar(
-      title: title,
-      actions: actions,
-      leading: canPop ? const CupertinoNavigationBarBackButton() : null,
-      preferredSize: const Size.fromHeight(kToolbarHeight),
-      settings: const LiquidGlassSettings(),
+    final fg = Theme.of(context).colorScheme.onSurface;
+    return IconTheme(
+      data: IconThemeData(color: fg),
+      child: DefaultTextStyle(
+        style: TextStyle(color: fg),
+        child: GlassAppBar(
+          title: title,
+          actions: actions,
+          leading: canPop ? const CupertinoNavigationBarBackButton() : null,
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          settings: const LiquidGlassSettings(),
+        ),
+      ),
     );
   }
 

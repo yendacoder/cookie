@@ -5,7 +5,11 @@ import 'package:cookie/core/providers/platform_style_provider.dart';
 
 void showPlatformSnackBar(BuildContext context, String message) {
   if (context.useIos) {
-    GlassSnackBar.show(context, message: message);
+    GlassSnackBar.show(
+      context,
+      message: message,
+      position: GlassToastPosition.top,
+    );
     return;
   }
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));

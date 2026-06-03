@@ -125,6 +125,7 @@ class _FeedView extends ConsumerWidget {
         ref.invalidate(subscriptionsFeedProvider);
         await ref.read(subscriptionsFeedProvider.future);
       },
+      headerSliverCount: 1,
       child: CustomScrollView(
         controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),

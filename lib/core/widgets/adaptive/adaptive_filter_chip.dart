@@ -18,10 +18,16 @@ class AdaptiveFilterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (context.useIos) {
+      final onSurface = Theme.of(context).colorScheme.onSurface;
       return GlassChip(
         label: label,
         selected: selected,
         onTap: () => onSelected(!selected),
+        iconColor: onSurface,
+        selectedColor: Theme.of(
+          context,
+        ).colorScheme.primary.withValues(alpha: 0.25),
+        labelStyle: TextStyle(color: onSurface),
       );
     }
     return FilterChip(

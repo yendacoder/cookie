@@ -69,6 +69,11 @@ class AdaptiveMenuButton<T extends Object> extends StatelessWidget {
                 title: item.label,
                 isDestructive: item.isDestructive,
                 onTap: () => onSelected(item.value),
+                titleStyle: item.isDestructive
+                    ? null
+                    : TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
               ),
             )
             .toList(),

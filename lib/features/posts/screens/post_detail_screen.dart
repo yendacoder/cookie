@@ -1456,21 +1456,21 @@ Future<int?> _showReportReasonDialog(BuildContext context) {
     context: context,
     builder: (ctx) => AdaptiveAlertDialog(
       title: Text(context.l10n.reportTitle),
-      content: SizedBox(
-        width: double.maxFinite,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: reasons.length,
-          itemBuilder: (_, i) {
-            return AdaptiveListTile(
-              contentPadding: EdgeInsets.zero,
-              onTap: () => Navigator.pop(ctx, i + 1),
-              title: Text(
-                reasons[i],
-                style: Theme.of(context).textTheme.bodyMedium,
+      content: Material(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisSize: .min,
+          crossAxisAlignment: .stretch,
+          children: [
+            for (int i = 0; i < reasons.length; i++)
+              AdaptiveListTile(
+                onTap: () => Navigator.pop(ctx, i + 1),
+                title: Text(
+                  reasons[i],
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
-            );
-          },
+          ],
         ),
       ),
       actions: [

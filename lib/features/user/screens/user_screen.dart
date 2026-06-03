@@ -3,7 +3,7 @@ import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
-import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_segmented_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cookie/core/utils/markdown_utils.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +115,7 @@ class _UserLoadedState extends ConsumerState<_UserLoaded> {
           ref.invalidate(userActivityProvider(widget.user.username));
           await ref.read(userDetailProvider(widget.user.username).future);
         },
+        headerSliverCount: 1,
         child: CustomScrollView(
           controller: widget.scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
@@ -307,15 +308,18 @@ class _FilterChips extends StatelessWidget {
     if (context.useIos) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        child: GlassSegmentedControl(
+        child: AdaptiveSegmentedButton<int>(
           segments: [
-            context.l10n.userTabAll,
-            context.l10n.userTabPosts,
-            context.l10n.userTabComments,
+            AdaptiveButtonSegment(value: 0, label: context.l10n.userTabAll),
+            AdaptiveButtonSegment(value: 1, label: context.l10n.userTabPosts),
+            AdaptiveButtonSegment(
+              value: 2,
+              label: context.l10n.userTabComments,
+            ),
           ],
-          selectedIndex: filter.index,
-          onSegmentSelected: (i) =>
-              onFilterChanged(UserActivityFilter.values[i]),
+          selected: {filter.index},
+          onSelectionChanged: (i) =>
+              onFilterChanged(UserActivityFilter.values[i.first]),
         ),
       );
     }

@@ -80,14 +80,15 @@ class _MutedCommunityTile extends StatelessWidget {
 
     return AdaptiveListTile(
       onTap: () => context.push('/c/$name'),
+      leadingSize: 40,
       leading: CircleAvatar(
         backgroundColor: colorScheme.secondaryContainer,
         child: proPicUrl != null
             ? ClipOval(
                 child: CachedNetworkImage(
                   imageUrl: proPicUrl!,
-                  width: 40,
-                  height: 40,
+                  width: 200,
+                  height: 200,
                   fit: BoxFit.cover,
                 ),
               )

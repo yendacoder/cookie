@@ -281,7 +281,7 @@ class _CommunityTile extends StatelessWidget {
           if (!selectMode)
             Padding(
               padding: const EdgeInsets.only(right: 16),
-              child: Icon(context.chevronRightIcon),
+              child: Icon(context.chevronRightIcon, color: colorScheme.onSurfaceVariant),
             ),
         ],
       ),

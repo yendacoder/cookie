@@ -30,6 +30,10 @@ class ProfileScreen extends ConsumerWidget {
     final user = authState.value;
     final packageInfo = ref.watch(packageInfoProvider);
     final update = ref.watch(updateCheckProvider).value;
+    final chevronIcon = Icon(
+      context.chevronRightIcon,
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+    );
 
     return AdaptiveScaffold(
       appBar: AdaptiveAppBar(
@@ -72,14 +76,14 @@ class ProfileScreen extends ConsumerWidget {
           AdaptiveListTile(
             leading: const Icon(Icons.explore_outlined),
             title: Text(context.l10n.communitiesScreenTitle),
-            trailing: Icon(context.chevronRightIcon),
+            trailing: chevronIcon,
             onTap: () => context.push('/communities'),
           ),
           if (user != null) ...[
             AdaptiveListTile(
               leading: Icon(context.bookmarkIcon),
               title: Text(context.l10n.listsScreenTitle),
-              trailing: Icon(context.chevronRightIcon),
+              trailing: chevronIcon,
               onTap: () => context.push('/lists'),
             ),
             AdaptiveListTile(
@@ -92,7 +96,7 @@ class ProfileScreen extends ConsumerWidget {
                     ? '${context.l10n.notificationsScreenTitle} [${user.notificationsNewCount}]'
                     : context.l10n.notificationsScreenTitle,
               ),
-              trailing: Icon(context.chevronRightIcon),
+              trailing: chevronIcon,
               onTap: () => context.push('/notifications'),
             ),
             AdaptiveListTile(
@@ -100,7 +104,7 @@ class ProfileScreen extends ConsumerWidget {
               title: Text(
                 '${context.l10n.mutedUsersScreenTitle} [${ref.watch(mutedUsersListProvider).length}]',
               ),
-              trailing: Icon(context.chevronRightIcon),
+              trailing: chevronIcon,
               onTap: () => context.push('/muted-users'),
             ),
             AdaptiveListTile(
@@ -108,13 +112,13 @@ class ProfileScreen extends ConsumerWidget {
               title: Text(
                 '${context.l10n.mutedCommunitiesScreenTitle} [${ref.watch(mutedCommunitiesListProvider).length}]',
               ),
-              trailing: Icon(context.chevronRightIcon),
+              trailing: chevronIcon,
               onTap: () => context.push('/muted-communities'),
             ),
             AdaptiveListTile(
               leading: Icon(context.settingsIcon),
               title: Text(context.l10n.settingsScreenTitle),
-              trailing: Icon(context.chevronRightIcon),
+              trailing: chevronIcon,
               onTap: () => context.push('/settings'),
             ),
           ],

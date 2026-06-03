@@ -73,6 +73,7 @@ class _CommunityLoaded extends ConsumerWidget {
           ref.invalidate(communityFeedProvider(community.name, community.id));
           await ref.read(communityDetailProvider(community.name).future);
         },
+        headerSliverCount: 1,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -296,23 +297,23 @@ class _CommunityHeader extends ConsumerWidget {
               for (int i = 0; i < mods.length; i++)
                 AdaptiveListTile(
                   contentPadding: EdgeInsets.zero,
+                  leadingSize: 36,
                   onTap: () {
                     context.pop();
                     context.push('/u/${mods[i].username}');
                   },
                   leading: CircleAvatar(
-                    radius: 18,
                     backgroundColor: Theme.of(
                       context,
                     ).colorScheme.primaryContainer,
                     child: mods[i].proPic != null
                         ? ClipOval(
                             child: CachedNetworkImage(
+                              width: 200,
+                              height: 200,
                               imageUrl:
                                   (mods[i].proPic as DiscuitImage).fullUrl,
-                              width: 36,
-                              height: 36,
-                              fit: BoxFit.cover,
+                              fit: .cover,
                             ),
                           )
                         : Text(
@@ -330,7 +331,10 @@ class _CommunityHeader extends ConsumerWidget {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   isLast: i == mods.length - 1,
-                  trailing: Icon(context.chevronRightIcon),
+                  trailing: Icon(
+                    context.chevronRightIcon,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
             ],
           ),

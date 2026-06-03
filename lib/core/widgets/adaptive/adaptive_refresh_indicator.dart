@@ -6,11 +6,15 @@ import 'package:cookie/core/providers/platform_style_provider.dart';
 /// Platform-adaptive pull-to-refresh wrapper for a [CustomScrollView].
 ///
 /// * **Android** – wraps the [CustomScrollView] in a [RefreshIndicator].
-/// * **iOS** – injects a [CupertinoSliverRefreshControl] as the first sliver
-///   inside the [CustomScrollView]; no outer wrapper is added.
+/// * **iOS** – injects a [CupertinoSliverRefreshControl] inside the
+///   [CustomScrollView]; no outer wrapper is added.
 ///
-/// The [child] must be a [CustomScrollView]. The widget automatically prepends
+/// The [child] must be a [CustomScrollView]. The widget automatically inserts
 /// the iOS refresh sliver, so callers only specify [onRefresh] once.
+///
+/// Use [headerSliverCount] when the [CustomScrollView] begins with sliver
+/// app-bar(s) that should appear *above* the refresh indicator. The refresh
+/// control is inserted after that many leading slivers (default 0).
 ///
 /// If the [CustomScrollView] does not yet have
 /// [AlwaysScrollableScrollPhysics], it is added automatically so that
@@ -20,10 +24,15 @@ class AdaptiveRefreshIndicator extends StatelessWidget {
     super.key,
     required this.onRefresh,
     required this.child,
+    this.headerSliverCount = 0,
   });
 
   final RefreshCallback onRefresh;
   final CustomScrollView child;
+
+  /// Number of leading slivers (e.g. a sliver app bar) that should remain
+  /// above the refresh control on iOS.
+  final int headerSliverCount;
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +51,9 @@ class AdaptiveRefreshIndicator extends StatelessWidget {
         : (child.physics ?? const AlwaysScrollableScrollPhysics());
     final slivers = context.useIos
         ? [
+            ...child.slivers.take(headerSliverCount),
             CupertinoSliverRefreshControl(onRefresh: onRefresh),
-            ...child.slivers,
+            ...child.slivers.skip(headerSliverCount),
           ]
         : child.slivers;
 

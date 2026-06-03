@@ -20,7 +20,11 @@ class AdaptiveFab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (context.useIos) {
-      return GlassButton(icon: Icon(icon), onTap: onPressed);
+      return GlassButton(
+        icon: Icon(icon),
+        iconColor: Theme.of(context).colorScheme.onSurface,
+        onTap: onPressed,
+      );
     }
     return FloatingActionButton(
       onPressed: onPressed,

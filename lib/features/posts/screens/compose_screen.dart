@@ -300,7 +300,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                       )
                     : textTheme.bodyMedium,
               ),
-              trailing: Icon(context.chevronRightIcon),
+              trailing: Icon(context.chevronRightIcon, color: colorScheme.onSurfaceVariant),
               onTap: _selectCommunity,
             ),
 
