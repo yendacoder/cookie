@@ -145,7 +145,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
           // Caption and/or page indicator at the bottom.
           Builder(
             builder: (context) {
-              if (count <= 2) return const SizedBox.shrink();
+              if (count < 2) return const SizedBox.shrink();
               return Positioned(
                 bottom: MediaQuery.paddingOf(context).bottom + 16,
                 left: 24,
