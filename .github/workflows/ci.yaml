@@ -1,11 +1,13 @@
-name: Build and release
+name: CI
+
 on:
   push:
-    tags:
-      - v*
+    branches:
+      - main
+  pull_request:
 
 jobs:
-  ci:
+  check:
     name: Lint & Test
     runs-on: ubuntu-latest
 
@@ -27,19 +29,3 @@ jobs:
 
       - name: Test
         run: flutter test
-
-  release-android:
-    permissions:
-      contents: write
-
-    needs:
-      - ci
-
-    uses: ./.github/workflows/release-android.yaml
-    with:
-      FLUTTER_VERSION: ${{ vars.FLUTTER_VERSION }}
-      VERSION_TAG: ${{ github.ref_name }}
-    secrets:
-      ANDROID_KEY_PROPERTIES: ${{ secrets.ANDROID_KEY_PROPERTIES }}
-      ANDROID_KEY: ${{ secrets.ANDROID_KEY }}
-
