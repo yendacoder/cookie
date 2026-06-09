@@ -317,7 +317,7 @@ class _LinkContent extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (link.image != null) ...[
+                if (link.image != null && youtubeId == null) ...[
                   const SizedBox(width: 12),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(6),
