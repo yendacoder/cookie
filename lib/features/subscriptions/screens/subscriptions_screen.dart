@@ -155,9 +155,10 @@ class _FeedView extends ConsumerWidget {
                     final post = feed.posts[index];
                     return PostCard(
                       post: post,
+                      heroTagScope: 'subscriptions',
                       onTap: () => context.push(
                         '/c/${post.communityName}/post/${post.publicId}',
-                        extra: post,
+                        extra: (post: post, heroTagScope: 'subscriptions'),
                       ),
                     );
                   },

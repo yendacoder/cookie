@@ -49,6 +49,7 @@ class PostCard extends ConsumerWidget {
     super.key,
     required this.post,
     required this.onTap,
+    required this.heroTagScope,
     this.checkMutedUser = true,
     this.checkMutedCommunity = true,
     this.showCommunity = true,
@@ -67,7 +68,12 @@ class PostCard extends ConsumerWidget {
   /// When set, the menu shows "Remove from list" instead of "Save to list".
   final VoidCallback? onRemoveFromList;
 
-  static String heroTag(String postId) => 'post-image-$postId';
+  /// Unique identifier for the list/tab this card belongs to.
+  /// Scopes the hero tag so the same post in multiple tabs doesn't collide.
+  final String heroTagScope;
+
+  static String heroTag(String postId, String scope) =>
+      'post-image-$postId-$scope';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -113,7 +119,7 @@ class PostCard extends ConsumerWidget {
                       ),
                   ],
                 ),
-                _PostContent(post: post),
+                _PostContent(post: post, heroTagScope: heroTagScope),
               ],
             ),
           ),
@@ -205,14 +211,15 @@ class _PostHeader extends StatelessWidget {
 // ── Content ───────────────────────────────────────────────────────────────────
 
 class _PostContent extends StatelessWidget {
-  const _PostContent({required this.post});
+  const _PostContent({required this.post, required this.heroTagScope});
 
   final Post post;
+  final String heroTagScope;
 
   @override
   Widget build(BuildContext context) {
     return switch (post.type) {
-      'image' => _ImageContent(post: post),
+      'image' => _ImageContent(post: post, heroTagScope: heroTagScope),
       'link' => _LinkContent(post: post),
       'text' when (post.body ?? '').isNotEmpty => _TextContent(
         body: post.body!,
@@ -223,9 +230,10 @@ class _PostContent extends StatelessWidget {
 }
 
 class _ImageContent extends StatelessWidget {
-  const _ImageContent({required this.post});
+  const _ImageContent({required this.post, required this.heroTagScope});
 
   final Post post;
+  final String heroTagScope;
 
   @override
   Widget build(BuildContext context) {
@@ -252,7 +260,7 @@ class _ImageContent extends StatelessWidget {
     // Hero only for single-image posts — a multi-image carousel may be on a
     // different page in the card vs the detail, causing a visual mismatch.
     if (images.length == 1) {
-      content = Hero(tag: PostCard.heroTag(post.id), child: content);
+      content = Hero(tag: PostCard.heroTag(post.id, heroTagScope), child: content);
     }
 
     return Padding(padding: const EdgeInsets.only(top: 8), child: content);

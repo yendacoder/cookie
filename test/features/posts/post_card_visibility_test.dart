@@ -131,7 +131,7 @@ Widget _wrap(Widget child, {List<Override> extra = const []}) {
 void main() {
   group('PostCard visibility', () {
     testWidgets('renders post title when visible', (tester) async {
-      await tester.pumpWidget(_wrap(PostCard(post: _post(), onTap: () {})));
+      await tester.pumpWidget(_wrap(PostCard(post: _post(), heroTagScope: 'test', onTap: () {})));
       await tester.pump();
       expect(find.text('Hello world'), findsOneWidget);
       expect(find.text('Post hidden'), findsNothing);
@@ -144,6 +144,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(id: 'p1'),
+            heroTagScope: 'test',
             onTap: () {},
           ),
           extra: [
@@ -161,6 +162,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(id: 'p1'),
+            heroTagScope: 'test',
             onTap: () {},
           ),
           extra: [
@@ -177,6 +179,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(communityId: 'comm-muted'),
+            heroTagScope: 'test',
             onTap: () {},
           ),
           extra: [
@@ -201,6 +204,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(author: _fakeUser('author-99')),
+            heroTagScope: 'test',
             onTap: () {},
           ),
           extra: [
@@ -227,6 +231,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(author: _fakeUser('author-99')),
+            heroTagScope: 'test',
             onTap: () {},
             checkMutedUser: false,
           ),
@@ -254,6 +259,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(communityId: 'comm-muted'),
+            heroTagScope: 'test',
             onTap: () {},
             checkMutedCommunity: false,
           ),

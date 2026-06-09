@@ -50,6 +50,7 @@ class PostDetailScreen extends ConsumerStatefulWidget {
     required this.communityName,
     required this.postId,
     this.initialPost,
+    this.heroTagScope = '',
   });
 
   final String communityName;
@@ -58,6 +59,9 @@ class PostDetailScreen extends ConsumerStatefulWidget {
   /// Pre-loaded post passed from the feed. When present, post content is shown
   /// immediately (enabling the hero transition) while the full detail loads.
   final Post? initialPost;
+
+  /// Must match the heroTagScope of the PostCard that triggered navigation.
+  final String heroTagScope;
 
   @override
   ConsumerState<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -138,7 +142,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
               },
               child: CustomScrollView(
                 slivers: [
-                  SliverToBoxAdapter(child: _PostDetailBody(post: post)),
+                  SliverToBoxAdapter(child: _PostDetailBody(post: post, heroTagScope: widget.heroTagScope)),
                   _CommentsSectionSliver(
                     post: post,
                     detailState: detailState,
@@ -332,9 +336,10 @@ enum _PostMenuAction {
 // ── Post body ─────────────────────────────────────────────────────────────────
 
 class _PostDetailBody extends StatelessWidget {
-  const _PostDetailBody({required this.post});
+  const _PostDetailBody({required this.post, required this.heroTagScope});
 
   final Post post;
+  final String heroTagScope;
 
   @override
   Widget build(BuildContext context) {
@@ -355,7 +360,7 @@ class _PostDetailBody extends StatelessWidget {
         const SizedBox(height: 12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _PostDetailContent(post: post),
+          child: _PostDetailContent(post: post, heroTagScope: heroTagScope),
         ),
         _PostDetailFooter(post: post),
         const AdaptiveDivider(),
@@ -399,14 +404,15 @@ class _PostMeta extends StatelessWidget {
 // ── Type-specific content ─────────────────────────────────────────────────────
 
 class _PostDetailContent extends StatelessWidget {
-  const _PostDetailContent({required this.post});
+  const _PostDetailContent({required this.post, required this.heroTagScope});
 
   final Post post;
+  final String heroTagScope;
 
   @override
   Widget build(BuildContext context) {
     return switch (post.type) {
-      'image' => _DetailImage(post: post),
+      'image' => _DetailImage(post: post, heroTagScope: heroTagScope),
       'link' => _DetailLink(post: post),
       'text' when (post.body ?? '').isNotEmpty => _DetailText(body: post.body!),
       _ => const SizedBox.shrink(),
@@ -415,9 +421,10 @@ class _PostDetailContent extends StatelessWidget {
 }
 
 class _DetailImage extends StatefulWidget {
-  const _DetailImage({required this.post});
+  const _DetailImage({required this.post, required this.heroTagScope});
 
   final Post post;
+  final String heroTagScope;
 
   static double _containerRatio(List<DiscuitImage> images) => images
       .map((img) => img.width / img.height)
@@ -448,7 +455,7 @@ class _DetailImageState extends State<_DetailImage> {
     );
 
     if (images.length == 1) {
-      carousel = Hero(tag: PostCard.heroTag(widget.post.id), child: carousel);
+      carousel = Hero(tag: PostCard.heroTag(widget.post.id, widget.heroTagScope), child: carousel);
     }
     return carousel;
   }

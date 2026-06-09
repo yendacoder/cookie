@@ -113,11 +113,16 @@ GoRouter router(Ref ref) {
       ),
       GoRoute(
         path: '/c/:communityName/post/:postId',
-        builder: (context, state) => PostDetailScreen(
-          communityName: state.pathParameters['communityName']!,
-          postId: state.pathParameters['postId']!,
-          initialPost: state.extra as Post?,
-        ),
+        builder: (context, state) {
+          final extra =
+              state.extra as ({Post post, String heroTagScope})?;
+          return PostDetailScreen(
+            communityName: state.pathParameters['communityName']!,
+            postId: state.pathParameters['postId']!,
+            initialPost: extra?.post,
+            heroTagScope: extra?.heroTagScope ?? '',
+          );
+        },
       ),
       GoRoute(
         path: '/u/:username',

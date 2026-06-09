@@ -419,11 +419,12 @@ class _ActivitySliver extends ConsumerWidget {
                 return switch (item) {
                   UserFeedPost(:final post) => PostCard(
                     post: post,
+                    heroTagScope: 'user',
                     showCommunity: true,
                     checkMutedUser: false,
                     onTap: () => context.push(
                       '/c/${post.communityName}/post/${post.publicId}',
-                      extra: post,
+                      extra: (post: post, heroTagScope: 'user'),
                     ),
                   ),
                   UserFeedComment(:final comment) => _UserCommentCard(

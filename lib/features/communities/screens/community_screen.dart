@@ -480,11 +480,12 @@ class _FeedSliver extends ConsumerWidget {
               final post = feed.posts[index];
               return PostCard(
                 post: post,
+                heroTagScope: 'community',
                 showCommunity: false,
                 checkMutedCommunity: false,
                 onTap: () => context.push(
                   '/c/${post.communityName}/post/${post.publicId}',
-                  extra: post,
+                  extra: (post: post, heroTagScope: 'community'),
                 ),
               );
             },

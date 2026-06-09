@@ -242,12 +242,13 @@ class _ItemTile extends ConsumerWidget {
       final post = Post.fromJson(item.targetItem!);
       return PostCard(
         post: post,
+        heroTagScope: 'list',
         showCommunity: true,
         checkMutedCommunity: false,
         checkMutedUser: false,
         onTap: () => context.push(
           '/c/${post.communityName}/post/${post.publicId}',
-          extra: post,
+          extra: (post: post, heroTagScope: 'list'),
         ),
         onRemoveFromList: () =>
             ref.read(listItemsProvider(listId).notifier).removeItem(item.id),
