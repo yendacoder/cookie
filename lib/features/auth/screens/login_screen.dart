@@ -95,7 +95,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: .stretch,
                   children: [
                     const SizedBox(height: 8),
                     if (_errorText != null) ...[
@@ -204,19 +204,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           : Text(l10n.loginButton),
                     ),
                     const SizedBox(height: 32),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(l10n.loginRegisterPrompt),
-                        const SizedBox(width: 4),
-                        AdaptiveTextButton(
-                          onPressed: () => launchUrl(
-                            Uri.parse('https://discuit.org/'),
-                            mode: LaunchMode.externalApplication,
-                          ),
-                          child: Text(l10n.loginRegisterLink),
-                        ),
-                      ],
+                    Text(l10n.loginRegisterPrompt, textAlign: .center),
+                    const SizedBox(height: 8),
+                    AdaptiveTextButton(
+                      onPressed: () => launchUrl(
+                        Uri.parse('https://discuit.org/'),
+                        mode: LaunchMode.externalApplication,
+                      ),
+                      child: Text(l10n.loginRegisterLink),
                     ),
                   ],
                 ),
