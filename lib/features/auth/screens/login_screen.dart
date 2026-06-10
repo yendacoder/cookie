@@ -209,7 +209,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     AdaptiveTextButton(
                       onPressed: () => launchUrl(
                         Uri.parse('https://discuit.org/'),
-                        mode: LaunchMode.externalApplication,
+                        mode: LaunchMode.inAppBrowserView,
                       ),
                       child: Text(l10n.loginRegisterLink),
                     ),

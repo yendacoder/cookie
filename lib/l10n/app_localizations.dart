@@ -1264,6 +1264,42 @@ abstract class AppLocalizations {
   /// **'Text size'**
   String get textScaleSetting;
 
+  /// No description provided for @deleteAccountSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccountSetting;
+
+  /// No description provided for @deleteAccountConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account?'**
+  String get deleteAccountConfirmTitle;
+
+  /// No description provided for @deleteAccountConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes your account, posts, comments, and votes. This cannot be undone.\n\nEnter your password to confirm.'**
+  String get deleteAccountConfirmBody;
+
+  /// No description provided for @deleteAccountPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get deleteAccountPasswordLabel;
+
+  /// No description provided for @deleteAccountErrorWrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password.'**
+  String get deleteAccountErrorWrongPassword;
+
+  /// No description provided for @deleteAccountErrorRateLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please wait a moment and try again.'**
+  String get deleteAccountErrorRateLimit;
+
   /// No description provided for @updateAvailableTitle.
   ///
   /// In en, this message translates to:

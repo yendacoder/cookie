@@ -724,6 +724,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get textScaleSetting => 'Text size';
 
   @override
+  String get deleteAccountSetting => 'Delete account';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Delete account?';
+
+  @override
+  String get deleteAccountConfirmBody =>
+      'This permanently deletes your account, posts, comments, and votes. This cannot be undone.\n\nEnter your password to confirm.';
+
+  @override
+  String get deleteAccountPasswordLabel => 'Password';
+
+  @override
+  String get deleteAccountErrorWrongPassword => 'Incorrect password.';
+
+  @override
+  String get deleteAccountErrorRateLimit =>
+      'Too many attempts. Please wait a moment and try again.';
+
+  @override
   String get updateAvailableTitle => 'Update available';
 
   @override

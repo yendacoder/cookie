@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum PlatformStyle { auto, android, ios }
 
-final platformStyleProvider = Provider<PlatformStyle>((_) => .auto);
+final platformStyleProvider = Provider<PlatformStyle>((_) => .ios);
 
 extension PlatformStyleRef on WidgetRef {
   bool get useIos => switch (watch(platformStyleProvider)) {

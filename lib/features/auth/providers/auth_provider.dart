@@ -116,4 +116,19 @@ class AuthNotifier extends _$AuthNotifier {
       state = const AsyncValue.data(null);
     }
   }
+
+  /// Permanently deletes the logged in user's account.
+  /// The server logs out all sessions of the user as part of this request.
+  Future<void> deleteAccount(String password) async {
+    final user = state.value;
+    if (user == null) return;
+    await ref
+        .read(apiClientProvider)
+        .delete('users/${user.username}', data: {'password': password});
+    ref.read(communityMutesProvider.notifier).clear();
+    ref.read(mutedCommunitiesListProvider.notifier).clear();
+    ref.read(userMutesProvider.notifier).clear();
+    ref.read(mutedUsersListProvider.notifier).clear();
+    state = const AsyncValue.data(null);
+  }
 }
