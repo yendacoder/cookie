@@ -5,6 +5,7 @@ import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cookie/features/communities/providers/community_provider.dart';
@@ -12,6 +13,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:html/dom.dart' show Document;
+import 'package:html/parser.dart' as html_parser;
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 import 'package:cookie/core/api/api_client.dart';
@@ -62,6 +66,8 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
   bool _submitting = false;
   bool _isUrlBody = false;
   bool _loadingCommunity = false;
+  bool _fetchingTitle = false;
+  Timer? _titleFetchDebounce;
 
   bool get _isEditing => widget.editingPost != null;
 
@@ -88,6 +94,58 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
         (uri.scheme == 'https' || uri.scheme == 'http') &&
         uri.host.isNotEmpty;
     if (isUrl != _isUrlBody) setState(() => _isUrlBody = isUrl);
+
+    _titleFetchDebounce?.cancel();
+    if (isUrl && !_isEditing && _titleCtrl.text.trim().isEmpty) {
+      _titleFetchDebounce = Timer(
+        const Duration(milliseconds: 600),
+        () => _fetchTitleFromUrl(uri),
+      );
+    }
+  }
+
+  /// Fetches [uri] and prefills the title field with the page's title,
+  /// unless the user has typed a title in the meantime.
+  Future<void> _fetchTitleFromUrl(Uri uri) async {
+    setState(() => _fetchingTitle = true);
+    try {
+      final response = await http
+          .get(
+            uri,
+            headers: {
+              'User-Agent':
+                  'Mozilla/5.0 (compatible; Cookie/1.0; +https://discuit.org)',
+            },
+          )
+          .timeout(const Duration(seconds: 5));
+      if (response.statusCode == 200 &&
+          (response.headers['content-type']?.contains('text/html') ?? false)) {
+        final title = _extractPageTitle(html_parser.parse(response.body));
+        final stillApplies =
+            mounted &&
+            _titleCtrl.text.trim().isEmpty &&
+            _bodyCtrl.text.trim() == uri.toString();
+        if (title != null && stillApplies) {
+          _titleCtrl.text = title;
+        }
+      }
+    } catch (_) {
+      // Title prefill is a convenience; ignore failures.
+    } finally {
+      if (mounted) setState(() => _fetchingTitle = false);
+    }
+  }
+
+  String? _extractPageTitle(Document document) {
+    for (final meta in document.querySelectorAll('meta')) {
+      final property = meta.attributes['property'] ?? meta.attributes['name'];
+      if (property == 'og:title' || property == 'twitter:title') {
+        final content = meta.attributes['content']?.trim();
+        if (content != null && content.isNotEmpty) return content;
+      }
+    }
+    final title = document.querySelector('title')?.text.trim();
+    return (title != null && title.isNotEmpty) ? title : null;
   }
 
   Future<void> _selectCommunity() async {
@@ -227,6 +285,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
 
   @override
   void dispose() {
+    _titleFetchDebounce?.cancel();
     _titleCtrl.dispose();
     _bodyCtrl.dispose();
     for (final img in _images) {
@@ -300,7 +359,10 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
                       )
                     : textTheme.bodyMedium,
               ),
-              trailing: Icon(context.chevronRightIcon, color: colorScheme.onSurfaceVariant),
+              trailing: Icon(
+                context.chevronRightIcon,
+                color: colorScheme.onSurfaceVariant,
+              ),
               onTap: _selectCommunity,
             ),
 
@@ -343,6 +405,16 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
               decoration: InputDecoration(
                 labelText: l10n.composeTitleHint,
                 alignLabelWithHint: true,
+                suffixIconConstraints: BoxConstraints(
+                  maxHeight: 20,
+                  maxWidth: 28,
+                ),
+                suffixIcon: _fetchingTitle
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: AdaptiveProgressIndicator(strokeWidth: 2),
+                      )
+                    : null,
               ),
               style: textTheme.titleMedium,
               maxLines: 3,
