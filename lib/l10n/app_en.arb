@@ -391,6 +391,8 @@
   "@communitiesEmpty": {},
   "communitiesJoinedEmpty": "You haven't joined any communities yet",
   "@communitiesJoinedEmpty": {},
+  "communitiesNoMatch": "No communities match your search",
+  "@communitiesNoMatch": {},
   "communitiesSelectTitle": "Select Community",
   "@communitiesSelectTitle": {},
   "listsEmpty": "You haven't created any lists yet",

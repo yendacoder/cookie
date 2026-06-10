@@ -462,6 +462,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'You haven\'t joined any communities yet';
 
   @override
+  String get communitiesNoMatch => 'No communities match your search';
+
+  @override
   String get communitiesSelectTitle => 'Select Community';
 
   @override

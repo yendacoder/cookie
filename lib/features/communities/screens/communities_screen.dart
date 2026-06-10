@@ -150,6 +150,7 @@ class _CommunitiesScreenState extends ConsumerState<CommunitiesScreen> {
                 tab: _tab,
                 selectMode: widget.selectMode,
                 onRefresh: _onRefresh,
+                isFiltered: _filter.isNotEmpty,
               ),
             },
           ),
@@ -167,12 +168,20 @@ class _CommunitiesList extends StatelessWidget {
     required this.tab,
     required this.selectMode,
     required this.onRefresh,
+    required this.isFiltered,
   });
 
   final List<Community> communities;
   final _Tab tab;
   final bool selectMode;
   final Future<void> Function() onRefresh;
+  final bool isFiltered;
+
+  String _emptyText(BuildContext context) {
+    if (isFiltered) return context.l10n.communitiesNoMatch;
+    if (tab == _Tab.joined) return context.l10n.communitiesJoinedEmpty;
+    return context.l10n.communitiesEmpty;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,9 +190,7 @@ class _CommunitiesList extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(32),
           child: Text(
-            tab == _Tab.joined
-                ? context.l10n.communitiesJoinedEmpty
-                : context.l10n.communitiesEmpty,
+            _emptyText(context),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSurfaceVariant,

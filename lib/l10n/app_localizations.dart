@@ -772,6 +772,12 @@ abstract class AppLocalizations {
   /// **'You haven\'t joined any communities yet'**
   String get communitiesJoinedEmpty;
 
+  /// No description provided for @communitiesNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No communities match your search'**
+  String get communitiesNoMatch;
+
   /// No description provided for @communitiesSelectTitle.
   ///
   /// In en, this message translates to:
