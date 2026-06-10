@@ -68,7 +68,7 @@ class AdaptiveRefreshIndicator extends StatelessWidget {
       shrinkWrap: child.shrinkWrap,
       center: child.center,
       anchor: child.anchor,
-      cacheExtent: child.cacheExtent,
+      scrollCacheExtent: child.scrollCacheExtent,
       slivers: slivers,
       semanticChildCount: child.semanticChildCount,
       dragStartBehavior: child.dragStartBehavior,

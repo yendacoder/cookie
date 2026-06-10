@@ -345,7 +345,7 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
         ReorderableListView.builder(
           padding: const EdgeInsets.only(bottom: 88),
           itemCount: _rules.length,
-          onReorder: _onReorder,
+          onReorderItem: _onReorder,
           itemBuilder: (_, i) {
             final rule = _rules[i];
             return AdaptiveListTile(
