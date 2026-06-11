@@ -1,36 +1,36 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/theme/app_theme.dart';
+import 'package:cookie/core/utils/markdown_utils.dart';
+import 'package:cookie/core/utils/relative_time.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_menu_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cookie/core/theme/app_theme.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
+import 'package:cookie/core/widgets/avatar.dart';
 import 'package:cookie/core/widgets/youtube_content.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/communities/providers/community_mutes_provider.dart';
 import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
+import 'package:cookie/features/posts/providers/hidden_posts_provider.dart';
 import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
+import 'package:cookie/features/posts/screens/image_viewer_screen.dart';
+import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
+import 'package:cookie/features/user/providers/user_mutes_provider.dart';
+import 'package:cookie/features/voting/providers/voting_provider.dart';
+import 'package:cookie/models/discuit_image.dart';
+import 'package:cookie/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
-import 'package:cookie/core/api/api_client.dart';
-import 'package:cookie/core/extensions/build_context_ext.dart';
-import 'package:cookie/core/utils/markdown_utils.dart';
-import 'package:cookie/core/utils/relative_time.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
-import 'package:cookie/core/widgets/avatar.dart';
-import 'package:cookie/models/discuit_image.dart';
-import 'package:cookie/models/post.dart';
-import 'package:cookie/features/auth/providers/auth_provider.dart';
-import 'package:cookie/features/communities/providers/community_mutes_provider.dart';
-import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
-import 'package:cookie/features/user/providers/user_mutes_provider.dart';
-import 'package:cookie/features/voting/providers/voting_provider.dart';
-import 'package:cookie/features/posts/providers/hidden_posts_provider.dart';
-import 'package:cookie/features/posts/screens/image_viewer_screen.dart';
 import 'post_image_carousel.dart';
 import 'post_save_to_list_sheet.dart';
 
@@ -82,10 +82,12 @@ class PostCard extends ConsumerWidget {
         checkMutedCommunity &&
         ref
             .watch(mutedCommunitiesListProvider)
-            .any((it) => it.id == post.communityId);
+            .any((it) => it.mutedCommunityId == post.communityId);
     final isMutedUser =
         checkMutedUser &&
-        ref.watch(mutedUsersListProvider).any((it) => it.id == post.author?.id);
+        ref
+            .watch(mutedUsersListProvider)
+            .any((it) => it.mutedUserId == post.author?.id);
     if (isHidden || isMutedUser || isMutedCommunity) {
       return _HiddenPlaceholder(post: post, withUndo: isHidden);
     }
@@ -260,7 +262,10 @@ class _ImageContent extends StatelessWidget {
     // Hero only for single-image posts — a multi-image carousel may be on a
     // different page in the card vs the detail, causing a visual mismatch.
     if (images.length == 1) {
-      content = Hero(tag: PostCard.heroTag(post.id, heroTagScope), child: content);
+      content = Hero(
+        tag: PostCard.heroTag(post.id, heroTagScope),
+        child: content,
+      );
     }
 
     return Padding(padding: const EdgeInsets.only(top: 8), child: content);
