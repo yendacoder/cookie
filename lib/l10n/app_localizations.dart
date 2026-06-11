@@ -664,6 +664,18 @@ abstract class AppLocalizations {
   /// **'Admin'**
   String get commentAdmin;
 
+  /// No description provided for @commentMutedUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Muted'**
+  String get commentMutedUsername;
+
+  /// No description provided for @commentMutedHiddenText.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve muted this user. Tap to view this comment.'**
+  String get commentMutedHiddenText;
+
   /// No description provided for @commentSubmitError.
   ///
   /// In en, this message translates to:

@@ -393,6 +393,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commentAdmin => 'Admin';
 
   @override
+  String get commentMutedUsername => 'Muted';
+
+  @override
+  String get commentMutedHiddenText =>
+      'You\'ve muted this user. Tap to view this comment.';
+
+  @override
   String get commentSubmitError => 'Failed to post comment';
 
   @override

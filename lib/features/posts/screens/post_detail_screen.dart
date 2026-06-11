@@ -142,7 +142,12 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
               },
               child: CustomScrollView(
                 slivers: [
-                  SliverToBoxAdapter(child: _PostDetailBody(post: post, heroTagScope: widget.heroTagScope)),
+                  SliverToBoxAdapter(
+                    child: _PostDetailBody(
+                      post: post,
+                      heroTagScope: widget.heroTagScope,
+                    ),
+                  ),
                   _CommentsSectionSliver(
                     post: post,
                     detailState: detailState,
@@ -455,7 +460,10 @@ class _DetailImageState extends State<_DetailImage> {
     );
 
     if (images.length == 1) {
-      carousel = Hero(tag: PostCard.heroTag(widget.post.id, widget.heroTagScope), child: carousel);
+      carousel = Hero(
+        tag: PostCard.heroTag(widget.post.id, widget.heroTagScope),
+        child: carousel,
+      );
     }
     return carousel;
   }
@@ -907,7 +915,7 @@ const _depthLineColors = [
   Color(0xFFE74C3C),
 ];
 
-class _CommentCard extends ConsumerWidget {
+class _CommentCard extends ConsumerStatefulWidget {
   const _CommentCard({
     required this.comment,
     required this.isOp,
@@ -923,17 +931,66 @@ class _CommentCard extends ConsumerWidget {
   final VoidCallback? onReply;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final depth = comment.depth.clamp(0, 4);
-    final indent = depth * 8.0;
-    final lineColor = _depthLineColors[comment.depth % _depthLineColors.length];
-    final colorScheme = Theme.of(context).colorScheme;
-    final muted = colorScheme.onSurfaceVariant;
-    final labelStyle = Theme.of(
-      context,
-    ).textTheme.labelSmall?.copyWith(color: muted);
-    final isDeleted = comment.deleted || comment.body.isEmpty;
+  ConsumerState<_CommentCard> createState() => _CommentCardState();
+}
 
+class _CommentCardState extends ConsumerState<_CommentCard> {
+  late bool _revealed = widget.comment.isAuthorMuted != true;
+
+  Widget _buildCommentContent(BuildContext context) {
+    final mutedColor = Theme.of(context).colorScheme.onSurfaceVariant;
+    final padding = const EdgeInsets.fromLTRB(8, 12, 8, 6);
+    if (widget.comment.isAuthorMuted == true && !_revealed) {
+      return AdaptiveInkWell(
+        onTap: () => setState(() => _revealed = true),
+        borderRadius: BorderRadius.circular(4),
+        child: Padding(
+          padding: padding,
+          child: Text(
+            context.l10n.commentMutedHiddenText,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: mutedColor,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (widget.comment.deleted) {
+      return Padding(
+        padding: padding,
+        child: Text(
+          context.l10n.postDetailCommentDeleted,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: mutedColor,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      );
+    }
+
+    final gifUri = _extractGifUri(widget.comment.body);
+    return Padding(
+      padding: padding,
+      child: Column(
+        crossAxisAlignment: .stretch,
+        children: [
+          MarkdownText(
+            widget.comment.body,
+            baseStyle: Theme.of(context).textTheme.bodySmall,
+          ),
+          if (gifUri != null) CommentGif(gifUri: gifUri),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCommentFooter(BuildContext context, TextStyle? labelStyle) {
+    final comment = widget.comment;
+    final isDeleted = comment.deleted;
+    final postPublicId = widget.postPublicId;
+    final onReply = widget.onReply;
     final vs = ref.watch(commentVotesProvider)[comment.id];
     final userVoted = vs?.userVoted ?? comment.userVoted;
     final userVotedUp = vs?.userVotedUp ?? comment.userVotedUp;
@@ -944,7 +1001,84 @@ class _CommentCard extends ConsumerWidget {
     final showUpSpinner = vs?.isLoading == true && vs?.pendingVoteUp == true;
     final showDownSpinner = vs?.isLoading == true && vs?.pendingVoteUp == false;
 
-    final gifUri = _extractGifUri(comment.body);
+    final mutedColor = Theme.of(context).colorScheme.onSurfaceVariant;
+
+    return Row(
+      children: [
+        SizedBox(width: 2),
+        _CommentVoteButton(
+          icon: Icons.arrow_upward_rounded,
+          isActive: votedUp,
+          activeColor: AppTheme.kUpvoteColor,
+          showSpinner: showUpSpinner,
+          muted: mutedColor,
+          onTap: () =>
+              ref.read(commentVotesProvider.notifier).vote(comment, true),
+        ),
+        Text(
+          '${upvotes - downvotes}',
+          style: labelStyle?.copyWith(
+            color: votedUp
+                ? AppTheme.kUpvoteColor
+                : votedDown
+                ? AppTheme.kDownvoteColor
+                : mutedColor,
+          ),
+        ),
+        _CommentVoteButton(
+          icon: Icons.arrow_downward_rounded,
+          isActive: votedDown,
+          activeColor: AppTheme.kDownvoteColor,
+          showSpinner: showDownSpinner,
+          muted: mutedColor,
+          onTap: () =>
+              ref.read(commentVotesProvider.notifier).vote(comment, false),
+        ),
+        if (comment.noReplies > 0) ...[
+          const SizedBox(width: 2),
+          Icon(
+            Icons.subdirectory_arrow_right_rounded,
+            size: 12,
+            color: mutedColor,
+          ),
+          const SizedBox(width: 2),
+          Text('${comment.noReplies}', style: labelStyle),
+          const SizedBox(width: 6),
+        ],
+        if (onReply != null && !isDeleted) ...[
+          const SizedBox(width: 6),
+          AdaptiveInkWell(
+            onTap: onReply,
+            child: Text(context.l10n.commentReplyButton, style: labelStyle),
+          ),
+        ],
+        if (!isDeleted) ...[
+          const SizedBox(width: 12),
+          _CommentMenuButton(
+            comment: comment,
+            postPublicId: postPublicId,
+            muted: mutedColor,
+          ),
+        ],
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final comment = widget.comment;
+    final isOp = widget.isOp;
+
+    final lastPostVisit = widget.lastPostVisit;
+    final depth = comment.depth.clamp(0, 4);
+    final indent = depth * 8.0;
+    final lineColor = _depthLineColors[comment.depth % _depthLineColors.length];
+    final colorScheme = Theme.of(context).colorScheme;
+    final muted = colorScheme.onSurfaceVariant;
+    final labelStyle = Theme.of(
+      context,
+    ).textTheme.labelSmall?.copyWith(color: muted);
+    final isMutedHidden = comment.isAuthorMuted == true && !_revealed;
 
     return Padding(
       padding: EdgeInsets.only(left: indent + 6, right: 6),
@@ -970,18 +1104,29 @@ class _CommentCard extends ConsumerWidget {
                     child: Row(
                       children: [
                         AdaptiveInkWell(
-                          onTap: () => context.push('/u/${comment.username}'),
+                          onTap: isMutedHidden
+                              ? null
+                              : () => context.push('/u/${comment.username}'),
                           borderRadius: BorderRadius.circular(4),
                           child: Row(
                             mainAxisSize: .min,
                             children: [
                               Avatar(
-                                imageUrl: comment.author?.proPic?.fullUrl,
-                                fallback: comment.username,
+                                imageUrl: isMutedHidden
+                                    ? null
+                                    : comment.author?.proPic?.fullUrl,
+                                fallback: isMutedHidden
+                                    ? context.l10n.commentMutedUsername
+                                    : comment.username,
                                 radius: 8,
                               ),
                               SizedBox(width: 8),
-                              Text(comment.username, style: labelStyle),
+                              Text(
+                                isMutedHidden
+                                    ? context.l10n.commentMutedUsername
+                                    : comment.username,
+                                style: labelStyle,
+                              ),
                               if (isOp) ...[
                                 SizedBox(width: 8),
                                 Text(
@@ -1014,7 +1159,7 @@ class _CommentCard extends ConsumerWidget {
                         // It's weird to mark own comments as new, so
                         // they are excluded explicitly
                         if (lastPostVisit != null &&
-                            comment.createdAt.isAfter(lastPostVisit!) &&
+                            comment.createdAt.isAfter(lastPostVisit) &&
                             ref.watch(authProvider).value?.username !=
                                 comment.author?.username)
                           Container(
@@ -1029,93 +1174,8 @@ class _CommentCard extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: isDeleted
-                        ? Text(
-                            context.l10n.postDetailCommentDeleted,
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(
-                                  color: muted,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                          )
-                        : MarkdownText(
-                            comment.body,
-                            baseStyle: Theme.of(context).textTheme.bodySmall,
-                          ),
-                  ),
-                  if (gifUri != null)
-                    Padding(
-                      padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
-                      child: CommentGif(gifUri: gifUri),
-                    ),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      SizedBox(width: 2),
-                      _CommentVoteButton(
-                        icon: Icons.arrow_upward_rounded,
-                        isActive: votedUp,
-                        activeColor: AppTheme.kUpvoteColor,
-                        showSpinner: showUpSpinner,
-                        muted: muted,
-                        onTap: () => ref
-                            .read(commentVotesProvider.notifier)
-                            .vote(comment, true),
-                      ),
-                      Text(
-                        '${upvotes - downvotes}',
-                        style: labelStyle?.copyWith(
-                          color: votedUp
-                              ? AppTheme.kUpvoteColor
-                              : votedDown
-                              ? AppTheme.kDownvoteColor
-                              : muted,
-                        ),
-                      ),
-                      _CommentVoteButton(
-                        icon: Icons.arrow_downward_rounded,
-                        isActive: votedDown,
-                        activeColor: AppTheme.kDownvoteColor,
-                        showSpinner: showDownSpinner,
-                        muted: muted,
-                        onTap: () => ref
-                            .read(commentVotesProvider.notifier)
-                            .vote(comment, false),
-                      ),
-                      if (comment.noReplies > 0) ...[
-                        const SizedBox(width: 2),
-                        Icon(
-                          Icons.subdirectory_arrow_right_rounded,
-                          size: 12,
-                          color: muted,
-                        ),
-                        const SizedBox(width: 2),
-                        Text('${comment.noReplies}', style: labelStyle),
-                        const SizedBox(width: 6),
-                      ],
-                      if (onReply != null && !isDeleted) ...[
-                        const SizedBox(width: 6),
-                        AdaptiveInkWell(
-                          onTap: onReply,
-                          child: Text(
-                            context.l10n.commentReplyButton,
-                            style: labelStyle,
-                          ),
-                        ),
-                      ],
-                      if (!isDeleted) ...[
-                        const SizedBox(width: 12),
-                        _CommentMenuButton(
-                          comment: comment,
-                          postPublicId: postPublicId,
-                          muted: muted,
-                        ),
-                      ],
-                    ],
-                  ),
+                  _buildCommentContent(context),
+                  if (!isMutedHidden) _buildCommentFooter(context, labelStyle),
                   SizedBox(height: 4),
                 ],
               ),
