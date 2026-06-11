@@ -1,3 +1,4 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +81,111 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     };
   }
 
+  Widget _buildAndroidInputs(BuildContext context) {
+    final l10n = context.l10n;
+    return Column(
+      children: [
+        TextFormField(
+          controller: _usernameController,
+          decoration: InputDecoration(
+            labelText: l10n.loginUsernameLabel,
+            prefixIcon: const Icon(Icons.person_outline),
+          ),
+          textInputAction: TextInputAction.next,
+          autofillHints: const [AutofillHints.username],
+          onChanged: (_) => setState(() => _errorText = null),
+          validator: (v) => (v == null || v.trim().isEmpty) ? ' ' : null,
+        ),
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _passwordController,
+          decoration: InputDecoration(
+            labelText: l10n.loginPasswordLabel,
+            prefixIcon: const Icon(Icons.lock_outline),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscurePassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+              ),
+              onPressed: () =>
+                  setState(() => _obscurePassword = !_obscurePassword),
+            ),
+          ),
+          obscureText: _obscurePassword,
+          textInputAction: TextInputAction.done,
+          autofillHints: const [AutofillHints.password],
+          onFieldSubmitted: (_) => _submit(),
+          onChanged: (_) => setState(() => _errorText = null),
+          validator: (v) => (v == null || v.isEmpty) ? ' ' : null,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIosInputs(BuildContext context) {
+    final l10n = context.l10n;
+    return Builder(
+      builder: (context) {
+        final cs = Theme.of(context).colorScheme;
+        final textStyle = TextStyle(color: cs.onSurface);
+        final hintStyle = TextStyle(color: cs.onSurface.withValues(alpha: 0.5));
+        final iconColor = cs.onSurfaceVariant;
+        return Column(
+          children: [
+            GlassTextField(
+              controller: _usernameController,
+              placeholder: l10n.loginUsernameLabel,
+              prefixIcon: Icon(Icons.person_outline, color: iconColor),
+              textStyle: textStyle,
+              placeholderStyle: hintStyle,
+              textInputAction: TextInputAction.next,
+              onChanged: (_) => setState(() => _errorText = null),
+            ),
+            const SizedBox(height: 16),
+            GlassTextField(
+              controller: _passwordController,
+              placeholder: l10n.loginPasswordLabel,
+              prefixIcon: Icon(Icons.lock_outline, color: iconColor),
+              suffixIcon: Icon(
+                _obscurePassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+                color: iconColor,
+              ),
+              onSuffixTap: () =>
+                  setState(() => _obscurePassword = !_obscurePassword),
+              textStyle: textStyle,
+              placeholderStyle: hintStyle,
+              obscureText: _obscurePassword,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _submit(),
+              onChanged: (_) => setState(() => _errorText = null),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildTermsButton(BuildContext context, String label, String url) {
+    final theme = Theme.of(context);
+    return Container(
+      alignment: .center,
+      padding: EdgeInsets.all(8),
+      child: AdaptiveInkWell(
+        onTap: () =>
+            launchUrl(Uri.parse(url), mode: LaunchMode.inAppBrowserView),
+        child: Text(
+          label,
+          style: theme.textTheme.bodyMedium!.copyWith(
+            color: theme.colorScheme.primary,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -88,135 +194,77 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       appBar: AdaptiveAppBar(title: Text(l10n.loginTitle)),
       body: SafeArea(
         child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 400),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: .stretch,
-                  children: [
-                    const SizedBox(height: 8),
-                    if (_errorText != null) ...[
-                      _ErrorBanner(message: _errorText!),
-                      const SizedBox(height: 24),
-                    ],
-                    if (context.useIos) ...[
-                      Builder(
-                        builder: (context) {
-                          final cs = Theme.of(context).colorScheme;
-                          final textStyle = TextStyle(color: cs.onSurface);
-                          final hintStyle = TextStyle(
-                            color: cs.onSurface.withValues(alpha: 0.5),
-                          );
-                          final iconColor = cs.onSurfaceVariant;
-                          return Column(
+          child: LayoutBuilder(
+            builder:
+                (BuildContext context, BoxConstraints viewportConstraints) {
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: 400,
+                        minHeight: viewportConstraints.maxHeight,
+                      ),
+                      child: Form(
+                        key: _formKey,
+                        child: IntrinsicHeight(
+                          child: Column(
+                            crossAxisAlignment: .stretch,
                             children: [
-                              GlassTextField(
-                                controller: _usernameController,
-                                placeholder: l10n.loginUsernameLabel,
-                                prefixIcon: Icon(
-                                  Icons.person_outline,
-                                  color: iconColor,
-                                ),
-                                textStyle: textStyle,
-                                placeholderStyle: hintStyle,
-                                textInputAction: TextInputAction.next,
-                                onChanged: (_) =>
-                                    setState(() => _errorText = null),
-                              ),
+                              Spacer(),
+                              if (_errorText != null) ...[
+                                _ErrorBanner(message: _errorText!),
+                                const SizedBox(height: 24),
+                              ],
+                              if (context.useIos)
+                                _buildIosInputs(context)
+                              else
+                                _buildAndroidInputs(context),
                               const SizedBox(height: 16),
-                              GlassTextField(
-                                controller: _passwordController,
-                                placeholder: l10n.loginPasswordLabel,
-                                prefixIcon: Icon(
-                                  Icons.lock_outline,
-                                  color: iconColor,
-                                ),
-                                suffixIcon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  color: iconColor,
-                                ),
-                                onSuffixTap: () => setState(
-                                  () => _obscurePassword = !_obscurePassword,
-                                ),
-                                textStyle: textStyle,
-                                placeholderStyle: hintStyle,
-                                obscureText: _obscurePassword,
-                                textInputAction: TextInputAction.done,
-                                onSubmitted: (_) => _submit(),
-                                onChanged: (_) =>
-                                    setState(() => _errorText = null),
+                              AdaptiveFilledButton(
+                                onPressed: _isSubmitting ? null : _submit,
+                                child: _isSubmitting
+                                    ? const SizedBox.square(
+                                        dimension: 20,
+                                        child: AdaptiveProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : Text(l10n.loginButton),
                               ),
+                              const SizedBox(height: 32),
+                              Text(
+                                l10n.loginRegisterPrompt,
+                                textAlign: .center,
+                              ),
+                              const SizedBox(height: 8),
+                              AdaptiveTextButton(
+                                onPressed: () => launchUrl(
+                                  Uri.parse('https://discuit.org/'),
+                                  mode: LaunchMode.inAppBrowserView,
+                                ),
+                                child: Text(l10n.loginRegisterLink),
+                              ),
+                              Spacer(),
+                              Text(l10n.loginTermsLabel, textAlign: .center),
+                              SizedBox(height: 8),
+                              _buildTermsButton(
+                                context,
+                                l10n.loginAppTermsLink,
+                                'https://static.k7a.me/cookie/terms',
+                              ),
+                              _buildTermsButton(
+                                context,
+                                l10n.loginDiscuitTermsLink,
+                                'https://discuit.org/terms',
+                              ),
+                              SizedBox(height: 8),
                             ],
-                          );
-                        },
-                      ),
-                    ] else ...[
-                      TextFormField(
-                        controller: _usernameController,
-                        decoration: InputDecoration(
-                          labelText: l10n.loginUsernameLabel,
-                          prefixIcon: const Icon(Icons.person_outline),
-                        ),
-                        textInputAction: TextInputAction.next,
-                        autofillHints: const [AutofillHints.username],
-                        onChanged: (_) => setState(() => _errorText = null),
-                        validator: (v) =>
-                            (v == null || v.trim().isEmpty) ? ' ' : null,
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          labelText: l10n.loginPasswordLabel,
-                          prefixIcon: const Icon(Icons.lock_outline),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                            ),
-                            onPressed: () => setState(
-                              () => _obscurePassword = !_obscurePassword,
-                            ),
                           ),
                         ),
-                        obscureText: _obscurePassword,
-                        textInputAction: TextInputAction.done,
-                        autofillHints: const [AutofillHints.password],
-                        onFieldSubmitted: (_) => _submit(),
-                        onChanged: (_) => setState(() => _errorText = null),
-                        validator: (v) => (v == null || v.isEmpty) ? ' ' : null,
                       ),
-                    ],
-                    const SizedBox(height: 16),
-                    AdaptiveFilledButton(
-                      onPressed: _isSubmitting ? null : _submit,
-                      child: _isSubmitting
-                          ? const SizedBox.square(
-                              dimension: 20,
-                              child: AdaptiveProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(l10n.loginButton),
                     ),
-                    const SizedBox(height: 32),
-                    Text(l10n.loginRegisterPrompt, textAlign: .center),
-                    const SizedBox(height: 8),
-                    AdaptiveTextButton(
-                      onPressed: () => launchUrl(
-                        Uri.parse('https://discuit.org/'),
-                        mode: LaunchMode.inAppBrowserView,
-                      ),
-                      child: Text(l10n.loginRegisterLink),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                  );
+                },
           ),
         ),
       ),

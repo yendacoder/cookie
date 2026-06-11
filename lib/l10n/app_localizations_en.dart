@@ -53,6 +53,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginRegisterLink => 'Register on the web';
 
   @override
+  String get loginTermsLabel => 'By using the app you agree to';
+
+  @override
+  String get loginAppTermsLink => 'App Terms of Service';
+
+  @override
+  String get loginDiscuitTermsLink => 'Discuit Terms of Service';
+
+  @override
   String get loginErrorInvalid => 'Invalid username or password';
 
   @override

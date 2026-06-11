@@ -178,6 +178,24 @@ abstract class AppLocalizations {
   /// **'Register on the web'**
   String get loginRegisterLink;
 
+  /// No description provided for @loginTermsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'By using the app you agree to'**
+  String get loginTermsLabel;
+
+  /// No description provided for @loginAppTermsLink.
+  ///
+  /// In en, this message translates to:
+  /// **'App Terms of Service'**
+  String get loginAppTermsLink;
+
+  /// No description provided for @loginDiscuitTermsLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Discuit Terms of Service'**
+  String get loginDiscuitTermsLink;
+
   /// No description provided for @loginErrorInvalid.
   ///
   /// In en, this message translates to:
