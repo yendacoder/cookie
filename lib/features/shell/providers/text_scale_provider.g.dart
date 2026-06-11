@@ -40,7 +40,7 @@ final class TextScaleProvider extends $NotifierProvider<TextScale, double> {
   }
 }
 
-String _$textScaleHash() => r'8710de433794fc50e8f3332086f08520a61486cd';
+String _$textScaleHash() => r'7788e377b8c8ccc24d0d97ab8f5b381a4aa21971';
 
 abstract class _$TextScale extends $Notifier<double> {
   double build();

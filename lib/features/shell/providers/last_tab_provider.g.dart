@@ -40,7 +40,7 @@ final class LastTabProvider extends $NotifierProvider<LastTab, int> {
   }
 }
 
-String _$lastTabHash() => r'f33ea35e8c99c2ba3bc21b3b6d49ac168436683a';
+String _$lastTabHash() => r'e04b60aa355f11ad94a3abcd7553f845e88d215c';
 
 abstract class _$LastTab extends $Notifier<int> {
   int build();

@@ -1,13 +1,12 @@
-import 'package:dio/dio.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:cookie/core/api/api_client.dart';
-import 'package:cookie/models/initial_response.dart';
-import 'package:cookie/models/user.dart';
 import 'package:cookie/features/communities/providers/community_mutes_provider.dart';
 import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
 import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
 import 'package:cookie/features/user/providers/user_mutes_provider.dart';
+import 'package:cookie/models/initial_response.dart';
+import 'package:cookie/models/user.dart';
+import 'package:dio/dio.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_provider.g.dart';
 
@@ -101,6 +100,24 @@ class AuthNotifier extends _$AuthNotifier {
     final user = state.value;
     if (user == null) return;
     state = AsyncData(user.copyWith(notificationsNewCount: count));
+  }
+
+  /// Re-fetches `_initial` and updates only `notificationsNewCount` on the
+  /// current user, leaving mutes/communities untouched.
+  Future<void> refreshNotificationCount() async {
+    if (state.value == null) return;
+    try {
+      final response = await ref.read(apiClientProvider).get('_initial');
+      final data = InitialResponse.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+      final newCount = data.user?.notificationsNewCount;
+      final current = state.value;
+      if (newCount == null || current == null) return;
+      state = AsyncData(current.copyWith(notificationsNewCount: newCount));
+    } on DioException {
+      // Ignore network errors; will retry on the next poll.
+    }
   }
 
   Future<void> logout() async {
