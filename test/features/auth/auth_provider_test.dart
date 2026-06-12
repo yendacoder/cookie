@@ -47,9 +47,8 @@ Response<dynamic> _initialResponse({
   requestOptions: RequestOptions(path: ''),
 );
 
-ProviderContainer _container(_MockDio dio) => ProviderContainer(
-  overrides: [apiClientProvider.overrideWithValue(dio)],
-);
+ProviderContainer _container(_MockDio dio) =>
+    ProviderContainer(overrides: [apiClientProvider.overrideWithValue(dio)]);
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -62,22 +61,21 @@ void main() {
 
   group('AuthNotifier — refreshNotificationCount', () {
     test('updates notificationsNewCount without re-seeding mutes', () async {
-      var callCount = 0;
       when(() => mockDio.get('_initial')).thenAnswer((_) async {
-        callCount++;
-        return callCount == 1
-            ? _initialResponse(
-                user: _userJson(notificationsNewCount: 2),
-                communityMutes: [
-                  {'id': 'm1', 'mutedCommunityId': 'c1'},
-                ],
-              )
-            : _initialResponse(
-                user: _userJson(
-                  username: 'changed',
-                  notificationsNewCount: 5,
-                ),
-              );
+        return _initialResponse(
+          user: _userJson(notificationsNewCount: 2),
+          communityMutes: [
+            {'id': 'm1', 'mutedCommunityId': 'c1'},
+          ],
+        );
+      });
+
+      when(() => mockDio.get('_user')).thenAnswer((_) async {
+        return Response(
+          data: _userJson(username: 'changed', notificationsNewCount: 5),
+          statusCode: 200,
+          requestOptions: RequestOptions(path: ''),
+        );
       });
 
       final container = _container(mockDio);
@@ -110,13 +108,11 @@ void main() {
     });
 
     test('swallows DioException and leaves state unchanged', () async {
-      var callCount = 0;
       when(() => mockDio.get('_initial')).thenAnswer((_) async {
-        callCount++;
-        if (callCount == 1) {
-          return _initialResponse(user: _userJson(notificationsNewCount: 2));
-        }
-        throw DioException(requestOptions: RequestOptions(path: '_initial'));
+        return _initialResponse(user: _userJson(notificationsNewCount: 2));
+      });
+      when(() => mockDio.get('_user')).thenAnswer((_) async {
+        throw DioException(requestOptions: RequestOptions(path: '_user'));
       });
 
       final container = _container(mockDio);

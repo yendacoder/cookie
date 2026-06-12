@@ -102,18 +102,18 @@ class AuthNotifier extends _$AuthNotifier {
     state = AsyncData(user.copyWith(notificationsNewCount: count));
   }
 
-  /// Re-fetches `_initial` and updates only `notificationsNewCount` on the
+  /// Re-fetches `_user` and updates only `notificationsNewCount` on the
   /// current user, leaving mutes/communities untouched.
   Future<void> refreshNotificationCount() async {
     if (state.value == null) return;
     try {
-      final response = await ref.read(apiClientProvider).get('_initial');
-      final data = InitialResponse.fromJson(
+      final response = await ref.read(apiClientProvider).get('_user');
+      final data = User.fromJson(
         response.data as Map<String, dynamic>,
       );
-      final newCount = data.user?.notificationsNewCount;
+      final newCount = data.notificationsNewCount;
       final current = state.value;
-      if (newCount == null || current == null) return;
+      if (current == null) return;
       state = AsyncData(current.copyWith(notificationsNewCount: newCount));
     } on DioException {
       // Ignore network errors; will retry on the next poll.
