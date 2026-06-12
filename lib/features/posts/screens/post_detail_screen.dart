@@ -520,17 +520,24 @@ class _DetailLink extends StatelessWidget {
         else if (link.image != null)
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: ClipRRect(
+            child: AdaptiveInkWell(
               borderRadius: BorderRadius.circular(8),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: CachedNetworkImage(
-                  imageUrl: link.image!.fullUrl,
-                  fit: BoxFit.cover,
-                  placeholder: (_, _) =>
-                      Container(color: colorScheme.surfaceContainerHighest),
-                  errorWidget: (_, _, _) =>
-                      Container(color: colorScheme.surfaceContainerHighest),
+              onTap: () => launchUrl(
+                Uri.parse(link.url),
+                mode: LaunchMode.externalApplication,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: CachedNetworkImage(
+                    imageUrl: link.image!.fullUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (_, _) =>
+                        Container(color: colorScheme.surfaceContainerHighest),
+                    errorWidget: (_, _, _) =>
+                        Container(color: colorScheme.surfaceContainerHighest),
+                  ),
                 ),
               ),
             ),
