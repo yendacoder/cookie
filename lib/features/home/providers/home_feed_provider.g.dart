@@ -77,7 +77,7 @@ final class HomeFeedNotifierProvider
   HomeFeedNotifier create() => HomeFeedNotifier();
 }
 
-String _$homeFeedNotifierHash() => r'77942ec37a8792161378398f1ac84a2b839ea87a';
+String _$homeFeedNotifierHash() => r'9d413cf2fad7611c895c48ab896959d1b1c17762';
 
 abstract class _$HomeFeedNotifier extends $AsyncNotifier<PostFeedState> {
   FutureOr<PostFeedState> build();

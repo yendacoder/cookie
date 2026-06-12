@@ -113,7 +113,7 @@ class _UserLoadedState extends ConsumerState<_UserLoaded> {
       body: AdaptiveRefreshIndicator(
         onRefresh: () async {
           ref.invalidate(userDetailProvider(widget.user.username));
-          ref.invalidate(userActivityProvider(widget.user.username));
+          ref.invalidate(userActivityProvider(widget.user.username, _filter));
           await ref.read(userDetailProvider(widget.user.username).future);
         },
         headerSliverCount: 1,
@@ -364,7 +364,9 @@ class _ActivitySliver extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activityState = ref.watch(userActivityProvider(user.username));
+    final activityState = ref.watch(
+      userActivityProvider(user.username, filter),
+    );
 
     return activityState.when(
       loading: () => SliverToBoxAdapter(
@@ -376,19 +378,14 @@ class _ActivitySliver extends ConsumerWidget {
       error: (error, _) => SliverToBoxAdapter(
         child: ErrorView(
           error: error,
-          onRetry: () => ref.invalidate(userActivityProvider(user.username)),
+          onRetry: () =>
+              ref.invalidate(userActivityProvider(user.username, filter)),
         ),
       ),
       data: (activity) {
-        final List<UserFeedItem> filteredItems = switch (filter) {
-          .all => activity.items,
-          .posts =>
-            activity.items.whereType<UserFeedPost>().toList(),
-          .comments =>
-            activity.items.whereType<UserFeedComment>().toList(),
-        };
+        final items = activity.items;
 
-        if (filteredItems.isEmpty && !activity.hasMore) {
+        if (items.isEmpty && !activity.hasMore) {
           return SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(32),
@@ -407,16 +404,17 @@ class _ActivitySliver extends ConsumerWidget {
         return SliverMainAxisGroup(
           slivers: [
             SliverList.separated(
-              itemCount: filteredItems.length + 1,
+              itemCount: items.length + 1,
               separatorBuilder: (_, _) => const SizedBox(height: 32),
               itemBuilder: (context, index) {
-                if (index == filteredItems.length) {
+                if (index == items.length) {
                   return _ActivityFooter(
                     activity: activity,
                     username: user.username,
+                    filter: filter,
                   );
                 }
-                final item = filteredItems[index];
+                final item = items[index];
                 final scope = HeroTagScope(.user, id: user.username);
                 return switch (item) {
                   UserFeedPost(:final post) => PostCard(
@@ -508,10 +506,15 @@ class _UserCommentCard extends StatelessWidget {
 // ── Activity footer ───────────────────────────────────────────────────────────
 
 class _ActivityFooter extends ConsumerWidget {
-  const _ActivityFooter({required this.activity, required this.username});
+  const _ActivityFooter({
+    required this.activity,
+    required this.username,
+    required this.filter,
+  });
 
   final UserActivityState activity;
   final String username;
+  final UserActivityFilter filter;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -519,7 +522,7 @@ class _ActivityFooter extends ConsumerWidget {
     if (!activity.isLoadingMore && activity.hasMore) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (context.mounted) {
-          ref.read(userActivityProvider(username).notifier).loadMore();
+          ref.read(userActivityProvider(username, filter).notifier).loadMore();
         }
       });
     }
@@ -545,8 +548,9 @@ class _ActivityFooter extends ConsumerWidget {
               ),
             ),
             AdaptiveTextButton(
-              onPressed: () =>
-                  ref.read(userActivityProvider(username).notifier).loadMore(),
+              onPressed: () => ref
+                  .read(userActivityProvider(username, filter).notifier)
+                  .loadMore(),
               child: Text(context.l10n.retryButton),
             ),
           ],

@@ -50,7 +50,7 @@ final class ListItemsNotifierProvider
   }
 }
 
-String _$listItemsNotifierHash() => r'cc08e791def424b5d93795b5f4fe034589649049';
+String _$listItemsNotifierHash() => r'cbb4eb731444042aa3eed85b0df9bbb3910a436b';
 
 final class ListItemsNotifierFamily extends $Family
     with

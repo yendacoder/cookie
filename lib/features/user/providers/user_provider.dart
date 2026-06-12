@@ -47,18 +47,27 @@ class UserActivityState {
 class UserActivityNotifier extends _$UserActivityNotifier {
   final _seenIds = <String>{};
   late String _username;
+  late UserActivityFilter _filter;
 
   @override
-  Future<UserActivityState> build(String username) async {
+  Future<UserActivityState> build(
+    String username,
+    UserActivityFilter filter,
+  ) async {
     _username = username;
+    _filter = filter;
     _seenIds.clear();
     return _loadPage(cursor: null);
   }
 
   Future<UserActivityState> _loadPage({required String? cursor}) async {
-    final response = await ref
-        .read(apiClientProvider)
-        .get('users/$_username/feed', queryParameters: {'next': ?cursor});
+    final response = await ref.read(apiClientProvider).get(
+      'users/$_username/feed',
+      queryParameters: {
+        'next': ?cursor,
+        if (_filter != UserActivityFilter.all) 'filter': _filter.name,
+      },
+    );
     final data = response.data as Map<String, dynamic>;
     final rawItems = (data['items'] as List).cast<Map<String, dynamic>>();
 

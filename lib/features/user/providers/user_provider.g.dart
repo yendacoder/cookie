@@ -106,7 +106,7 @@ final class UserActivityNotifierProvider
     extends $AsyncNotifierProvider<UserActivityNotifier, UserActivityState> {
   UserActivityNotifierProvider._({
     required UserActivityNotifierFamily super.from,
-    required String super.argument,
+    required (String, UserActivityFilter) super.argument,
   }) : super(
          retry: null,
          name: r'userActivityProvider',
@@ -122,7 +122,7 @@ final class UserActivityNotifierProvider
   String toString() {
     return r'userActivityProvider'
         ''
-        '($argument)';
+        '$argument';
   }
 
   @$internal
@@ -141,7 +141,7 @@ final class UserActivityNotifierProvider
 }
 
 String _$userActivityNotifierHash() =>
-    r'd16f7fd8db929ee0470607a63697ee939d365c9a';
+    r'960b5434900bbf21e1184abeabbce7ec2fd071eb';
 
 final class UserActivityNotifierFamily extends $Family
     with
@@ -150,7 +150,7 @@ final class UserActivityNotifierFamily extends $Family
           AsyncValue<UserActivityState>,
           UserActivityState,
           FutureOr<UserActivityState>,
-          String
+          (String, UserActivityFilter)
         > {
   UserActivityNotifierFamily._()
     : super(
@@ -161,8 +161,10 @@ final class UserActivityNotifierFamily extends $Family
         isAutoDispose: true,
       );
 
-  UserActivityNotifierProvider call(String username) =>
-      UserActivityNotifierProvider._(argument: username, from: this);
+  UserActivityNotifierProvider call(
+    String username,
+    UserActivityFilter filter,
+  ) => UserActivityNotifierProvider._(argument: (username, filter), from: this);
 
   @override
   String toString() => r'userActivityProvider';
@@ -170,10 +172,11 @@ final class UserActivityNotifierFamily extends $Family
 
 abstract class _$UserActivityNotifier
     extends $AsyncNotifier<UserActivityState> {
-  late final _$args = ref.$arg as String;
-  String get username => _$args;
+  late final _$args = ref.$arg as (String, UserActivityFilter);
+  String get username => _$args.$1;
+  UserActivityFilter get filter => _$args.$2;
 
-  FutureOr<UserActivityState> build(String username);
+  FutureOr<UserActivityState> build(String username, UserActivityFilter filter);
   @$mustCallSuper
   @override
   void runBuild() {
@@ -187,6 +190,6 @@ abstract class _$UserActivityNotifier
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
   }
 }
