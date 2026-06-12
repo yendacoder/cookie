@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -478,14 +479,15 @@ class _FeedSliver extends ConsumerWidget {
                 );
               }
               final post = feed.posts[index];
+              final scope = HeroTagScope(.community, id: post.communityName);
               return PostCard(
                 post: post,
-                heroTagScope: 'community',
+                heroTagScope: scope,
                 showCommunity: false,
                 checkMutedCommunity: false,
                 onTap: () => context.push(
                   '/c/${post.communityName}/post/${post.publicId}',
-                  extra: (post: post, heroTagScope: 'community'),
+                  extra: (post: post, heroTagScope: scope),
                 ),
               );
             },

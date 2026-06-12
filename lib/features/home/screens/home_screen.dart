@@ -1,3 +1,4 @@
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_filter_chip.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
@@ -150,12 +151,13 @@ class _FeedView extends ConsumerWidget {
                       return _FeedFooter(feed: feed, ref: ref);
                     }
                     final post = feed.posts[index];
+                    final scope = HeroTagScope(.home);
                     return PostCard(
                       post: post,
-                      heroTagScope: 'home',
+                      heroTagScope: scope,
                       onTap: () => context.push(
                         '/c/${post.communityName}/post/${post.publicId}',
-                        extra: (post: post, heroTagScope: 'home'),
+                        extra: (post: post, heroTagScope: scope),
                       ),
                     );
                   },

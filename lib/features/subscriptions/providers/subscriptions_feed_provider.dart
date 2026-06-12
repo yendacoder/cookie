@@ -1,3 +1,4 @@
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,7 +64,15 @@ class SubscriptionsFeedNotifier extends _$SubscriptionsFeedNotifier {
         .where((p) => _seenIds.add(p.id))
         .toList();
 
-    ref.read(readNewCommentsProvider.notifier).clear();
+    if (cursor == null) {
+      ref
+          .read(
+            readNewCommentsProvider(
+              HeroTagScope(.subscriptions).toString(),
+            ).notifier,
+          )
+          .clear();
+    }
     return PostFeedState(posts: posts, nextCursor: data['next']?.toString());
   }
 

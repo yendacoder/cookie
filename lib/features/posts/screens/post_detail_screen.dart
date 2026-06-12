@@ -1,3 +1,4 @@
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_menu_button.dart';
@@ -10,6 +11,7 @@ import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_sheet_header.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -50,7 +52,7 @@ class PostDetailScreen extends ConsumerStatefulWidget {
     required this.communityName,
     required this.postId,
     this.initialPost,
-    this.heroTagScope = '',
+    this.heroTagScope = const HeroTagScope(.unknown),
   });
 
   final String communityName;
@@ -61,7 +63,7 @@ class PostDetailScreen extends ConsumerStatefulWidget {
   final Post? initialPost;
 
   /// Must match the heroTagScope of the PostCard that triggered navigation.
-  final String heroTagScope;
+  final HeroTagScope heroTagScope;
 
   @override
   ConsumerState<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -105,6 +107,15 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final detailState = ref.watch(postDetailProvider(widget.postId));
+    if (detailState.hasValue) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref
+            .read(
+              readNewCommentsProvider(widget.heroTagScope.toString()).notifier,
+            )
+            .setRead(widget.postId);
+      });
+    }
     final post = detailState.value ?? widget.initialPost;
     final isAuthenticated = ref.watch(authProvider).value != null;
 
@@ -344,7 +355,7 @@ class _PostDetailBody extends StatelessWidget {
   const _PostDetailBody({required this.post, required this.heroTagScope});
 
   final Post post;
-  final String heroTagScope;
+  final HeroTagScope heroTagScope;
 
   @override
   Widget build(BuildContext context) {
@@ -412,7 +423,7 @@ class _PostDetailContent extends StatelessWidget {
   const _PostDetailContent({required this.post, required this.heroTagScope});
 
   final Post post;
-  final String heroTagScope;
+  final HeroTagScope heroTagScope;
 
   @override
   Widget build(BuildContext context) {
@@ -429,7 +440,7 @@ class _DetailImage extends StatefulWidget {
   const _DetailImage({required this.post, required this.heroTagScope});
 
   final Post post;
-  final String heroTagScope;
+  final HeroTagScope heroTagScope;
 
   static double _containerRatio(List<DiscuitImage> images) => images
       .map((img) => img.width / img.height)

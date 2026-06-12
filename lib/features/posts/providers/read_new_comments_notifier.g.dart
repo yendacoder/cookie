@@ -12,7 +12,7 @@ part of 'read_new_comments_notifier.dart';
 /// update all lists that all new comments have been loaded
 
 @ProviderFor(ReadNewCommentsNotifier)
-final readNewCommentsProvider = ReadNewCommentsNotifierProvider._();
+final readNewCommentsProvider = ReadNewCommentsNotifierFamily._();
 
 /// When a post detail screen loads successfully, it might want to
 /// update all lists that all new comments have been loaded
@@ -20,19 +20,26 @@ final class ReadNewCommentsNotifierProvider
     extends $NotifierProvider<ReadNewCommentsNotifier, Set<String>> {
   /// When a post detail screen loads successfully, it might want to
   /// update all lists that all new comments have been loaded
-  ReadNewCommentsNotifierProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'readNewCommentsProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  ReadNewCommentsNotifierProvider._({
+    required ReadNewCommentsNotifierFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'readNewCommentsProvider',
+         isAutoDispose: false,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$readNewCommentsNotifierHash();
+
+  @override
+  String toString() {
+    return r'readNewCommentsProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
@@ -45,16 +52,61 @@ final class ReadNewCommentsNotifierProvider
       providerOverride: $SyncValueProvider<Set<String>>(value),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ReadNewCommentsNotifierProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$readNewCommentsNotifierHash() =>
-    r'd4faea4de28c86eb41e02844813fcf42c70d08f1';
+    r'c3f1fa32ca454baecf698695f075bcc8631fdec3';
+
+/// When a post detail screen loads successfully, it might want to
+/// update all lists that all new comments have been loaded
+
+final class ReadNewCommentsNotifierFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          ReadNewCommentsNotifier,
+          Set<String>,
+          Set<String>,
+          Set<String>,
+          String
+        > {
+  ReadNewCommentsNotifierFamily._()
+    : super(
+        retry: null,
+        name: r'readNewCommentsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
+
+  /// When a post detail screen loads successfully, it might want to
+  /// update all lists that all new comments have been loaded
+
+  ReadNewCommentsNotifierProvider call(String listType) =>
+      ReadNewCommentsNotifierProvider._(argument: listType, from: this);
+
+  @override
+  String toString() => r'readNewCommentsProvider';
+}
 
 /// When a post detail screen loads successfully, it might want to
 /// update all lists that all new comments have been loaded
 
 abstract class _$ReadNewCommentsNotifier extends $Notifier<Set<String>> {
-  Set<String> build();
+  late final _$args = ref.$arg as String;
+  String get listType => _$args;
+
+  Set<String> build(String listType);
   @$mustCallSuper
   @override
   void runBuild() {
@@ -67,6 +119,6 @@ abstract class _$ReadNewCommentsNotifier extends $Notifier<Set<String>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    element.handleCreate(ref, () => build(_$args));
   }
 }

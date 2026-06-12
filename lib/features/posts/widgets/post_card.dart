@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/core/theme/app_theme.dart';
 import 'package:cookie/core/utils/markdown_utils.dart';
@@ -70,9 +71,9 @@ class PostCard extends ConsumerWidget {
 
   /// Unique identifier for the list/tab this card belongs to.
   /// Scopes the hero tag so the same post in multiple tabs doesn't collide.
-  final String heroTagScope;
+  final HeroTagScope heroTagScope;
 
-  static String heroTag(String postId, String scope) =>
+  static String heroTag(String postId, HeroTagScope scope) =>
       'post-image-$postId-$scope';
 
   @override
@@ -129,6 +130,7 @@ class PostCard extends ConsumerWidget {
         // Footer sits outside InkWell — no gesture conflict with vote taps.
         _PostFooter(
           post: post,
+          heroTagScope: heroTagScope,
           muteUser: checkMutedUser,
           muteCommunity: checkMutedCommunity,
           onDetailTap: onTap,
@@ -216,7 +218,7 @@ class _PostContent extends StatelessWidget {
   const _PostContent({required this.post, required this.heroTagScope});
 
   final Post post;
-  final String heroTagScope;
+  final HeroTagScope heroTagScope;
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +237,7 @@ class _ImageContent extends StatelessWidget {
   const _ImageContent({required this.post, required this.heroTagScope});
 
   final Post post;
-  final String heroTagScope;
+  final HeroTagScope heroTagScope;
 
   @override
   Widget build(BuildContext context) {
@@ -385,6 +387,7 @@ class _TextContent extends StatelessWidget {
 class _PostFooter extends ConsumerWidget {
   const _PostFooter({
     required this.post,
+    required this.heroTagScope,
     required this.muteUser,
     required this.muteCommunity,
     required this.onDetailTap,
@@ -392,6 +395,7 @@ class _PostFooter extends ConsumerWidget {
   });
 
   final Post post;
+  final HeroTagScope heroTagScope;
   final bool muteUser;
   final bool muteCommunity;
   final VoidCallback onDetailTap;
@@ -456,7 +460,11 @@ class _PostFooter extends ConsumerWidget {
                     Icon(Icons.mode_comment_outlined, size: 14, color: muted),
                     const SizedBox(width: 6),
                     Text('${post.noComments}', style: base),
-                    if (!ref.watch(readNewCommentsProvider).contains(post.id) &&
+                    if (!ref
+                            .watch(
+                              readNewCommentsProvider(heroTagScope.toString()),
+                            )
+                            .contains(post.publicId) &&
                         (post.newComments ?? 0) > 0)
                       Tooltip(
                         message: context.l10n.commentsNewCountTooltip(

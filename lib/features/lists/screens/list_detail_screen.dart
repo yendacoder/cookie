@@ -1,3 +1,4 @@
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
@@ -240,15 +241,16 @@ class _ItemTile extends ConsumerWidget {
   Widget _itemContent(BuildContext context, WidgetRef ref) {
     if (item.targetType == 'post' && item.targetItem != null) {
       final post = Post.fromJson(item.targetItem!);
+      final scope = HeroTagScope(.list, id: listId.toString());
       return PostCard(
         post: post,
-        heroTagScope: 'list',
+        heroTagScope: scope,
         showCommunity: true,
         checkMutedCommunity: false,
         checkMutedUser: false,
         onTap: () => context.push(
           '/c/${post.communityName}/post/${post.publicId}',
-          extra: (post: post, heroTagScope: 'list'),
+          extra: (post: post, heroTagScope: scope),
         ),
         onRemoveFromList: () =>
             ref.read(listItemsProvider(listId).notifier).removeItem(item.id),

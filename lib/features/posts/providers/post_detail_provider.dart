@@ -1,9 +1,7 @@
-import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/models/comment.dart';
 import 'package:cookie/models/post.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'post_detail_provider.g.dart';
 
@@ -16,7 +14,6 @@ class PostDetailNotifier extends _$PostDetailNotifier {
         .get('posts/$publicId', queryParameters: {'fetchCommunity': 'true'});
 
     final res = Post.fromJson(response.data as Map<String, dynamic>);
-    ref.read(readNewCommentsProvider.notifier).setRead(res.id);
     return res;
   }
 

@@ -6,7 +6,7 @@ part 'read_new_comments_notifier.g.dart';
 @Riverpod(keepAlive: true)
 class ReadNewCommentsNotifier extends _$ReadNewCommentsNotifier {
   @override
-  Set<String> build() => {};
+  Set<String> build(String listType) => {};
 
   void clear() {
     state = {};

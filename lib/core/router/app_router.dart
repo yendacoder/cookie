@@ -1,3 +1,4 @@
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -115,12 +116,12 @@ GoRouter router(Ref ref) {
         path: '/c/:communityName/post/:postId',
         builder: (context, state) {
           final extra =
-              state.extra as ({Post post, String heroTagScope})?;
+              state.extra as ({Post post, HeroTagScope heroTagScope})?;
           return PostDetailScreen(
             communityName: state.pathParameters['communityName']!,
             postId: state.pathParameters['postId']!,
             initialPost: extra?.post,
-            heroTagScope: extra?.heroTagScope ?? '',
+            heroTagScope: extra?.heroTagScope ?? HeroTagScope(.unknown),
           );
         },
       ),

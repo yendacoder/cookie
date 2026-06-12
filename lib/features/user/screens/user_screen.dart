@@ -1,3 +1,4 @@
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
@@ -104,7 +105,7 @@ class _UserLoaded extends ConsumerStatefulWidget {
 }
 
 class _UserLoadedState extends ConsumerState<_UserLoaded> {
-  UserActivityFilter _filter = UserActivityFilter.all;
+  UserActivityFilter _filter = .all;
 
   @override
   Widget build(BuildContext context) {
@@ -380,10 +381,10 @@ class _ActivitySliver extends ConsumerWidget {
       ),
       data: (activity) {
         final List<UserFeedItem> filteredItems = switch (filter) {
-          UserActivityFilter.all => activity.items,
-          UserActivityFilter.posts =>
+          .all => activity.items,
+          .posts =>
             activity.items.whereType<UserFeedPost>().toList(),
-          UserActivityFilter.comments =>
+          .comments =>
             activity.items.whereType<UserFeedComment>().toList(),
         };
 
@@ -416,15 +417,16 @@ class _ActivitySliver extends ConsumerWidget {
                   );
                 }
                 final item = filteredItems[index];
+                final scope = HeroTagScope(.user, id: user.username);
                 return switch (item) {
                   UserFeedPost(:final post) => PostCard(
                     post: post,
-                    heroTagScope: 'user',
+                    heroTagScope: scope,
                     showCommunity: true,
                     checkMutedUser: false,
                     onTap: () => context.push(
                       '/c/${post.communityName}/post/${post.publicId}',
-                      extra: (post: post, heroTagScope: 'user'),
+                      extra: (post: post, heroTagScope: scope),
                     ),
                   ),
                   UserFeedComment(:final comment) => _UserCommentCard(

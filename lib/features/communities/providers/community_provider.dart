@@ -1,3 +1,4 @@
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -125,7 +126,15 @@ class CommunityFeedNotifier extends _$CommunityFeedNotifier {
         .where((p) => _seenIds.add(p.id))
         .toList();
 
-    ref.read(readNewCommentsProvider.notifier).clear();
+    if (cursor == null) {
+      ref
+          .read(
+            readNewCommentsProvider(
+              HeroTagScope(.community, id: _communityName).toString(),
+            ).notifier,
+          )
+          .clear();
+    }
     return PostFeedState(posts: posts, nextCursor: data['next']?.toString());
   }
 

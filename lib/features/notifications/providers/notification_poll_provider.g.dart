@@ -48,7 +48,7 @@ final class NotificationPollerProvider
 }
 
 String _$notificationPollerHash() =>
-    r'a1a06adfb0796b7c86b073bc9a7a119a6725f570';
+    r'dc141da3c0b62345f41e41bcd597d934486f3aa3';
 
 /// Periodically refreshes the notification count while the app is
 /// authenticated and in the foreground, and immediately on resume.

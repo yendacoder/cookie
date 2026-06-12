@@ -1,3 +1,4 @@
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -98,7 +99,13 @@ class HomeFeedNotifier extends _$HomeFeedNotifier {
         .map(Post.fromJson)
         .where((p) => _seenIds.add(p.id))
         .toList();
-    ref.read(readNewCommentsProvider.notifier).clear();
+    if (cursor == null) {
+      ref
+          .read(
+            readNewCommentsProvider(HeroTagScope(.home).toString()).notifier,
+          )
+          .clear();
+    }
     return PostFeedState(posts: posts, nextCursor: data['next']?.toString());
   }
 

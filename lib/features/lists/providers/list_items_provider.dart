@@ -1,3 +1,5 @@
+import 'package:cookie/core/hero_tag_scope.dart';
+import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:cookie/core/api/api_client.dart';
@@ -31,6 +33,15 @@ class ListItemsNotifier extends _$ListItemsNotifier {
         .read(apiClientProvider)
         .get('lists/$listId/items', queryParameters: {'next': ?cursor});
     final data = response.data as Map<String, dynamic>;
+    if (cursor == null) {
+      ref
+          .read(
+            readNewCommentsProvider(
+              HeroTagScope(.list, id: listId.toString()).toString(),
+            ).notifier,
+          )
+          .clear();
+    }
     return ListItemFeedState(
       items: (data['items'] as List)
           .cast<Map<String, dynamic>>()

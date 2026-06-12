@@ -1,3 +1,4 @@
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
 import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
@@ -127,11 +128,16 @@ Widget _wrap(Widget child, {List<Override> extra = const []}) {
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
+const _kHeroTagScope = HeroTagScope(.home);
 
 void main() {
   group('PostCard visibility', () {
     testWidgets('renders post title when visible', (tester) async {
-      await tester.pumpWidget(_wrap(PostCard(post: _post(), heroTagScope: 'test', onTap: () {})));
+      await tester.pumpWidget(
+        _wrap(
+          PostCard(post: _post(), heroTagScope: _kHeroTagScope, onTap: () {}),
+        ),
+      );
       await tester.pump();
       expect(find.text('Hello world'), findsOneWidget);
       expect(find.text('Post hidden'), findsNothing);
@@ -144,7 +150,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(id: 'p1'),
-            heroTagScope: 'test',
+            heroTagScope: _kHeroTagScope,
             onTap: () {},
           ),
           extra: [
@@ -162,7 +168,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(id: 'p1'),
-            heroTagScope: 'test',
+            heroTagScope: _kHeroTagScope,
             onTap: () {},
           ),
           extra: [
@@ -179,7 +185,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(communityId: 'comm-muted'),
-            heroTagScope: 'test',
+            heroTagScope: _kHeroTagScope,
             onTap: () {},
           ),
           extra: [
@@ -204,7 +210,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(author: _fakeUser('author-99')),
-            heroTagScope: 'test',
+            heroTagScope: _kHeroTagScope,
             onTap: () {},
           ),
           extra: [
@@ -231,7 +237,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(author: _fakeUser('author-99')),
-            heroTagScope: 'test',
+            heroTagScope: _kHeroTagScope,
             onTap: () {},
             checkMutedUser: false,
           ),
@@ -259,7 +265,7 @@ void main() {
         _wrap(
           PostCard(
             post: _post(communityId: 'comm-muted'),
-            heroTagScope: 'test',
+            heroTagScope: _kHeroTagScope,
             onTap: () {},
             checkMutedCommunity: false,
           ),
