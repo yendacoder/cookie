@@ -1,3 +1,4 @@
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
@@ -19,7 +20,7 @@ class AdaptiveMenuItem<T extends Object> {
 
 /// Platform-adaptive contextual action button.
 ///
-/// * **iOS** – renders a [GlassPullDownButton] (iOS 14+ pull-down menu).
+/// * **iOS** – renders a plain icon button that opens a [GlassMenu].
 /// * **Android** – renders a [PopupMenuButton].
 ///
 /// Build [items] with the same conditional logic you previously used in
@@ -32,7 +33,6 @@ class AdaptiveMenuButton<T extends Object> extends StatelessWidget {
     required this.onSelected,
     this.androidIcon,
     this.iconSize,
-    this.androidPadding,
     this.androidStyle,
     this.iosButtonSize = 44,
   });
@@ -43,7 +43,6 @@ class AdaptiveMenuButton<T extends Object> extends StatelessWidget {
   /// Icon widget shown on Android. Defaults to [Icons.more_horiz].
   final Widget? androidIcon;
   final double? iconSize;
-  final EdgeInsetsGeometry? androidPadding;
 
   /// Button style passed to [PopupMenuButton] on Android only.
   final ButtonStyle? androidStyle;
@@ -54,15 +53,45 @@ class AdaptiveMenuButton<T extends Object> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (context.useIos) {
-      return GlassPullDownButton(
-        buttonWidth: iosButtonSize,
-        buttonHeight: iosButtonSize,
-        icon: Icon(
-          CupertinoIcons.ellipsis_circle,
-          size: iconSize,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
+      final colorScheme = Theme.of(context).colorScheme;
+      // GlassPullDownButton doesn't expose glassSettings for its menu, and
+      // the default ~12% opaque glassColor leaves item labels unreadable
+      // over busy backgrounds. Build the trigger + menu directly (this is
+      // all GlassPullDownButton does internally) so we can pass a near-opaque,
+      // theme-matched glassColor to the menu.
+      const menuGlassDefaults = LiquidGlassSettings(
+        blur: 10,
+        thickness: 10,
+        lightAngle: GlassDefaults.lightAngle,
+        lightIntensity: 0.7,
+        ambientStrength: 0.4,
+        saturation: 1.2,
+        refractiveIndex: 0.7,
+        chromaticAberration: 0.0,
+      );
+      return GlassMenu(
+        glassSettings: LiquidGlassSettings(
+          blur: menuGlassDefaults.blur,
+          thickness: menuGlassDefaults.thickness,
+          glassColor: colorScheme.surface.withValues(alpha: 0.92),
+          lightAngle: menuGlassDefaults.lightAngle,
+          lightIntensity: menuGlassDefaults.lightIntensity,
+          ambientStrength: menuGlassDefaults.ambientStrength,
+          saturation: menuGlassDefaults.saturation,
+          refractiveIndex: menuGlassDefaults.refractiveIndex,
+          chromaticAberration: menuGlassDefaults.chromaticAberration,
         ),
-        quality: .premium,
+        triggerBuilder: (context, toggleMenu) => AdaptiveInkWell(
+          onTap: toggleMenu,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Icon(
+              CupertinoIcons.ellipsis_circle,
+              size: iconSize,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
         items: items
             .map(
               (item) => GlassMenuItem(
@@ -71,9 +100,7 @@ class AdaptiveMenuButton<T extends Object> extends StatelessWidget {
                 onTap: () => onSelected(item.value),
                 titleStyle: item.isDestructive
                     ? null
-                    : TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                    : TextStyle(color: colorScheme.onSurface),
               ),
             )
             .toList(),
@@ -82,7 +109,7 @@ class AdaptiveMenuButton<T extends Object> extends StatelessWidget {
     return PopupMenuButton<T>(
       icon: androidIcon ?? const Icon(Icons.more_horiz),
       iconSize: iconSize,
-      padding: androidPadding ?? EdgeInsets.zero,
+      padding: EdgeInsets.zero,
       style: androidStyle,
       onSelected: onSelected,
       itemBuilder: (_) => items

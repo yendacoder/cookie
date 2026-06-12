@@ -451,6 +451,22 @@
   "@postMenuMuteUser": {},
   "postMenuMuteCommunity": "Mute community",
   "@postMenuMuteCommunity": {},
+  "postMenuBlock": "Block user",
+  "@postMenuBlock": {},
+  "blockUserTitle": "Block user?",
+  "@blockUserTitle": {},
+  "blockUserConfirm": "This will mute @{username}, hide their posts and comments from you, and report this content for review.",
+  "@blockUserConfirm": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "blockUserSuccess": "User blocked and content reported",
+  "@blockUserSuccess": {},
+  "blockUserFail": "Failed to block user, please try again later.",
+  "@blockUserFail": {},
   "postHiddenLabel": "Post hidden",
   "@postHiddenLabel": {},
   "undoButton": "Undo",

@@ -554,6 +554,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get postMenuMuteCommunity => 'Mute community';
 
   @override
+  String get postMenuBlock => 'Block user';
+
+  @override
+  String get blockUserTitle => 'Block user?';
+
+  @override
+  String blockUserConfirm(String username) {
+    return 'This will mute @$username, hide their posts and comments from you, and report this content for review.';
+  }
+
+  @override
+  String get blockUserSuccess => 'User blocked and content reported';
+
+  @override
+  String get blockUserFail => 'Failed to block user, please try again later.';
+
+  @override
   String get postHiddenLabel => 'Post hidden';
 
   @override

@@ -23,6 +23,7 @@ import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart'
 import 'package:cookie/features/posts/screens/image_viewer_screen.dart';
 import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
 import 'package:cookie/features/user/providers/user_mutes_provider.dart';
+import 'package:cookie/features/user/widgets/block_user_dialog.dart';
 import 'package:cookie/features/voting/providers/voting_provider.dart';
 import 'package:cookie/models/discuit_image.dart';
 import 'package:cookie/models/post.dart';
@@ -43,6 +44,7 @@ enum _PostMenuAction {
   hide,
   muteUser,
   muteCommunity,
+  block,
 }
 
 class PostCard extends ConsumerWidget {
@@ -490,9 +492,9 @@ class _PostFooter extends ConsumerWidget {
             ),
           ),
           Padding(
-            // ios menu button has outline and needs to be aligned differently
+            // ios menu button has different constraints and needs to be aligned differently
             padding: context.useIos
-                ? const EdgeInsets.symmetric(horizontal: 8)
+                ? const EdgeInsets.symmetric(horizontal: 4)
                 : EdgeInsets.zero,
             child: _PostMenuButton(
               post: post,
@@ -623,7 +625,6 @@ class _PostMenuButton extends ConsumerWidget {
       androidIcon: Icon(Icons.more_horiz, size: 16, color: muted),
       iconSize: 14,
       iosButtonSize: 28,
-      androidPadding: EdgeInsets.zero,
       items: [
         if (onRemoveFromList != null)
           AdaptiveMenuItem(
@@ -656,6 +657,12 @@ class _PostMenuButton extends ConsumerWidget {
           AdaptiveMenuItem(
             value: _PostMenuAction.muteCommunity,
             label: l10n.postMenuMuteCommunity,
+          ),
+        if (muteUser && post.author != null)
+          AdaptiveMenuItem(
+            value: _PostMenuAction.block,
+            label: l10n.postMenuBlock,
+            isDestructive: true,
           ),
       ],
       onSelected: (action) async {
@@ -714,6 +721,17 @@ class _PostMenuButton extends ConsumerWidget {
             await ref
                 .read(userMutesProvider.notifier)
                 .mute(post.author?.id ?? '', post.author?.username ?? '');
+          case .block:
+            final author = post.author;
+            if (author == null) return;
+            await showBlockUserDialog(
+              context,
+              ref,
+              userId: author.id,
+              username: author.username,
+              targetId: post.id,
+              targetType: 'post',
+            );
         }
       },
     );

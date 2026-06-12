@@ -934,6 +934,36 @@ abstract class AppLocalizations {
   /// **'Mute community'**
   String get postMenuMuteCommunity;
 
+  /// No description provided for @postMenuBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Block user'**
+  String get postMenuBlock;
+
+  /// No description provided for @blockUserTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Block user?'**
+  String get blockUserTitle;
+
+  /// No description provided for @blockUserConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This will mute @{username}, hide their posts and comments from you, and report this content for review.'**
+  String blockUserConfirm(String username);
+
+  /// No description provided for @blockUserSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'User blocked and content reported'**
+  String get blockUserSuccess;
+
+  /// No description provided for @blockUserFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to block user, please try again later.'**
+  String get blockUserFail;
+
   /// No description provided for @postHiddenLabel.
   ///
   /// In en, this message translates to:

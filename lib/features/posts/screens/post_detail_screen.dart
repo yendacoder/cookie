@@ -44,6 +44,7 @@ import 'package:cookie/features/posts/widgets/post_card.dart';
 import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
 import 'package:cookie/features/posts/widgets/post_image_carousel.dart';
 import 'package:cookie/features/posts/widgets/post_save_to_list_sheet.dart';
+import 'package:cookie/features/user/widgets/block_user_dialog.dart';
 import 'image_viewer_screen.dart';
 
 class PostDetailScreen extends ConsumerStatefulWidget {
@@ -276,6 +277,12 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 value: _PostMenuAction.report,
                 label: l10n.postMenuReport,
               ),
+              if (!isAuthor && post.author != null)
+                AdaptiveMenuItem(
+                  value: _PostMenuAction.block,
+                  label: l10n.postMenuBlock,
+                  isDestructive: true,
+                ),
             ],
             onSelected: (action) async {
               switch (action) {
@@ -332,6 +339,18 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   context.pop();
                 case .report:
                   _reportPost(context, ref);
+                case .block:
+                  final author = post.author;
+                  if (author == null) return;
+                  final blocked = await showBlockUserDialog(
+                    context,
+                    ref,
+                    userId: author.id,
+                    username: author.username,
+                    targetId: post.id,
+                    targetType: 'post',
+                  );
+                  if (blocked && context.mounted) context.pop();
               }
             },
           ),
@@ -347,6 +366,7 @@ enum _PostMenuAction {
   deletePost,
   hide,
   report,
+  block,
 }
 
 // ── Post body ─────────────────────────────────────────────────────────────────
@@ -1207,7 +1227,7 @@ class _CommentCardState extends ConsumerState<_CommentCard> {
 
 // ── Comment menu button ───────────────────────────────────────────────────────
 
-enum _CommentMenuAction { edit, delete, report }
+enum _CommentMenuAction { edit, delete, report, block }
 
 class _CommentMenuButton extends ConsumerWidget {
   const _CommentMenuButton({
@@ -1283,7 +1303,6 @@ class _CommentMenuButton extends ConsumerWidget {
       androidIcon: Icon(Icons.more_horiz, size: 14, color: muted),
       iconSize: 14,
       iosButtonSize: 28,
-      androidPadding: EdgeInsets.zero,
       androidStyle: TextButton.styleFrom(
         padding: .zero,
         visualDensity: .compact,
@@ -1307,6 +1326,12 @@ class _CommentMenuButton extends ConsumerWidget {
           value: _CommentMenuAction.report,
           label: l10n.postMenuReport,
         ),
+        if (!isOwn && comment.userId != null)
+          AdaptiveMenuItem(
+            value: _CommentMenuAction.block,
+            label: l10n.postMenuBlock,
+            isDestructive: true,
+          ),
       ],
       onSelected: (action) async {
         switch (action) {
@@ -1322,6 +1347,20 @@ class _CommentMenuButton extends ConsumerWidget {
             _deleteComment(context, ref);
           case .report:
             _reportComment(context, ref);
+          case .block:
+            final userId = comment.userId;
+            if (userId == null) return;
+            final blocked = await showBlockUserDialog(
+              context,
+              ref,
+              userId: userId,
+              username: comment.username,
+              targetId: comment.id,
+              targetType: 'comment',
+            );
+            if (blocked) {
+              ref.invalidate(postDetailProvider(postPublicId));
+            }
         }
       },
     );
