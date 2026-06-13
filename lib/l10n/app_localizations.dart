@@ -1360,6 +1360,48 @@ abstract class AppLocalizations {
   /// **'Edit comment'**
   String get commentEditTitle;
 
+  /// No description provided for @commentMenuModActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Mod actions'**
+  String get commentMenuModActions;
+
+  /// No description provided for @commentModActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mod actions'**
+  String get commentModActionsTitle;
+
+  /// No description provided for @commentModActionsLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get commentModActionsLocked;
+
+  /// No description provided for @commentModActionsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete comment'**
+  String get commentModActionsDelete;
+
+  /// No description provided for @commentModActionsDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove the comment from the community. It cannot be undone from the app.'**
+  String get commentModActionsDeleteConfirm;
+
+  /// No description provided for @commentModActionsDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment deleted'**
+  String get commentModActionsDeleted;
+
+  /// No description provided for @commentModActionsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Action failed, please try again later.'**
+  String get commentModActionsError;
+
   /// No description provided for @imageViewerAltText.
   ///
   /// In en, this message translates to:

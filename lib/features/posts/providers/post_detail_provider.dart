@@ -141,4 +141,39 @@ class PostDetailNotifier extends _$PostDetailNotifier {
       ),
     );
   }
+
+  Future<void> setCommentLocked(String commentId, bool locked) async {
+    final post = state.value;
+    if (post == null) return;
+    final response = await ref
+        .read(apiClientProvider)
+        .put(
+          'posts/${post.publicId}/comments/$commentId'
+          '?action=${locked ? 'lock&lockAs=mods' : 'unlock'}',
+        );
+    final updated = Comment.fromJson(response.data as Map<String, dynamic>);
+    state = AsyncData(
+      post.copyWith(
+        comments: post.comments
+            ?.map((c) => c.id == commentId ? updated : c)
+            .toList(),
+      ),
+    );
+  }
+
+  Future<void> deleteCommentAsMod(String commentId) async {
+    final post = state.value;
+    if (post == null) return;
+    final response = await ref
+        .read(apiClientProvider)
+        .delete('posts/${post.publicId}/comments/$commentId?deleteAs=mods');
+    final updated = Comment.fromJson(response.data as Map<String, dynamic>);
+    state = AsyncData(
+      post.copyWith(
+        comments: post.comments
+            ?.map((c) => c.id == commentId ? updated : c)
+            .toList(),
+      ),
+    );
+  }
 }

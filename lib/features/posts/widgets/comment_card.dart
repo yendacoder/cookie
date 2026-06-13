@@ -43,6 +43,7 @@ class CommentsSectionSliver extends StatelessWidget {
     final comments = rawComments != null ? _orderComments(rawComments) : null;
     final isLoading = detailState.isLoading;
     final hasError = detailState.hasError;
+    final isMod = post.community?.userMod == true;
 
     return SliverMainAxisGroup(
       slivers: [
@@ -88,6 +89,7 @@ class CommentsSectionSliver extends StatelessWidget {
               return _CommentCard(
                 comment: comment,
                 isOp: comment.author?.id == post.author?.id,
+                isMod: isMod,
                 postPublicId: post.publicId,
                 lastPostVisit: post.lastVisitAt,
                 onReply: onReplyTap != null ? () => onReplyTap!(comment) : null,
@@ -113,6 +115,7 @@ class _CommentCard extends ConsumerStatefulWidget {
   const _CommentCard({
     required this.comment,
     required this.isOp,
+    required this.isMod,
     required this.postPublicId,
     required this.lastPostVisit,
     this.onReply,
@@ -120,6 +123,7 @@ class _CommentCard extends ConsumerStatefulWidget {
 
   final Comment comment;
   final bool isOp;
+  final bool isMod;
   final String postPublicId;
   final DateTime? lastPostVisit;
   final VoidCallback? onReply;
@@ -252,6 +256,7 @@ class _CommentCardState extends ConsumerState<_CommentCard> {
             comment: comment,
             postPublicId: postPublicId,
             muted: mutedColor,
+            isMod: widget.isMod,
           ),
         ],
       ],
@@ -347,6 +352,10 @@ class _CommentCardState extends ConsumerState<_CommentCard> {
                           comment.createdAt.toRelativeString(context.l10n),
                           style: labelStyle,
                         ),
+                        if (comment.locked) ...[
+                          const SizedBox(width: 6),
+                          Icon(Icons.lock, size: 12, color: muted),
+                        ],
                         // Most often own comments will be marked as new
                         // since the last call to API to fetch the post
                         // would be before the comment created time.

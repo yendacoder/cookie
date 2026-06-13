@@ -14,11 +14,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'comment_mod_actions_sheet.dart';
 import 'report_reason_dialog.dart';
 
 // ── Comment menu button ───────────────────────────────────────────────────────
 
-enum _CommentMenuAction { edit, delete, report, block }
+enum _CommentMenuAction { edit, delete, report, block, modActions }
 
 class CommentMenuButton extends ConsumerWidget {
   const CommentMenuButton({
@@ -26,11 +27,13 @@ class CommentMenuButton extends ConsumerWidget {
     required this.comment,
     required this.postPublicId,
     required this.muted,
+    this.isMod = false,
   });
 
   final Comment comment;
   final String postPublicId;
   final Color muted;
+  final bool isMod;
 
   void _deleteComment(BuildContext context, WidgetRef ref) async {
     final l10n = context.l10n;
@@ -124,6 +127,11 @@ class CommentMenuButton extends ConsumerWidget {
             label: l10n.postMenuBlock,
             isDestructive: true,
           ),
+        if (isMod)
+          AdaptiveMenuItem(
+            value: _CommentMenuAction.modActions,
+            label: l10n.commentMenuModActions,
+          ),
       ],
       onSelected: (action) async {
         switch (action) {
@@ -153,6 +161,14 @@ class CommentMenuButton extends ConsumerWidget {
             if (blocked) {
               ref.invalidate(postDetailProvider(postPublicId));
             }
+          case .modActions:
+            showPlatformSheet<void>(
+              context: context,
+              builder: (_) => CommentModActionsSheet(
+                comment: comment,
+                postPublicId: postPublicId,
+              ),
+            );
         }
       },
     );

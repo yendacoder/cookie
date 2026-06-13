@@ -776,6 +776,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commentEditTitle => 'Edit comment';
 
   @override
+  String get commentMenuModActions => 'Mod actions';
+
+  @override
+  String get commentModActionsTitle => 'Mod actions';
+
+  @override
+  String get commentModActionsLocked => 'Locked';
+
+  @override
+  String get commentModActionsDelete => 'Delete comment';
+
+  @override
+  String get commentModActionsDeleteConfirm =>
+      'This will remove the comment from the community. It cannot be undone from the app.';
+
+  @override
+  String get commentModActionsDeleted => 'Comment deleted';
+
+  @override
+  String get commentModActionsError => 'Action failed, please try again later.';
+
+  @override
   String get imageViewerAltText => 'Alt text';
 
   @override
