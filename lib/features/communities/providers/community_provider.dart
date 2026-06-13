@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/models/community.dart';
 import 'package:cookie/models/post.dart';
-import 'package:cookie/features/home/providers/home_feed_provider.dart';
+import 'package:cookie/features/feed/models/post_feed_state.dart';
 import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
 
 part 'community_provider.g.dart';

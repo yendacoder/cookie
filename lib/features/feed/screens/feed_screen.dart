@@ -14,22 +14,24 @@ import 'package:cookie/core/widgets/default_app_bar.dart';
 import 'package:cookie/core/widgets/error_view.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
 import 'package:cookie/features/auth/widgets/auth_gate.dart';
-import 'package:cookie/features/home/providers/home_feed_provider.dart'
-    show PostFeedState, PostSort;
+import 'package:cookie/features/feed/models/feed_type.dart';
+import 'package:cookie/features/feed/models/post_feed_state.dart';
+import 'package:cookie/features/feed/providers/feed_provider.dart';
 import 'package:cookie/features/posts/widgets/post_card.dart';
 import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
 import 'package:cookie/features/shell/providers/nav_bar_visibility_provider.dart';
-import 'package:cookie/features/subscriptions/providers/subscriptions_feed_provider.dart';
 
-class SubscriptionsScreen extends ConsumerStatefulWidget {
-  const SubscriptionsScreen({super.key});
+/// Displays a `/posts` feed, parametrized by [FeedType].
+class FeedScreen extends ConsumerStatefulWidget {
+  const FeedScreen({super.key, required this.type});
+
+  final FeedType type;
 
   @override
-  ConsumerState<SubscriptionsScreen> createState() =>
-      _SubscriptionsScreenState();
+  ConsumerState<FeedScreen> createState() => _FeedScreenState();
 }
 
-class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
+class _FeedScreenState extends ConsumerState<FeedScreen> {
   final _scrollController = ScrollController();
   double _anchorOffset = 0;
   ScrollDirection _lastDirection = ScrollDirection.idle;
@@ -48,9 +50,10 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
 
   void _onScroll() {
     if (_scrollController.position.extentAfter < 400) {
-      ref.read(subscriptionsFeedProvider.notifier).loadMore();
+      ref.read(feedProvider(widget.type).notifier).loadMore();
     }
 
+    // Always show bars when at the very top.
     if (_scrollController.position.pixels <= 0) {
       ref.read(navBarVisibilityProvider.notifier).show();
       return;
@@ -82,22 +85,30 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
+    final title = widget.type.title(context.l10n);
 
     return authState.when(
       loading: () => Scaffold(
-        appBar: DefaultAppBar(title: context.l10n.subscriptionsScreenTitle),
+        appBar: DefaultAppBar(title: title),
         body: const Center(child: AdaptiveProgressIndicator()),
       ),
       error: (error, _) => Scaffold(
-        appBar: DefaultAppBar(title: context.l10n.subscriptionsScreenTitle),
+        appBar: DefaultAppBar(title: title),
         body: ErrorView(
           error: error,
           onRetry: () => ref.invalidate(authProvider),
         ),
       ),
-      data: (user) => Scaffold(
-        body: AuthGate(child: _FeedView(scrollController: _scrollController)),
-      ),
+      // The data state embeds a SliverAppBar so it collapses with the content.
+      data: (user) {
+        final feedView = _FeedView(
+          type: widget.type,
+          scrollController: _scrollController,
+        );
+        return Scaffold(
+          body: widget.type.requiresAuth ? AuthGate(child: feedView) : feedView,
+        );
+      },
     );
   }
 }
@@ -105,14 +116,16 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
 // ── Feed ──────────────────────────────────────────────────────────────────────
 
 class _FeedView extends ConsumerWidget {
-  const _FeedView({required this.scrollController});
+  const _FeedView({required this.type, required this.scrollController});
 
+  final FeedType type;
   final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final feedState = ref.watch(subscriptionsFeedProvider);
-    ref.listen(subscriptionsFeedProvider, (previous, next) {
+    final provider = feedProvider(type);
+    final feedState = ref.watch(provider);
+    ref.listen(provider, (previous, next) {
       if (previous?.hasValue == true && next.isLoading) {
         scrollController.animateTo(
           0,
@@ -123,25 +136,22 @@ class _FeedView extends ConsumerWidget {
     });
     return AdaptiveRefreshIndicator(
       onRefresh: () async {
-        ref.invalidate(subscriptionsFeedProvider);
-        await ref.read(subscriptionsFeedProvider.future);
+        ref.invalidate(provider);
+        await ref.read(provider.future);
       },
       headerSliverCount: 1,
       child: CustomScrollView(
         controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
-          DefaultSliverAppBar(
-            title: context.l10n.subscriptionsScreenTitle,
-            pinned: false,
-          ),
-          SliverToBoxAdapter(child: _SortChips()),
+          DefaultSliverAppBar(title: type.title(context.l10n), pinned: false),
+          SliverToBoxAdapter(child: _SortChips(type: type)),
           feedState.when(
             loading: () => const SliverToBoxAdapter(child: PostFeedSkeleton()),
-            error: (error, t) => SliverFillRemaining(
+            error: (error, _) => SliverFillRemaining(
               child: ErrorView(
                 error: error,
-                onRetry: () => ref.invalidate(subscriptionsFeedProvider),
+                onRetry: () => ref.invalidate(provider),
               ),
             ),
             data: (feed) => SliverMainAxisGroup(
@@ -151,10 +161,10 @@ class _FeedView extends ConsumerWidget {
                   separatorBuilder: (_, _) => const SizedBox(height: 32),
                   itemBuilder: (context, index) {
                     if (index == feed.posts.length) {
-                      return _FeedFooter(feed: feed, ref: ref);
+                      return _FeedFooter(type: type, feed: feed, ref: ref);
                     }
                     final post = feed.posts[index];
-                    final scope = HeroTagScope(.subscriptions);
+                    final scope = HeroTagScope(type.heroTagScope);
                     return PostCard(
                       post: post,
                       heroTagScope: scope,
@@ -177,10 +187,13 @@ class _FeedView extends ConsumerWidget {
 // ── Sort chips ────────────────────────────────────────────────────────────────
 
 class _SortChips extends ConsumerWidget {
+  const _SortChips({required this.type});
+
+  final FeedType type;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final current =
-        ref.watch(subscriptionsFeedSortProvider).value ?? PostSort.hot;
+    final current = ref.watch(feedSortProvider(type)).value ?? PostSort.hot;
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -192,9 +205,8 @@ class _SortChips extends ConsumerWidget {
             AdaptiveFilterChip(
               label: sort.label(context.l10n),
               selected: sort == current,
-              onSelected: (_) => ref
-                  .read(subscriptionsFeedSortProvider.notifier)
-                  .setSort(sort),
+              onSelected: (_) =>
+                  ref.read(feedSortProvider(type).notifier).setSort(sort),
             ),
         ],
       ),
@@ -205,8 +217,13 @@ class _SortChips extends ConsumerWidget {
 // ── List footer ───────────────────────────────────────────────────────────────
 
 class _FeedFooter extends StatelessWidget {
-  const _FeedFooter({required this.feed, required this.ref});
+  const _FeedFooter({
+    required this.type,
+    required this.feed,
+    required this.ref,
+  });
 
+  final FeedType type;
   final PostFeedState feed;
   final WidgetRef ref;
 
@@ -233,8 +250,7 @@ class _FeedFooter extends StatelessWidget {
               ),
             ),
             AdaptiveTextButton(
-              onPressed: () =>
-                  ref.read(subscriptionsFeedProvider.notifier).loadMore(),
+              onPressed: () => ref.read(feedProvider(type).notifier).loadMore(),
               child: Text(context.l10n.retryButton),
             ),
           ],

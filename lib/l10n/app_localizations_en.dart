@@ -23,6 +23,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navSubscriptions => 'Subscriptions';
 
   @override
+  String get navModerating => 'Moderating';
+
+  @override
   String get navCommunities => 'Communities';
 
   @override
@@ -301,6 +304,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subscriptionsScreenTitle => 'Subscriptions';
+
+  @override
+  String get moderatingScreenTitle => 'Moderating';
 
   @override
   String get communitiesScreenTitle => 'Communities';

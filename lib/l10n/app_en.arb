@@ -20,6 +20,10 @@
   "@navSubscriptions": {
     "description": "Subscriptions navigation tab label"
   },
+  "navModerating": "Moderating",
+  "@navModerating": {
+    "description": "Moderating navigation tab label"
+  },
   "navCommunities": "Communities",
   "@navCommunities": {
     "description": "Communities navigation tab label"
@@ -230,6 +234,8 @@
   "@homeScreenTitle": {},
   "subscriptionsScreenTitle": "Subscriptions",
   "@subscriptionsScreenTitle": {},
+  "moderatingScreenTitle": "Moderating",
+  "@moderatingScreenTitle": {},
   "communitiesScreenTitle": "Communities",
   "@communitiesScreenTitle": {},
   "listsScreenTitle": "Lists",

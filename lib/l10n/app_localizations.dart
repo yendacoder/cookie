@@ -118,6 +118,12 @@ abstract class AppLocalizations {
   /// **'Subscriptions'**
   String get navSubscriptions;
 
+  /// Moderating navigation tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Moderating'**
+  String get navModerating;
+
   /// Communities navigation tab label
   ///
   /// In en, this message translates to:
@@ -513,6 +519,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Subscriptions'**
   String get subscriptionsScreenTitle;
+
+  /// No description provided for @moderatingScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderating'**
+  String get moderatingScreenTitle;
 
   /// No description provided for @communitiesScreenTitle.
   ///

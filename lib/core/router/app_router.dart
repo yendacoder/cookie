@@ -9,7 +9,8 @@ import 'package:cookie/features/communities/screens/mod_tools_screen.dart';
 import 'package:cookie/features/posts/screens/compose_screen.dart';
 import 'package:cookie/features/communities/screens/community_screen.dart';
 import 'package:cookie/features/communities/screens/muted_communities_screen.dart';
-import 'package:cookie/features/home/screens/home_screen.dart';
+import 'package:cookie/features/feed/models/feed_type.dart';
+import 'package:cookie/features/feed/screens/feed_screen.dart';
 import 'package:cookie/features/notifications/screens/notifications_screen.dart';
 import 'package:cookie/features/posts/screens/youtube_player_screen.dart';
 import 'package:cookie/features/profile/screens/edit_profile_screen.dart';
@@ -24,7 +25,6 @@ import 'package:cookie/features/shell/providers/last_tab_provider.dart';
 import 'package:cookie/features/shell/screens/shell_screen.dart';
 import 'package:cookie/features/user/screens/muted_users_screen.dart';
 import 'package:cookie/features/user/screens/user_screen.dart';
-import 'package:cookie/features/subscriptions/screens/subscriptions_screen.dart';
 import 'package:cookie/models/community.dart';
 import 'package:cookie/models/post.dart';
 
@@ -34,7 +34,8 @@ part 'app_router.g.dart';
 GoRouter router(Ref ref) {
   final initialLocation = switch (ref.read(lastTabProvider)) {
     1 => '/subscriptions',
-    2 => '/profile',
+    2 => '/moderating',
+    3 => '/profile',
     _ => '/',
   };
   return GoRouter(
@@ -48,7 +49,8 @@ GoRouter router(Ref ref) {
             routes: [
               GoRoute(
                 path: '/',
-                builder: (context, state) => const HomeScreen(),
+                builder: (context, state) =>
+                    const FeedScreen(type: FeedType.home),
               ),
             ],
           ),
@@ -56,7 +58,17 @@ GoRouter router(Ref ref) {
             routes: [
               GoRoute(
                 path: '/subscriptions',
-                builder: (context, state) => const SubscriptionsScreen(),
+                builder: (context, state) =>
+                    const FeedScreen(type: FeedType.subscriptions),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/moderating',
+                builder: (context, state) =>
+                    const FeedScreen(type: FeedType.moderating),
               ),
             ],
           ),

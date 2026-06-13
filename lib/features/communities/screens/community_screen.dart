@@ -20,10 +20,9 @@ import 'package:cookie/core/widgets/markdown_text.dart';
 import 'package:cookie/models/community.dart';
 import 'package:cookie/models/discuit_image.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
-import 'package:cookie/features/home/providers/home_feed_provider.dart';
 import 'package:cookie/features/posts/widgets/post_card.dart';
 import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
-import 'package:cookie/features/home/providers/home_feed_provider.dart'
+import 'package:cookie/features/feed/models/post_feed_state.dart'
     show PostFeedState, PostSort;
 import 'package:cookie/features/communities/providers/community_mutes_provider.dart';
 import 'package:cookie/features/communities/providers/community_provider.dart';

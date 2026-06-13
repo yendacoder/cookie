@@ -1,5 +1,7 @@
 import 'package:cookie/core/api/api_client.dart';
-import 'package:cookie/features/home/providers/home_feed_provider.dart';
+import 'package:cookie/features/feed/models/feed_type.dart';
+import 'package:cookie/features/feed/models/post_feed_state.dart';
+import 'package:cookie/features/feed/providers/feed_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,14 +13,14 @@ import 'package:mocktail/mocktail.dart';
 
 class _MockDio extends Mock implements Dio {}
 
-/// Overrides HomeFeedSort to return a fixed value without touching prefs.
-class _FixedSort extends HomeFeedSort {
+/// Overrides FeedSort to return a fixed value without touching prefs.
+class _FixedSort extends FeedSort {
   _FixedSort(this._sort);
 
   final PostSort _sort;
 
   @override
-  Future<PostSort> build() async => _sort;
+  Future<PostSort> build(FeedType type) async => _sort;
 }
 
 Map<String, dynamic> _postJson(String id) => {
@@ -56,7 +58,9 @@ Response<dynamic> _page(List<String> ids, {String? next}) => Response(
 ProviderContainer _container(_MockDio dio) => ProviderContainer(
   overrides: [
     apiClientProvider.overrideWithValue(dio),
-    homeFeedSortProvider.overrideWith(() => _FixedSort(PostSort.hot)),
+    feedSortProvider(
+      FeedType.home,
+    ).overrideWith(() => _FixedSort(PostSort.hot)),
   ],
 );
 
@@ -66,10 +70,11 @@ ProviderContainer _container(_MockDio dio) => ProviderContainer(
 
 void main() {
   late _MockDio mockDio;
+  final provider = feedProvider(FeedType.home);
 
   setUp(() => mockDio = _MockDio());
 
-  group('HomeFeedNotifier — initial load', () {
+  group('FeedNotifier — initial load', () {
     test('returns posts from first page', () async {
       when(
         () => mockDio.get(
@@ -81,7 +86,7 @@ void main() {
       final container = _container(mockDio);
       addTearDown(container.dispose);
 
-      final state = await container.read(homeFeedProvider.future);
+      final state = await container.read(provider.future);
       expect(state.posts.map((p) => p.id), ['a', 'b', 'c']);
       expect(state.nextCursor, 'cur1');
       expect(state.hasMore, true);
@@ -98,12 +103,12 @@ void main() {
       final container = _container(mockDio);
       addTearDown(container.dispose);
 
-      final state = await container.read(homeFeedProvider.future);
+      final state = await container.read(provider.future);
       expect(state.hasMore, false);
     });
   });
 
-  group('HomeFeedNotifier — deduplication', () {
+  group('FeedNotifier — deduplication', () {
     test('duplicate ids across pages are dropped', () async {
       // First call returns 'a','b'. Second call returns 'b','c' — 'b' is dup.
       var callCount = 0;
@@ -122,16 +127,16 @@ void main() {
       final container = _container(mockDio);
       addTearDown(container.dispose);
 
-      await container.read(homeFeedProvider.future);
-      await container.read(homeFeedProvider.notifier).loadMore();
+      await container.read(provider.future);
+      await container.read(provider.notifier).loadMore();
 
-      final state = container.read(homeFeedProvider).value!;
+      final state = container.read(provider).value!;
       final ids = state.posts.map((p) => p.id).toList();
       expect(ids, ['a', 'b', 'c']); // 'b' not repeated
     });
   });
 
-  group('HomeFeedNotifier — loadMore', () {
+  group('FeedNotifier — loadMore', () {
     test('appends second page posts', () async {
       var callCount = 0;
       when(
@@ -149,14 +154,10 @@ void main() {
       final container = _container(mockDio);
       addTearDown(container.dispose);
 
-      await container.read(homeFeedProvider.future);
-      await container.read(homeFeedProvider.notifier).loadMore();
+      await container.read(provider.future);
+      await container.read(provider.notifier).loadMore();
 
-      final ids = container
-          .read(homeFeedProvider)
-          .value!
-          .posts
-          .map((p) => p.id);
+      final ids = container.read(provider).value!.posts.map((p) => p.id);
       expect(ids, ['a', 'b', 'c', 'd']);
     });
 
@@ -171,8 +172,8 @@ void main() {
       final container = _container(mockDio);
       addTearDown(container.dispose);
 
-      await container.read(homeFeedProvider.future);
-      await container.read(homeFeedProvider.notifier).loadMore();
+      await container.read(provider.future);
+      await container.read(provider.notifier).loadMore();
 
       // Only the initial GET should have been made.
       verify(
@@ -201,13 +202,13 @@ void main() {
       final container = _container(mockDio);
       addTearDown(container.dispose);
 
-      await container.read(homeFeedProvider.future);
+      await container.read(provider.future);
 
       // Fire two loadMore calls in quick succession.
-      final notifier = container.read(homeFeedProvider.notifier);
+      final notifier = container.read(provider.notifier);
       final f1 = notifier.loadMore();
       final f2 = notifier.loadMore(); // should be dropped
-      await Future.wait([f1, f2]);
+      await Future.wait<void>([f1, f2]);
 
       // Only 2 GET calls total (initial + one loadMore).
       verify(

@@ -1,4 +1,12 @@
-enum HeroTagScopeType { home, subscriptions, community, user, list, unknown }
+enum HeroTagScopeType {
+  home,
+  subscriptions,
+  moderating,
+  community,
+  user,
+  list,
+  unknown,
+}
 
 class HeroTagScope {
   const HeroTagScope(this.type, {this.id});

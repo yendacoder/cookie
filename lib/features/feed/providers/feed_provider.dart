@@ -1,23 +1,25 @@
-import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/features/feed/models/feed_type.dart';
+import 'package:cookie/features/feed/models/post_feed_state.dart';
 import 'package:cookie/models/post.dart';
-import 'package:cookie/features/home/providers/home_feed_provider.dart'
-    show PostFeedState, PostSort;
 import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
 
-part 'subscriptions_feed_provider.g.dart';
+part 'feed_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-class SubscriptionsFeedSort extends _$SubscriptionsFeedSort {
-  static const _key = 'subscriptions_feed_sort';
+class FeedSort extends _$FeedSort {
   static final _prefs = SharedPreferencesAsync();
 
+  // Stored from build() so setSort() can access it without the family arg.
+  late FeedType _type;
+
   @override
-  Future<PostSort> build() async {
-    final saved = await _prefs.getString(_key);
+  Future<PostSort> build(FeedType type) async {
+    _type = type;
+    final saved = await _prefs.getString(type.sortPrefsKey);
     if (saved == null) return PostSort.hot;
     return PostSort.values.firstWhere(
       (s) => s.name == saved,
@@ -28,18 +30,22 @@ class SubscriptionsFeedSort extends _$SubscriptionsFeedSort {
   Future<void> setSort(PostSort sort) async {
     if (state.value == sort) return;
     state = AsyncData(sort);
-    await _prefs.setString(_key, sort.name);
+    await _prefs.setString(_type.sortPrefsKey, sort.name);
   }
 }
 
 @Riverpod(keepAlive: true)
-class SubscriptionsFeedNotifier extends _$SubscriptionsFeedNotifier {
+class FeedNotifier extends _$FeedNotifier {
   final _seenIds = <String>{};
 
+  // Stored from build() so loadMore() can access it without the family arg.
+  late FeedType _type;
+
   @override
-  Future<PostFeedState> build() async {
+  Future<PostFeedState> build(FeedType type) async {
+    _type = type;
     _seenIds.clear();
-    final sort = await ref.watch(subscriptionsFeedSortProvider.future);
+    final sort = await ref.watch(feedSortProvider(type).future);
     return _loadPage(sort: sort, cursor: null);
   }
 
@@ -52,7 +58,7 @@ class SubscriptionsFeedNotifier extends _$SubscriptionsFeedNotifier {
         .get(
           'posts',
           queryParameters: {
-            'feed': 'home',
+            if (_type.apiFeedParam != null) 'feed': _type.apiFeedParam,
             'sort': sort.apiValue,
             'next': ?cursor,
           },
@@ -66,11 +72,7 @@ class SubscriptionsFeedNotifier extends _$SubscriptionsFeedNotifier {
 
     if (cursor == null) {
       ref
-          .read(
-            readNewCommentsProvider(
-              HeroTagScope(.subscriptions).toString(),
-            ).notifier,
-          )
+          .read(readNewCommentsProvider(_type.heroTagScope.toString()).notifier)
           .clear();
     }
     return PostFeedState(posts: posts, nextCursor: data['next']?.toString());
@@ -91,10 +93,10 @@ class SubscriptionsFeedNotifier extends _$SubscriptionsFeedNotifier {
     );
 
     try {
-      final sort =
-          ref.read(subscriptionsFeedSortProvider).value ?? PostSort.hot;
+      final sort = ref.read(feedSortProvider(_type)).value ?? PostSort.hot;
       final page = await _loadPage(sort: sort, cursor: cursorToLoad);
 
+      // Guard against stale completions after a sort change resets the state.
       if (state case AsyncData(
         :final value,
       ) when value.isLoadingMore && value.nextCursor == cursorToLoad) {

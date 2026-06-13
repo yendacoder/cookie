@@ -1,5 +1,5 @@
-import 'package:cookie/features/home/providers/home_feed_provider.dart';
-import 'package:cookie/features/subscriptions/providers/subscriptions_feed_provider.dart';
+import 'package:cookie/features/feed/models/feed_type.dart';
+import 'package:cookie/features/feed/providers/feed_provider.dart';
 import 'package:cookie/features/update/providers/update_check_provider.dart';
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/material.dart';
@@ -22,9 +22,11 @@ class ShellScreen extends ConsumerWidget {
     if (index == navigationShell.currentIndex) {
       switch (index) {
         case 0:
-          ref.invalidate(homeFeedProvider, asReload: true);
+          ref.invalidate(feedProvider(FeedType.home), asReload: true);
         case 1:
-          ref.invalidate(subscriptionsFeedProvider, asReload: true);
+          ref.invalidate(feedProvider(FeedType.subscriptions), asReload: true);
+        case 2:
+          ref.invalidate(feedProvider(FeedType.moderating), asReload: true);
       }
     }
     ref.read(navBarVisibilityProvider.notifier).show();
@@ -33,7 +35,7 @@ class ShellScreen extends ConsumerWidget {
       initialLocation: index == navigationShell.currentIndex,
     );
     // do not save profile tab as last as it feels unexpected
-    if (index < 2) ref.read(lastTabProvider.notifier).set(index);
+    if (index < 3) ref.read(lastTabProvider.notifier).set(index);
   }
 
   @override
@@ -52,7 +54,7 @@ class ShellScreen extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final useIos = ref.useIos;
 
-    if (navigationShell.currentIndex >= 2 && !isNavBarVisible) {
+    if (navigationShell.currentIndex == 3 && !isNavBarVisible) {
       ref.read(navBarVisibilityProvider.notifier).hide();
       isNavBarVisible = true;
     }
@@ -85,6 +87,11 @@ class ShellScreen extends ConsumerWidget {
           icon: const Icon(Icons.dynamic_feed_outlined),
           selectedIcon: const Icon(Icons.dynamic_feed),
           label: context.l10n.navSubscriptions,
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.admin_panel_settings_outlined),
+          selectedIcon: const Icon(Icons.admin_panel_settings),
+          label: context.l10n.navModerating,
         ),
         NavigationDestination(
           icon: Badge(
@@ -126,6 +133,11 @@ class ShellScreen extends ConsumerWidget {
           icon: const Icon(Icons.dynamic_feed_outlined),
           activeIcon: const Icon(Icons.dynamic_feed),
           label: context.l10n.navSubscriptions,
+        ),
+        GlassBottomBarTab(
+          icon: const Icon(Icons.admin_panel_settings_outlined),
+          activeIcon: const Icon(Icons.admin_panel_settings),
+          label: context.l10n.navModerating,
         ),
         GlassBottomBarTab(
           icon: iosProfileIcon(),
