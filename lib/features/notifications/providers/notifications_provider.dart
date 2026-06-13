@@ -1,8 +1,7 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:cookie/core/api/api_client.dart';
-import 'package:cookie/models/notification.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/models/notification.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'notifications_provider.g.dart';
 

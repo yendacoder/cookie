@@ -84,19 +84,24 @@ void main() {
     test('selects smallest copy that covers the physical target', () {
       // targetWidth=150, dpr=2 → physicalTarget=300
       // Copies: 200, 400, 800 — smallest ≥ 300 is 400
-      final img = _image(copies: [
-        _copy(width: 200, url: '/200.jpg'),
-        _copy(width: 400, url: '/400.jpg'),
-        _copy(width: 800, url: '/800.jpg'),
-      ]);
+      final img = _image(
+        copies: [
+          _copy(width: 200, url: '/200.jpg'),
+          _copy(width: 400, url: '/400.jpg'),
+          _copy(width: 800, url: '/800.jpg'),
+        ],
+      );
       expect(img.bestUrl(150, 2.0), 'https://discuit.org/400.jpg');
     });
 
     test('falls back to fullUrl when all copies are too small', () {
-      final img = _image(url: '/original.jpg', copies: [
-        _copy(width: 50, url: '/50.jpg'),
-        _copy(width: 100, url: '/100.jpg'),
-      ]);
+      final img = _image(
+        url: '/original.jpg',
+        copies: [
+          _copy(width: 50, url: '/50.jpg'),
+          _copy(width: 100, url: '/100.jpg'),
+        ],
+      );
       // physicalTarget = 200*1.0 = 200; both copies < 200
       expect(img.bestUrl(200, 1.0), 'https://discuit.org/original.jpg');
     });
@@ -114,18 +119,20 @@ void main() {
     });
 
     test('preserves absolute URL on a copy', () {
-      final img = _image(copies: [
-        _copy(width: 400, url: 'https://cdn.example.com/400.jpg'),
-      ]);
+      final img = _image(
+        copies: [_copy(width: 400, url: 'https://cdn.example.com/400.jpg')],
+      );
       expect(img.bestUrl(100, 1.0), 'https://cdn.example.com/400.jpg');
     });
 
     test('handles dpr=1 correctly', () {
       // physicalTarget = 100*1 = 100; smallest copy ≥ 100 is 200
-      final img = _image(copies: [
-        _copy(width: 50, url: '/50.jpg'),
-        _copy(width: 200, url: '/200.jpg'),
-      ]);
+      final img = _image(
+        copies: [
+          _copy(width: 50, url: '/50.jpg'),
+          _copy(width: 200, url: '/200.jpg'),
+        ],
+      );
       expect(img.bestUrl(100, 1.0), 'https://discuit.org/200.jpg');
     });
   });

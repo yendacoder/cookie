@@ -1,18 +1,17 @@
-import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_sheet_header.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
-import 'package:cookie/models/post.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_sheet_header.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'package:cookie/features/lists/providers/user_lists_provider.dart';
+import 'package:cookie/models/post.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class PostSaveToListSheet extends ConsumerStatefulWidget {
   const PostSaveToListSheet({super.key, required this.post});

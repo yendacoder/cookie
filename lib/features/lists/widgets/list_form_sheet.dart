@@ -1,11 +1,10 @@
-import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_sheet_header.dart';
-import 'package:flutter/material.dart';
-
 import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_sheet_header.dart';
 import 'package:cookie/models/user_list.dart';
+import 'package:flutter/material.dart';
 
 /// Bottom sheet form for creating or editing a [UserList].
 ///

@@ -1,25 +1,24 @@
-import 'package:cookie/core/widgets/adaptive/adaptive_fab.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_fab.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'package:cookie/core/widgets/error_view.dart';
-import 'package:cookie/models/user_list.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
 import 'package:cookie/features/auth/widgets/auth_gate.dart';
 import 'package:cookie/features/lists/providers/user_lists_provider.dart';
 import 'package:cookie/features/lists/widgets/list_form_sheet.dart';
+import 'package:cookie/models/user_list.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ListsScreen extends ConsumerWidget {
   const ListsScreen({super.key});

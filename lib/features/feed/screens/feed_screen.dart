@@ -1,15 +1,10 @@
+import 'package:cookie/core/consts.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_filter_chip.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart' show ScrollDirection;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
-import 'package:cookie/core/consts.dart';
-import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
 import 'package:cookie/core/widgets/default_app_bar.dart';
 import 'package:cookie/core/widgets/error_view.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
@@ -20,6 +15,10 @@ import 'package:cookie/features/feed/providers/feed_provider.dart';
 import 'package:cookie/features/posts/widgets/post_card.dart';
 import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
 import 'package:cookie/features/shell/providers/nav_bar_visibility_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollDirection;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// Displays a `/posts` feed, parametrized by [FeedType].
 class FeedScreen extends ConsumerStatefulWidget {

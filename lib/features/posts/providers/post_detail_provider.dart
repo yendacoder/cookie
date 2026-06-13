@@ -100,4 +100,45 @@ class PostDetailNotifier extends _$PostDetailNotifier {
           },
         );
   }
+
+  Future<void> setLocked(bool locked) async {
+    final post = state.value;
+    if (post == null) return;
+    if (locked) {
+      await ref
+          .read(apiClientProvider)
+          .put('posts/${post.publicId}?action=lock&lockAs=mods');
+    } else {
+      await ref
+          .read(apiClientProvider)
+          .put('posts/${post.publicId}?action=unlock');
+    }
+    state = AsyncData(post.copyWith(locked: locked));
+  }
+
+  Future<void> setPinned(bool pinned) async {
+    final post = state.value;
+    if (post == null) return;
+    final action = pinned ? 'pin' : 'unpin';
+    await ref
+        .read(apiClientProvider)
+        .put('posts/${post.publicId}?action=$action&siteWide=false');
+    state = AsyncData(post.copyWith(isPinned: pinned));
+  }
+
+  Future<void> deleteAsMod() async {
+    final post = state.value;
+    if (post == null) return;
+    await ref
+        .read(apiClientProvider)
+        .delete('posts/${post.publicId}?deleteAs=mods&deleteContent=false');
+    state = AsyncData(
+      post.copyWith(
+        deleted: true,
+        deletedAs: 'mods',
+        isPinned: false,
+        isPinnedSite: false,
+      ),
+    );
+  }
 }

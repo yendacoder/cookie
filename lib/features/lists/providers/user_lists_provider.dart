@@ -1,8 +1,7 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:cookie/core/api/api_client.dart';
-import 'package:cookie/models/user_list.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/models/user_list.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_lists_provider.g.dart';
 

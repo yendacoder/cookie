@@ -1,7 +1,6 @@
 import 'package:cookie/models/community.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:cookie/models/initial_response.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'muted_communities_list_provider.g.dart';
 

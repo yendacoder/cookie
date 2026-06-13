@@ -1,11 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cookie/core/hero_tag_scope.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
@@ -14,18 +9,22 @@ import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_filter_chip.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cookie/core/widgets/error_view.dart';
 import 'package:cookie/core/widgets/markdown_text.dart';
-import 'package:cookie/models/community.dart';
-import 'package:cookie/models/discuit_image.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
-import 'package:cookie/features/posts/widgets/post_card.dart';
-import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
-import 'package:cookie/features/feed/models/post_feed_state.dart'
-    show PostFeedState, PostSort;
 import 'package:cookie/features/communities/providers/community_mutes_provider.dart';
 import 'package:cookie/features/communities/providers/community_provider.dart';
+import 'package:cookie/features/feed/models/post_feed_state.dart'
+    show PostFeedState, PostSort;
+import 'package:cookie/features/posts/widgets/post_card.dart';
+import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
+import 'package:cookie/models/community.dart';
+import 'package:cookie/models/discuit_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class CommunityScreen extends ConsumerWidget {
   const CommunityScreen({super.key, required this.communityName});

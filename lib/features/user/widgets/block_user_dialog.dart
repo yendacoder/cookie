@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'package:cookie/features/user/providers/user_mutes_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// Shows a confirmation dialog, then mutes [userId] and reports [targetId]
 /// (a post or comment) so moderators are notified of the content.

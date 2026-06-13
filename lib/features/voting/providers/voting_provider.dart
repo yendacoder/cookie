@@ -1,8 +1,7 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/models/comment.dart';
 import 'package:cookie/models/post.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'voting_provider.g.dart';
 

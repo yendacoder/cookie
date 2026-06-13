@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
 import 'package:cookie/core/widgets/error_view.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// Wraps [child] and shows a sign-in prompt when the user is not authenticated.
 /// Shows a typed [ErrorView] with a retry option for genuine errors.

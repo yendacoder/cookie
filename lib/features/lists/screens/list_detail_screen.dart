@@ -1,29 +1,28 @@
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/hero_tag_scope.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/utils/relative_time.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
-import 'package:cookie/core/api/api_client.dart';
-import 'package:cookie/core/extensions/build_context_ext.dart';
-import 'package:cookie/core/providers/platform_style_provider.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
-import 'package:cookie/core/widgets/markdown_text.dart';
-import 'package:cookie/core/utils/relative_time.dart';
 import 'package:cookie/core/widgets/error_view.dart';
-import 'package:cookie/models/comment.dart';
-import 'package:cookie/models/post.dart';
-import 'package:cookie/models/user_list.dart';
-import 'package:cookie/features/posts/widgets/post_card.dart';
-import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
+import 'package:cookie/core/widgets/markdown_text.dart';
 import 'package:cookie/features/lists/providers/list_items_provider.dart';
 import 'package:cookie/features/lists/providers/user_lists_provider.dart';
 import 'package:cookie/features/lists/widgets/list_form_sheet.dart';
+import 'package:cookie/features/posts/widgets/post_card.dart';
+import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
+import 'package:cookie/models/comment.dart';
+import 'package:cookie/models/post.dart';
+import 'package:cookie/models/user_list.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ListDetailScreen extends ConsumerStatefulWidget {
   const ListDetailScreen({super.key, required this.listId, this.initialList});

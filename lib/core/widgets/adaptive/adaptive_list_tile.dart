@@ -1,8 +1,7 @@
+import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:flutter/cupertino.dart' show CupertinoSwitch;
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
-
-import 'package:cookie/core/providers/platform_style_provider.dart';
 
 class AdaptiveListTile extends StatelessWidget {
   const AdaptiveListTile({
@@ -63,7 +62,9 @@ class AdaptiveListTile extends StatelessWidget {
     return ListTile(
       title: title,
       subtitle: subtitle,
-      leading: leadingSize != null ? _sizedLeading(leading, leadingSize!) : leading,
+      leading: leadingSize != null
+          ? _sizedLeading(leading, leadingSize!)
+          : leading,
       trailing: trailing,
       onTap: onTap,
       onLongPress: onLongPress,

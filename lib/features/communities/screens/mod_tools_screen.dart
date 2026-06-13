@@ -1,22 +1,21 @@
-import 'package:cookie/core/widgets/adaptive/adaptive_fab.dart';
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_fab.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_sheet_header.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
+import 'package:cookie/core/widgets/error_view.dart';
+import 'package:cookie/features/communities/providers/community_provider.dart';
+import 'package:cookie/models/community.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:cookie/core/api/api_client.dart';
-import 'package:cookie/core/extensions/build_context_ext.dart';
-import 'package:cookie/core/providers/platform_style_provider.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
-import 'package:cookie/core/widgets/error_view.dart';
-import 'package:cookie/models/community.dart';
-import 'package:cookie/features/communities/providers/community_provider.dart';
 
 class ModToolsScreen extends ConsumerWidget {
   const ModToolsScreen({super.key, required this.communityName});

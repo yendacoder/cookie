@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:html/parser.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:gif_view/gif_view.dart';
+import 'package:html/parser.dart';
+import 'package:http/http.dart' as http;
 
 class CommentGif extends StatefulWidget {
   const CommentGif({super.key, required this.gifUri});

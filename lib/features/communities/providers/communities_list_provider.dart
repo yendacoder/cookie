@@ -1,7 +1,6 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/models/community.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'communities_list_provider.g.dart';
 

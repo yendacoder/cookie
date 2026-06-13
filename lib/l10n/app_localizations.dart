@@ -1276,6 +1276,54 @@ abstract class AppLocalizations {
   /// **'This will permanently delete your post.'**
   String get postDeleteConfirm;
 
+  /// No description provided for @postMenuModActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Mod actions'**
+  String get postMenuModActions;
+
+  /// No description provided for @postModActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mod actions'**
+  String get postModActionsTitle;
+
+  /// No description provided for @postModActionsLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get postModActionsLocked;
+
+  /// No description provided for @postModActionsPinned.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned in community'**
+  String get postModActionsPinned;
+
+  /// No description provided for @postModActionsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete post'**
+  String get postModActionsDelete;
+
+  /// No description provided for @postModActionsDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This will remove the post from the community. It cannot be undone from the app.'**
+  String get postModActionsDeleteConfirm;
+
+  /// No description provided for @postModActionsDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Post deleted'**
+  String get postModActionsDeleted;
+
+  /// No description provided for @postModActionsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Action failed, please try again later.'**
+  String get postModActionsError;
+
   /// No description provided for @composeEditTitle.
   ///
   /// In en, this message translates to:

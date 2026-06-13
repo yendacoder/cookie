@@ -1,20 +1,14 @@
-import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
-import 'package:cookie/models/discuit_image.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
 import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
 import 'package:cookie/features/feed/models/feed_type.dart';
@@ -22,6 +16,11 @@ import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart'
 import 'package:cookie/features/shell/providers/package_info_provider.dart';
 import 'package:cookie/features/update/providers/update_check_provider.dart';
 import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
+import 'package:cookie/models/discuit_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});

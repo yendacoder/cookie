@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:cookie/core/errors/app_exception.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:flutter/material.dart';
 
 /// A full-area error display that classifies the error and shows an appropriate
 /// title, description, and optional field path for parse failures.

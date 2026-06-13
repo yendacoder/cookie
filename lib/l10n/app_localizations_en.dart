@@ -732,6 +732,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get postDeleteConfirm => 'This will permanently delete your post.';
 
   @override
+  String get postMenuModActions => 'Mod actions';
+
+  @override
+  String get postModActionsTitle => 'Mod actions';
+
+  @override
+  String get postModActionsLocked => 'Locked';
+
+  @override
+  String get postModActionsPinned => 'Pinned in community';
+
+  @override
+  String get postModActionsDelete => 'Delete post';
+
+  @override
+  String get postModActionsDeleteConfirm =>
+      'This will remove the post from the community. It cannot be undone from the app.';
+
+  @override
+  String get postModActionsDeleted => 'Post deleted';
+
+  @override
+  String get postModActionsError => 'Action failed, please try again later.';
+
+  @override
   String get composeEditTitle => 'Edit post';
 
   @override

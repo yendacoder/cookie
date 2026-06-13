@@ -1,18 +1,17 @@
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/features/auth/providers/auth_provider.dart';
 import 'package:cookie/features/feed/models/feed_type.dart';
 import 'package:cookie/features/feed/providers/feed_provider.dart';
 import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart';
+import 'package:cookie/features/shell/providers/last_tab_provider.dart';
+import 'package:cookie/features/shell/providers/nav_bar_visibility_provider.dart';
 import 'package:cookie/features/update/providers/update_check_provider.dart';
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
-
-import 'package:cookie/core/extensions/build_context_ext.dart';
-import 'package:cookie/core/providers/platform_style_provider.dart';
-import 'package:cookie/features/auth/providers/auth_provider.dart';
-import 'package:cookie/features/shell/providers/last_tab_provider.dart';
-import 'package:cookie/features/shell/providers/nav_bar_visibility_provider.dart';
 
 class ShellScreen extends ConsumerWidget {
   const ShellScreen({super.key, required this.navigationShell});

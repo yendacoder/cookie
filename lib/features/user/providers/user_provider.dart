@@ -1,10 +1,9 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/models/comment.dart';
 import 'package:cookie/models/post.dart';
 import 'package:cookie/models/public_user.dart';
 import 'package:cookie/models/user_feed_item.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_provider.g.dart';
 
@@ -61,13 +60,15 @@ class UserActivityNotifier extends _$UserActivityNotifier {
   }
 
   Future<UserActivityState> _loadPage({required String? cursor}) async {
-    final response = await ref.read(apiClientProvider).get(
-      'users/$_username/feed',
-      queryParameters: {
-        'next': ?cursor,
-        if (_filter != UserActivityFilter.all) 'filter': _filter.name,
-      },
-    );
+    final response = await ref
+        .read(apiClientProvider)
+        .get(
+          'users/$_username/feed',
+          queryParameters: {
+            'next': ?cursor,
+            if (_filter != UserActivityFilter.all) 'filter': _filter.name,
+          },
+        );
     final data = response.data as Map<String, dynamic>;
     final rawItems = (data['items'] as List).cast<Map<String, dynamic>>();
 

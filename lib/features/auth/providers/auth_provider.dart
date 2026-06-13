@@ -108,9 +108,7 @@ class AuthNotifier extends _$AuthNotifier {
     if (state.value == null) return;
     try {
       final response = await ref.read(apiClientProvider).get('_user');
-      final data = User.fromJson(
-        response.data as Map<String, dynamic>,
-      );
+      final data = User.fromJson(response.data as Map<String, dynamic>);
       final newCount = data.notificationsNewCount;
       final current = state.value;
       if (current == null) return;

@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:flutter/material.dart';
 
 /// On Android renders as a standard [InkWell] with ripple.
 /// On iOS renders as a [GestureDetector] with a press-opacity animation

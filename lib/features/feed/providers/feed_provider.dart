@@ -1,11 +1,10 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/features/feed/models/feed_type.dart';
 import 'package:cookie/features/feed/models/post_feed_state.dart';
-import 'package:cookie/models/post.dart';
 import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
+import 'package:cookie/models/post.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'feed_provider.g.dart';
 

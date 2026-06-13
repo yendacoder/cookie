@@ -1,9 +1,8 @@
+import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/models/user_list.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'list_items_provider.g.dart';
 

@@ -1,17 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cookie/features/communities/providers/community_mutes_provider.dart';
+import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
+import 'package:cookie/models/discuit_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:cookie/core/extensions/build_context_ext.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
-import 'package:cookie/models/discuit_image.dart';
-import 'package:cookie/features/communities/providers/community_mutes_provider.dart';
-import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
 
 class MutedCommunitiesScreen extends ConsumerWidget {
   const MutedCommunitiesScreen({super.key});

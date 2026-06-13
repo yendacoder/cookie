@@ -1,24 +1,23 @@
-import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/core/utils/relative_time.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cookie/core/widgets/error_view.dart';
-import 'package:cookie/l10n/app_localizations.dart';
-import 'package:cookie/models/notification.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
 import 'package:cookie/features/auth/widgets/auth_gate.dart';
 import 'package:cookie/features/notifications/providers/notifications_provider.dart';
+import 'package:cookie/l10n/app_localizations.dart';
+import 'package:cookie/models/notification.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});

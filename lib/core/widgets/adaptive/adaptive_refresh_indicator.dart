@@ -1,7 +1,6 @@
+import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:flutter/cupertino.dart' show CupertinoSliverRefreshControl;
 import 'package:flutter/material.dart';
-
-import 'package:cookie/core/providers/platform_style_provider.dart';
 
 /// Platform-adaptive pull-to-refresh wrapper for a [CustomScrollView].
 ///

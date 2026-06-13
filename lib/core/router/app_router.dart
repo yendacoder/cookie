@@ -1,33 +1,32 @@
 import 'package:cookie/core/hero_tag_scope.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:cookie/features/auth/screens/login_screen.dart';
 import 'package:cookie/features/communities/screens/communities_screen.dart';
-import 'package:cookie/features/communities/screens/mod_tools_screen.dart';
-import 'package:cookie/features/posts/screens/compose_screen.dart';
 import 'package:cookie/features/communities/screens/community_screen.dart';
+import 'package:cookie/features/communities/screens/mod_tools_screen.dart';
 import 'package:cookie/features/communities/screens/muted_communities_screen.dart';
 import 'package:cookie/features/feed/models/feed_type.dart';
 import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart';
 import 'package:cookie/features/feed/screens/feed_screen.dart';
-import 'package:cookie/features/notifications/screens/notifications_screen.dart';
-import 'package:cookie/features/posts/screens/youtube_player_screen.dart';
-import 'package:cookie/features/profile/screens/edit_profile_screen.dart';
 import 'package:cookie/features/lists/screens/list_detail_screen.dart';
 import 'package:cookie/features/lists/screens/lists_screen.dart';
-import 'package:cookie/features/profile/screens/settings_screen.dart';
-import 'package:cookie/models/user_list.dart';
+import 'package:cookie/features/notifications/screens/notifications_screen.dart';
+import 'package:cookie/features/posts/screens/compose_screen.dart';
 import 'package:cookie/features/posts/screens/image_viewer_screen.dart';
 import 'package:cookie/features/posts/screens/post_detail_screen.dart';
+import 'package:cookie/features/posts/screens/youtube_player_screen.dart';
+import 'package:cookie/features/profile/screens/edit_profile_screen.dart';
 import 'package:cookie/features/profile/screens/profile_screen.dart';
+import 'package:cookie/features/profile/screens/settings_screen.dart';
 import 'package:cookie/features/shell/providers/last_tab_provider.dart';
 import 'package:cookie/features/shell/screens/shell_screen.dart';
 import 'package:cookie/features/user/screens/muted_users_screen.dart';
 import 'package:cookie/features/user/screens/user_screen.dart';
 import 'package:cookie/models/community.dart';
 import 'package:cookie/models/post.dart';
+import 'package:cookie/models/user_list.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
 

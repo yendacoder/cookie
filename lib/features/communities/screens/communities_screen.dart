@@ -1,23 +1,22 @@
-import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_segmented_button.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/core/utils/markdown_utils.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_ink_well.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_refresh_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_segmented_button.dart';
 import 'package:cookie/core/widgets/error_view.dart';
-import 'package:cookie/models/community.dart';
-import 'package:cookie/models/discuit_image.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
 import 'package:cookie/features/communities/providers/communities_list_provider.dart';
+import 'package:cookie/models/community.dart';
+import 'package:cookie/models/discuit_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 enum _Tab { all, joined }
 
@@ -288,7 +287,10 @@ class _CommunityTile extends StatelessWidget {
           if (!selectMode)
             Padding(
               padding: const EdgeInsets.only(right: 16),
-              child: Icon(context.chevronRightIcon, color: colorScheme.onSurfaceVariant),
+              child: Icon(
+                context.chevronRightIcon,
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
         ],
       ),

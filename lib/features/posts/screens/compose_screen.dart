@@ -1,14 +1,24 @@
-import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_segmented_button.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_divider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_segmented_button.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
+import 'package:cookie/core/widgets/avatar.dart';
+import 'package:cookie/core/widgets/markdown_text.dart';
 import 'package:cookie/features/communities/providers/community_provider.dart';
+import 'package:cookie/models/community.dart';
+import 'package:cookie/models/discuit_image.dart';
+import 'package:cookie/models/post.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,17 +27,6 @@ import 'package:html/dom.dart' show Document;
 import 'package:html/parser.dart' as html_parser;
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-
-import 'package:cookie/core/api/api_client.dart';
-import 'package:cookie/core/extensions/build_context_ext.dart';
-import 'package:cookie/core/providers/platform_style_provider.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
-import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
-import 'package:cookie/core/widgets/avatar.dart';
-import 'package:cookie/core/widgets/markdown_text.dart';
-import 'package:cookie/models/community.dart';
-import 'package:cookie/models/discuit_image.dart';
-import 'package:cookie/models/post.dart';
 
 // ── Image entry ───────────────────────────────────────────────────────────────
 

@@ -1,6 +1,5 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 import 'package:cookie/core/api/api_client.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'hidden_posts_provider.g.dart';
 
