@@ -116,12 +116,22 @@ class PostCard extends ConsumerWidget {
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                     ),
-                    if (post.isPinned)
+                    if (post.isPinned) ...[
+                      SizedBox(width: 12),
                       Icon(
                         Icons.push_pin,
                         size: 14,
                         color: Theme.of(context).colorScheme.primary,
                       ),
+                    ],
+                    if (post.locked) ...[
+                      SizedBox(width: 12),
+                      Icon(
+                        Icons.lock,
+                        size: 14,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ],
                   ],
                 ),
                 _PostContent(post: post, heroTagScope: heroTagScope),
