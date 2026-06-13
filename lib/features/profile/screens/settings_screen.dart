@@ -13,6 +13,8 @@ import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/feed/models/feed_type.dart';
+import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart';
 import 'package:cookie/features/shell/providers/text_scale_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -21,6 +23,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textScale = ref.watch(textScaleProvider);
+    final visibleFeedTypes = ref.watch(visibleFeedTypesProvider);
     final textTheme = Theme.of(context).textTheme;
 
     return AdaptiveScaffold(
@@ -72,6 +75,25 @@ class SettingsScreen extends ConsumerWidget {
                 ref.read(textScaleProvider.notifier).set(selected.first),
           ),
           const SizedBox(height: 32),
+          const AdaptiveDivider(height: 1),
+          const SizedBox(height: 24),
+          Text(
+            context.l10n.navigationTabsSetting,
+            style: textTheme.titleMedium,
+          ),
+          for (final type in FeedType.values)
+            AdaptiveSwitchListTile(
+              title: Text(type.title(context.l10n)),
+              value: visibleFeedTypes.contains(type),
+              onChanged:
+                  visibleFeedTypes.length == 1 &&
+                      visibleFeedTypes.contains(type)
+                  ? null
+                  : (_) => ref
+                        .read(visibleFeedTypesProvider.notifier)
+                        .toggle(type),
+            ),
+          const SizedBox(height: 8),
           const AdaptiveDivider(height: 1),
           const SizedBox(height: 8),
           AdaptiveListTile(

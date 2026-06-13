@@ -17,6 +17,8 @@ import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
 import 'package:cookie/models/discuit_image.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
 import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
+import 'package:cookie/features/feed/models/feed_type.dart';
+import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart';
 import 'package:cookie/features/shell/providers/package_info_provider.dart';
 import 'package:cookie/features/update/providers/update_check_provider.dart';
 import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
@@ -33,6 +35,9 @@ class ProfileScreen extends ConsumerWidget {
     final chevronIcon = Icon(
       context.chevronRightIcon,
       color: Theme.of(context).colorScheme.onSurfaceVariant,
+    );
+    final hiddenFeedTypes = FeedType.values.where(
+      (type) => !ref.watch(visibleFeedTypesProvider).contains(type),
     );
 
     return AdaptiveScaffold(
@@ -73,6 +78,13 @@ class ProfileScreen extends ConsumerWidget {
           ),
           const AdaptiveDivider(height: 1),
           // Navigation
+          for (final type in hiddenFeedTypes)
+            AdaptiveListTile(
+              leading: Icon(type.navIcon),
+              title: Text(type.title(context.l10n)),
+              trailing: chevronIcon,
+              onTap: () => context.push('/feed/${type.name}'),
+            ),
           AdaptiveListTile(
             leading: const Icon(Icons.explore_outlined),
             title: Text(context.l10n.communitiesScreenTitle),

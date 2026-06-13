@@ -763,6 +763,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get textScaleSetting => 'Text size';
 
   @override
+  String get navigationTabsSetting => 'Navigation tabs';
+
+  @override
   String get deleteAccountSetting => 'Delete account';
 
   @override

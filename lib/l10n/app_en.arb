@@ -599,6 +599,8 @@
   "@settingsScreenTitle": {},
   "textScaleSetting": "Text size",
   "@textScaleSetting": {},
+  "navigationTabsSetting": "Navigation tabs",
+  "@navigationTabsSetting": {},
   "deleteAccountSetting": "Delete account",
   "@deleteAccountSetting": {},
   "deleteAccountConfirmTitle": "Delete account?",

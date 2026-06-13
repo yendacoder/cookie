@@ -1336,6 +1336,12 @@ abstract class AppLocalizations {
   /// **'Text size'**
   String get textScaleSetting;
 
+  /// No description provided for @navigationTabsSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation tabs'**
+  String get navigationTabsSetting;
+
   /// No description provided for @deleteAccountSetting.
   ///
   /// In en, this message translates to:

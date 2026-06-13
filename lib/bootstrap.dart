@@ -1,3 +1,5 @@
+import 'package:cookie/features/feed/models/feed_type.dart';
+import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart';
 import 'package:cookie/features/shell/providers/text_scale_provider.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,15 @@ Future<void> bootstrap({List<Override> additionalOverrides = const []}) async {
       await SharedPreferencesAsync().getInt(LastTab.kPrefsName) ?? 0;
   final textScale =
       await SharedPreferencesAsync().getDouble(TextScale.kPrefsName) ?? 1.0;
+  final savedVisibleFeedTypeNames = await SharedPreferencesAsync()
+      .getStringList(VisibleFeedTypes.kPrefsName);
+  final visibleFeedTypes = savedVisibleFeedTypeNames == null
+      ? FeedType.values.toSet()
+      : {
+          for (final name in savedVisibleFeedTypeNames)
+            ...FeedType.values.where((t) => t.name == name),
+        };
+  if (visibleFeedTypes.isEmpty) visibleFeedTypes.addAll(FeedType.values);
 
   final packageInfo = await PackageInfo.fromPlatform();
 
@@ -41,6 +52,9 @@ Future<void> bootstrap({List<Override> additionalOverrides = const []}) async {
         lastTabProvider.overrideWith(() => _SavedLastTab(savedTab)),
         textScaleProvider.overrideWith(
           () => _SavedTextScale(textScale.clamp(1.0, 3.0)),
+        ),
+        visibleFeedTypesProvider.overrideWith(
+          () => _SavedVisibleFeedTypes(visibleFeedTypes),
         ),
         ...additionalOverrides,
       ],
@@ -73,4 +87,13 @@ class _SavedTextScale extends TextScale {
 
   @override
   double build() => _saved;
+}
+
+class _SavedVisibleFeedTypes extends VisibleFeedTypes {
+  _SavedVisibleFeedTypes(this._saved);
+
+  final Set<FeedType> _saved;
+
+  @override
+  Set<FeedType> build() => _saved;
 }

@@ -10,6 +10,7 @@ import 'package:cookie/features/posts/screens/compose_screen.dart';
 import 'package:cookie/features/communities/screens/community_screen.dart';
 import 'package:cookie/features/communities/screens/muted_communities_screen.dart';
 import 'package:cookie/features/feed/models/feed_type.dart';
+import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart';
 import 'package:cookie/features/feed/screens/feed_screen.dart';
 import 'package:cookie/features/notifications/screens/notifications_screen.dart';
 import 'package:cookie/features/posts/screens/youtube_player_screen.dart';
@@ -32,11 +33,18 @@ part 'app_router.g.dart';
 
 @Riverpod(keepAlive: true)
 GoRouter router(Ref ref) {
-  final initialLocation = switch (ref.read(lastTabProvider)) {
-    1 => '/subscriptions',
-    2 => '/moderating',
-    3 => '/profile',
-    _ => '/',
+  final visibleFeedTypes = ref.read(visibleFeedTypesProvider);
+  final lastTab = ref.read(lastTabProvider);
+  final lastFeedType = lastTab >= 0 && lastTab < FeedType.values.length
+      ? FeedType.values[lastTab]
+      : null;
+  final initialLocation = switch (lastFeedType) {
+    final type? when visibleFeedTypes.contains(type) => type.routePath,
+    _ when lastTab == 3 => '/profile',
+    _ =>
+      FeedType.values
+          .firstWhere(visibleFeedTypes.contains, orElse: () => FeedType.home)
+          .routePath,
   };
   return GoRouter(
     initialLocation: initialLocation,
@@ -86,6 +94,12 @@ GoRouter router(Ref ref) {
         path: '/communities',
         builder: (context, state) =>
             CommunitiesScreen(selectMode: state.extra == true),
+      ),
+      GoRoute(
+        path: '/feed/:type',
+        builder: (context, state) => FeedScreen(
+          type: FeedType.values.byName(state.pathParameters['type']!),
+        ),
       ),
       GoRoute(path: '/lists', builder: (context, state) => const ListsScreen()),
       GoRoute(

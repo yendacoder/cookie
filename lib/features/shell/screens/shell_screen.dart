@@ -1,5 +1,6 @@
 import 'package:cookie/features/feed/models/feed_type.dart';
 import 'package:cookie/features/feed/providers/feed_provider.dart';
+import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart';
 import 'package:cookie/features/update/providers/update_check_provider.dart';
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/material.dart';
@@ -18,24 +19,28 @@ class ShellScreen extends ConsumerWidget {
 
   final StatefulNavigationShell navigationShell;
 
-  void _onTabSelected(int index, WidgetRef ref) {
-    if (index == navigationShell.currentIndex) {
-      switch (index) {
-        case 0:
-          ref.invalidate(feedProvider(FeedType.home), asReload: true);
-        case 1:
-          ref.invalidate(feedProvider(FeedType.subscriptions), asReload: true);
-        case 2:
-          ref.invalidate(feedProvider(FeedType.moderating), asReload: true);
-      }
+  void _onTabSelected(
+    int barPosition,
+    List<int> visibleBranchIndices,
+    WidgetRef ref,
+  ) {
+    final branchIndex = visibleBranchIndices[barPosition];
+    if (branchIndex == navigationShell.currentIndex &&
+        branchIndex < FeedType.values.length) {
+      ref.invalidate(
+        feedProvider(FeedType.values[branchIndex]),
+        asReload: true,
+      );
     }
     ref.read(navBarVisibilityProvider.notifier).show();
     navigationShell.goBranch(
-      index,
-      initialLocation: index == navigationShell.currentIndex,
+      branchIndex,
+      initialLocation: branchIndex == navigationShell.currentIndex,
     );
     // do not save profile tab as last as it feels unexpected
-    if (index < 3) ref.read(lastTabProvider.notifier).set(index);
+    if (branchIndex < FeedType.values.length) {
+      ref.read(lastTabProvider.notifier).set(branchIndex);
+    }
   }
 
   @override
@@ -53,8 +58,27 @@ class ShellScreen extends ConsumerWidget {
     );
     final colorScheme = Theme.of(context).colorScheme;
     final useIos = ref.useIos;
+    final visibleFeedTypes = ref.watch(visibleFeedTypesProvider);
 
-    if (navigationShell.currentIndex == 3 && !isNavBarVisible) {
+    final profileBranchIndex = FeedType.values.length;
+    final visibleBranchIndices = [
+      for (final type in FeedType.values)
+        if (visibleFeedTypes.contains(type)) type.index,
+      profileBranchIndex,
+    ];
+
+    var selectedPosition = visibleBranchIndices.indexOf(
+      navigationShell.currentIndex,
+    );
+    if (selectedPosition == -1) {
+      selectedPosition = 0;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        navigationShell.goBranch(visibleBranchIndices.first);
+      });
+    }
+
+    if (navigationShell.currentIndex == profileBranchIndex &&
+        !isNavBarVisible) {
       ref.read(navBarVisibilityProvider.notifier).hide();
       isNavBarVisible = true;
     }
@@ -74,25 +98,18 @@ class ShellScreen extends ConsumerWidget {
     }
 
     final androidBar = NavigationBar(
-      selectedIndex: navigationShell.currentIndex,
+      selectedIndex: selectedPosition,
       labelBehavior: .alwaysHide,
-      onDestinationSelected: (index) => _onTabSelected(index, ref),
+      onDestinationSelected: (position) =>
+          _onTabSelected(position, visibleBranchIndices, ref),
       destinations: [
-        NavigationDestination(
-          icon: const Icon(Icons.home_outlined),
-          selectedIcon: const Icon(Icons.home),
-          label: context.l10n.navHome,
-        ),
-        NavigationDestination(
-          icon: const Icon(Icons.dynamic_feed_outlined),
-          selectedIcon: const Icon(Icons.dynamic_feed),
-          label: context.l10n.navSubscriptions,
-        ),
-        NavigationDestination(
-          icon: const Icon(Icons.admin_panel_settings_outlined),
-          selectedIcon: const Icon(Icons.admin_panel_settings),
-          label: context.l10n.navModerating,
-        ),
+        for (final type in FeedType.values)
+          if (visibleFeedTypes.contains(type))
+            NavigationDestination(
+              icon: Icon(type.navIcon),
+              selectedIcon: Icon(type.navIconSelected),
+              label: type.navLabel(context.l10n),
+            ),
         NavigationDestination(
           icon: Badge(
             isLabelVisible: notifCount > 0 || hasUpdate,
@@ -114,8 +131,9 @@ class ShellScreen extends ConsumerWidget {
     );
 
     final iosBar = GlassBottomBar(
-      selectedIndex: navigationShell.currentIndex,
-      onTabSelected: (index) => _onTabSelected(index, ref),
+      selectedIndex: selectedPosition,
+      onTabSelected: (position) =>
+          _onTabSelected(position, visibleBranchIndices, ref),
       extraButton: isAuthenticated
           ? GlassBottomBarExtraButton(
               icon: const Icon(CupertinoIcons.square_pencil),
@@ -124,21 +142,13 @@ class ShellScreen extends ConsumerWidget {
             )
           : null,
       tabs: [
-        GlassBottomBarTab(
-          icon: const Icon(Icons.home_outlined),
-          activeIcon: const Icon(Icons.home),
-          label: context.l10n.navHome,
-        ),
-        GlassBottomBarTab(
-          icon: const Icon(Icons.dynamic_feed_outlined),
-          activeIcon: const Icon(Icons.dynamic_feed),
-          label: context.l10n.navSubscriptions,
-        ),
-        GlassBottomBarTab(
-          icon: const Icon(Icons.admin_panel_settings_outlined),
-          activeIcon: const Icon(Icons.admin_panel_settings),
-          label: context.l10n.navModerating,
-        ),
+        for (final type in FeedType.values)
+          if (visibleFeedTypes.contains(type))
+            GlassBottomBarTab(
+              icon: Icon(type.navIcon),
+              activeIcon: Icon(type.navIconSelected),
+              label: type.navLabel(context.l10n),
+            ),
         GlassBottomBarTab(
           icon: iosProfileIcon(),
           label: context.l10n.navProfile,
