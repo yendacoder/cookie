@@ -559,6 +559,68 @@
   "@modToolsDeleteRuleTitle": {},
   "modToolsDeleteRuleConfirm": "This rule will be permanently deleted.",
   "@modToolsDeleteRuleConfirm": {},
+  "modToolsTabReports": "Reports",
+  "@modToolsTabReports": {},
+  "modToolsTabBanned": "Banned",
+  "@modToolsTabBanned": {},
+  "modToolsTabModerators": "Moderators",
+  "@modToolsTabModerators": {},
+  "modToolsModeratorsEmpty": "No moderators",
+  "@modToolsModeratorsEmpty": {},
+  "modToolsModeratorsRemove": "Remove",
+  "@modToolsModeratorsRemove": {},
+  "modToolsModeratorsRemoveTitle": "Remove moderator",
+  "@modToolsModeratorsRemoveTitle": {},
+  "modToolsModeratorsRemoveConfirm": "@{username} will no longer be a moderator of this community.",
+  "@modToolsModeratorsRemoveConfirm": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "modToolsAddModerator": "Add moderator",
+  "@modToolsAddModerator": {},
+  "modToolsAddModeratorTitle": "Add moderator",
+  "@modToolsAddModeratorTitle": {},
+  "modToolsModeratorUsernameLabel": "Username",
+  "@modToolsModeratorUsernameLabel": {},
+  "modToolsModeratorUsernameRequired": "Username is required",
+  "@modToolsModeratorUsernameRequired": {},
+  "modToolsReportsFilterAll": "All",
+  "@modToolsReportsFilterAll": {},
+  "modToolsReportsFilterPosts": "Posts",
+  "@modToolsReportsFilterPosts": {},
+  "modToolsReportsFilterComments": "Comments",
+  "@modToolsReportsFilterComments": {},
+  "modToolsReportsEmpty": "No reports",
+  "@modToolsReportsEmpty": {},
+  "modToolsReportsReason": "Reason: {reason}",
+  "@modToolsReportsReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "modToolsReportsIgnore": "Ignore",
+  "@modToolsReportsIgnore": {},
+  "modToolsReportsView": "View",
+  "@modToolsReportsView": {},
+  "modToolsReportsRemoved": "Removed",
+  "@modToolsReportsRemoved": {},
+  "modToolsBannedEmpty": "No banned users",
+  "@modToolsBannedEmpty": {},
+  "modToolsBannedUnban": "Unban",
+  "@modToolsBannedUnban": {},
+  "modToolsBanUserTitle": "Ban user",
+  "@modToolsBanUserTitle": {},
+  "modToolsBanUsernameLabel": "Username",
+  "@modToolsBanUsernameLabel": {},
+  "modToolsBanUsernameRequired": "Username is required",
+  "@modToolsBanUsernameRequired": {},
+  "modToolsBanSubmit": "Ban",
+  "@modToolsBanSubmit": {},
   "postMenuEdit": "Edit post",
   "@postMenuEdit": {},
   "postMenuDelete": "Delete post",
@@ -595,6 +657,24 @@
   "@postModActionsDeleted": {},
   "postModActionsError": "Action failed, please try again later.",
   "@postModActionsError": {},
+  "modActionsBanUser": "Ban user",
+  "@modActionsBanUser": {},
+  "modActionsBanUserConfirm": "@{username} won't be able to post or comment in this community anymore.",
+  "@modActionsBanUserConfirm": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "modActionsUserBanned": "@{username} has been banned",
+  "@modActionsUserBanned": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
   "composeEditTitle": "Edit post",
   "@composeEditTitle": {},
   "commentMenuEdit": "Edit comment",

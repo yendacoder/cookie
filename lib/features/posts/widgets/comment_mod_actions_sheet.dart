@@ -1,3 +1,5 @@
+import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/errors/app_exception.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
@@ -5,6 +7,7 @@ import 'package:cookie/core/widgets/adaptive/adaptive_list_tile.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_sheet_header.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
+import 'package:cookie/features/communities/providers/community_banned_provider.dart';
 import 'package:cookie/features/posts/providers/post_detail_provider.dart';
 import 'package:cookie/models/comment.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +35,7 @@ class _CommentModActionsSheetState
     extends ConsumerState<CommentModActionsSheet> {
   bool _updatingLock = false;
   bool _deleting = false;
+  bool _banningUser = false;
 
   Future<void> _setLocked(bool locked) async {
     setState(() => _updatingLock = true);
@@ -88,6 +92,54 @@ class _CommentModActionsSheetState
     }
   }
 
+  Future<void> _banUser() async {
+    final l10n = context.l10n;
+    final username = widget.comment.username;
+    final confirmed = await showPlatformDialog<bool>(
+      context: context,
+      builder: (ctx) => AdaptiveAlertDialog(
+        title: Text(l10n.modActionsBanUser),
+        content: Text(l10n.modActionsBanUserConfirm(username)),
+        actions: [
+          AdaptiveDialogAction(
+            onPressed: () => ctx.pop(false),
+            child: Text(l10n.cancelButton),
+          ),
+          AdaptiveDialogAction(
+            isDefault: true,
+            isDestructive: true,
+            onPressed: () => ctx.pop(true),
+            child: Text(l10n.modActionsBanUser),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _banningUser = true);
+    try {
+      await ref
+          .read(apiClientProvider)
+          .post(
+            'communities/${widget.comment.communityId}/banned',
+            data: {'username': username},
+          );
+      ref.invalidate(
+        communityBannedUsersProvider(widget.comment.communityId),
+        asReload: true,
+      );
+      if (mounted) {
+        Navigator.of(context).pop();
+        showPlatformSnackBar(context, l10n.modActionsUserBanned(username));
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _banningUser = false);
+        showPlatformSnackBar(context, apiErrorMessage(e));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -125,6 +177,20 @@ class _CommentModActionsSheetState
                   )
                 : null,
             onTap: _deleting || comment.deleted ? null : _delete,
+            contentPadding: context.useIos ? const EdgeInsets.all(20) : null,
+          ),
+          AdaptiveListTile(
+            title: Text(
+              l10n.modActionsBanUser,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+            trailing: _banningUser
+                ? const SizedBox.square(
+                    dimension: 20,
+                    child: AdaptiveProgressIndicator(strokeWidth: 2),
+                  )
+                : null,
+            onTap: _banningUser || comment.userDeleted ? null : _banUser,
             contentPadding: context.useIos ? const EdgeInsets.all(20) : null,
             isLast: true,
           ),

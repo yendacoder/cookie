@@ -55,6 +55,19 @@ final class UnknownException extends AppException {
   final Object cause;
 }
 
+/// Extracts a human-readable error message suitable for showing directly to
+/// the user, preferring the server-provided `message` field from a JSON
+/// error response over Dio's generic exception text.
+String apiErrorMessage(Object error) {
+  if (error is DioException) {
+    final data = error.response?.data;
+    if (data is Map && data['message'] is String) {
+      return data['message'] as String;
+    }
+  }
+  return error.toString();
+}
+
 /// Walks the [CheckedFromJsonException] chain and builds a field path like
 /// `communities → proPic → averageColor`.
 String? _fieldPath(CheckedFromJsonException error) {

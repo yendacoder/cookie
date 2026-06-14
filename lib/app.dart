@@ -33,7 +33,10 @@ class CookieApp extends ConsumerWidget {
           data: MediaQuery.of(
             context,
           ).copyWith(textScaler: TextScaler.linear(scale)),
-          child: child!,
+          // Provides a themed `DefaultTextStyle` for widgets rendered via
+          // `Overlay.of(context)` (e.g. GlassSnackBar), which otherwise sit
+          // outside any `Material` ancestor and fall back to bare text styling.
+          child: Material(type: MaterialType.transparency, child: child!),
         );
       },
     );

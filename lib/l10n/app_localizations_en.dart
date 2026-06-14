@@ -701,6 +701,85 @@ class AppLocalizationsEn extends AppLocalizations {
       'This rule will be permanently deleted.';
 
   @override
+  String get modToolsTabReports => 'Reports';
+
+  @override
+  String get modToolsTabBanned => 'Banned';
+
+  @override
+  String get modToolsTabModerators => 'Moderators';
+
+  @override
+  String get modToolsModeratorsEmpty => 'No moderators';
+
+  @override
+  String get modToolsModeratorsRemove => 'Remove';
+
+  @override
+  String get modToolsModeratorsRemoveTitle => 'Remove moderator';
+
+  @override
+  String modToolsModeratorsRemoveConfirm(String username) {
+    return '@$username will no longer be a moderator of this community.';
+  }
+
+  @override
+  String get modToolsAddModerator => 'Add moderator';
+
+  @override
+  String get modToolsAddModeratorTitle => 'Add moderator';
+
+  @override
+  String get modToolsModeratorUsernameLabel => 'Username';
+
+  @override
+  String get modToolsModeratorUsernameRequired => 'Username is required';
+
+  @override
+  String get modToolsReportsFilterAll => 'All';
+
+  @override
+  String get modToolsReportsFilterPosts => 'Posts';
+
+  @override
+  String get modToolsReportsFilterComments => 'Comments';
+
+  @override
+  String get modToolsReportsEmpty => 'No reports';
+
+  @override
+  String modToolsReportsReason(String reason) {
+    return 'Reason: $reason';
+  }
+
+  @override
+  String get modToolsReportsIgnore => 'Ignore';
+
+  @override
+  String get modToolsReportsView => 'View';
+
+  @override
+  String get modToolsReportsRemoved => 'Removed';
+
+  @override
+  String get modToolsBannedEmpty => 'No banned users';
+
+  @override
+  String get modToolsBannedUnban => 'Unban';
+
+  @override
+  String get modToolsBanUserTitle => 'Ban user';
+
+  @override
+  String get modToolsBanUsernameLabel => 'Username';
+
+  @override
+  String get modToolsBanUsernameRequired => 'Username is required';
+
+  @override
+  String get modToolsBanSubmit => 'Ban';
+
+  @override
   String get postMenuEdit => 'Edit post';
 
   @override
@@ -755,6 +834,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get postModActionsError => 'Action failed, please try again later.';
+
+  @override
+  String get modActionsBanUser => 'Ban user';
+
+  @override
+  String modActionsBanUserConfirm(String username) {
+    return '@$username won\'t be able to post or comment in this community anymore.';
+  }
+
+  @override
+  String modActionsUserBanned(String username) {
+    return '@$username has been banned';
+  }
 
   @override
   String get composeEditTitle => 'Edit post';

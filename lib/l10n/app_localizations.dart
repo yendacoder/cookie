@@ -1216,6 +1216,156 @@ abstract class AppLocalizations {
   /// **'This rule will be permanently deleted.'**
   String get modToolsDeleteRuleConfirm;
 
+  /// No description provided for @modToolsTabReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get modToolsTabReports;
+
+  /// No description provided for @modToolsTabBanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Banned'**
+  String get modToolsTabBanned;
+
+  /// No description provided for @modToolsTabModerators.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderators'**
+  String get modToolsTabModerators;
+
+  /// No description provided for @modToolsModeratorsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No moderators'**
+  String get modToolsModeratorsEmpty;
+
+  /// No description provided for @modToolsModeratorsRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get modToolsModeratorsRemove;
+
+  /// No description provided for @modToolsModeratorsRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove moderator'**
+  String get modToolsModeratorsRemoveTitle;
+
+  /// No description provided for @modToolsModeratorsRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'@{username} will no longer be a moderator of this community.'**
+  String modToolsModeratorsRemoveConfirm(String username);
+
+  /// No description provided for @modToolsAddModerator.
+  ///
+  /// In en, this message translates to:
+  /// **'Add moderator'**
+  String get modToolsAddModerator;
+
+  /// No description provided for @modToolsAddModeratorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add moderator'**
+  String get modToolsAddModeratorTitle;
+
+  /// No description provided for @modToolsModeratorUsernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get modToolsModeratorUsernameLabel;
+
+  /// No description provided for @modToolsModeratorUsernameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is required'**
+  String get modToolsModeratorUsernameRequired;
+
+  /// No description provided for @modToolsReportsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get modToolsReportsFilterAll;
+
+  /// No description provided for @modToolsReportsFilterPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Posts'**
+  String get modToolsReportsFilterPosts;
+
+  /// No description provided for @modToolsReportsFilterComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get modToolsReportsFilterComments;
+
+  /// No description provided for @modToolsReportsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No reports'**
+  String get modToolsReportsEmpty;
+
+  /// No description provided for @modToolsReportsReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason: {reason}'**
+  String modToolsReportsReason(String reason);
+
+  /// No description provided for @modToolsReportsIgnore.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore'**
+  String get modToolsReportsIgnore;
+
+  /// No description provided for @modToolsReportsView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get modToolsReportsView;
+
+  /// No description provided for @modToolsReportsRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get modToolsReportsRemoved;
+
+  /// No description provided for @modToolsBannedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No banned users'**
+  String get modToolsBannedEmpty;
+
+  /// No description provided for @modToolsBannedUnban.
+  ///
+  /// In en, this message translates to:
+  /// **'Unban'**
+  String get modToolsBannedUnban;
+
+  /// No description provided for @modToolsBanUserTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ban user'**
+  String get modToolsBanUserTitle;
+
+  /// No description provided for @modToolsBanUsernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get modToolsBanUsernameLabel;
+
+  /// No description provided for @modToolsBanUsernameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is required'**
+  String get modToolsBanUsernameRequired;
+
+  /// No description provided for @modToolsBanSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Ban'**
+  String get modToolsBanSubmit;
+
   /// No description provided for @postMenuEdit.
   ///
   /// In en, this message translates to:
@@ -1323,6 +1473,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Action failed, please try again later.'**
   String get postModActionsError;
+
+  /// No description provided for @modActionsBanUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Ban user'**
+  String get modActionsBanUser;
+
+  /// No description provided for @modActionsBanUserConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'@{username} won\'t be able to post or comment in this community anymore.'**
+  String modActionsBanUserConfirm(String username);
+
+  /// No description provided for @modActionsUserBanned.
+  ///
+  /// In en, this message translates to:
+  /// **'@{username} has been banned'**
+  String modActionsUserBanned(String username);
 
   /// No description provided for @composeEditTitle.
   ///

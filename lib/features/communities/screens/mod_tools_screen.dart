@@ -1,6 +1,8 @@
 import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/errors/app_exception.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_fab.dart';
@@ -10,8 +12,12 @@ import 'package:cookie/core/widgets/adaptive/adaptive_scaffold.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_sheet.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_sheet_header.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
+import 'package:cookie/core/widgets/adaptive/adaptive_tab_bar.dart';
 import 'package:cookie/core/widgets/error_view.dart';
 import 'package:cookie/features/communities/providers/community_provider.dart';
+import 'package:cookie/features/communities/widgets/mod_banned_tab.dart';
+import 'package:cookie/features/communities/widgets/mod_moderators_tab.dart';
+import 'package:cookie/features/communities/widgets/mod_reports_tab.dart';
 import 'package:cookie/models/community.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,12 +37,12 @@ class ModToolsScreen extends ConsumerWidget {
     if (communityAsync.value == null) {
       if (communityAsync.isLoading) {
         return AdaptiveScaffold(
-          appBar: AppBar(title: Text(l10n.modToolsScreenTitle)),
+          appBar: AdaptiveAppBar(title: Text(l10n.modToolsScreenTitle)),
           body: const Center(child: AdaptiveProgressIndicator()),
         );
       }
       return AdaptiveScaffold(
-        appBar: AppBar(title: Text(l10n.modToolsScreenTitle)),
+        appBar: AdaptiveAppBar(title: Text(l10n.modToolsScreenTitle)),
         body: ErrorView(
           error: communityAsync.error!,
           onRetry: () => ref.invalidate(communityDetailProvider(communityName)),
@@ -47,21 +53,37 @@ class ModToolsScreen extends ConsumerWidget {
     final community = communityAsync.value!;
 
     return DefaultTabController(
-      length: 2,
+      length: 5,
       child: AdaptiveScaffold(
-        appBar: AppBar(
-          title: Text(l10n.modToolsScreenTitle),
-          bottom: TabBar(
-            tabs: [
-              Tab(text: l10n.modToolsTabSettings),
-              Tab(text: l10n.modToolsTabRules),
-            ],
-          ),
-        ),
-        body: TabBarView(
+        appBar: AdaptiveAppBar(title: Text(l10n.modToolsScreenTitle)),
+        body: Column(
           children: [
-            _MetaTab(community: community, communityName: communityName),
-            _RulesTab(community: community, communityName: communityName),
+            AdaptiveTabBar(
+              tabs: [
+                AdaptiveTab(label: l10n.modToolsTabSettings),
+                AdaptiveTab(label: l10n.modToolsTabRules),
+                AdaptiveTab(label: l10n.modToolsTabReports),
+                AdaptiveTab(label: l10n.modToolsTabBanned),
+                AdaptiveTab(label: l10n.modToolsTabModerators),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  _MetaTab(community: community, communityName: communityName),
+                  _RulesTab(community: community, communityName: communityName),
+                  ModReportsTab(
+                    communityId: community.id,
+                    communityName: communityName,
+                  ),
+                  ModBannedTab(communityId: community.id),
+                  ModModeratorsTab(
+                    community: community,
+                    communityName: communityName,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -134,7 +156,7 @@ class _MetaTabState extends ConsumerState<_MetaTab> {
       }
     } catch (e) {
       if (mounted) {
-        showPlatformSnackBar(context, e.toString());
+        showPlatformSnackBar(context, apiErrorMessage(e));
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -252,7 +274,7 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
       // Revert to the pre-reorder order.
       if (mounted) {
         setState(() => _rules = _sorted(widget.community.rules));
-        showPlatformSnackBar(context, e.toString());
+        showPlatformSnackBar(context, apiErrorMessage(e));
       }
     } finally {
       if (mounted) setState(() => _reordering = false);
@@ -291,7 +313,7 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
       _pushRules(updated);
     } catch (e) {
       if (mounted) {
-        showPlatformSnackBar(context, e.toString());
+        showPlatformSnackBar(context, apiErrorMessage(e));
       }
     }
   }
@@ -446,7 +468,7 @@ class _RuleSheetState extends ConsumerState<_RuleSheet> {
     } catch (e) {
       if (mounted) {
         setState(() => _saving = false);
-        showPlatformSnackBar(context, e.toString());
+        showPlatformSnackBar(context, apiErrorMessage(e));
       }
     }
   }
