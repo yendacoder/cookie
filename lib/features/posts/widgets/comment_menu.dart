@@ -1,3 +1,4 @@
+import 'package:cookie/core/errors/app_exception.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
@@ -63,7 +64,7 @@ class CommentMenuButton extends ConsumerWidget {
           .deleteComment(comment.id);
     } catch (e) {
       if (context.mounted) {
-        showPlatformSnackBar(context, e.toString());
+        showPlatformSnackBar(context, apiErrorMessage(e));
       }
     }
   }
@@ -218,7 +219,7 @@ class _CommentEditSheetState extends ConsumerState<_CommentEditSheet> {
     } catch (e) {
       if (mounted) {
         setState(() => _saving = false);
-        showPlatformSnackBar(context, e.toString());
+        showPlatformSnackBar(context, apiErrorMessage(e));
       }
     }
   }

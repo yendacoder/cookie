@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/errors/app_exception.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
@@ -163,7 +164,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
       } catch (e) {
         setState(() => _loadingCommunity = false);
         if (mounted) {
-          showPlatformSnackBar(context, e.toString());
+          showPlatformSnackBar(context, apiErrorMessage(e));
         }
       }
     }
@@ -277,7 +278,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _submitting = false);
-        showPlatformSnackBar(context, e.toString());
+        showPlatformSnackBar(context, apiErrorMessage(e));
       }
     }
   }

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/errors/app_exception.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
@@ -718,7 +719,7 @@ class _PostMenuButton extends ConsumerWidget {
               }
             } catch (e) {
               if (context.mounted) {
-                showPlatformSnackBar(context, e.toString());
+                showPlatformSnackBar(context, apiErrorMessage(e));
               }
             }
           case .hide:

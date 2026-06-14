@@ -1,4 +1,5 @@
 import 'package:cookie/core/api/api_client.dart';
+import 'package:cookie/core/errors/app_exception.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
@@ -320,7 +321,7 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     if (context.mounted) context.pop();
                   } catch (e) {
                     if (context.mounted) {
-                      showPlatformSnackBar(context, e.toString());
+                      showPlatformSnackBar(context, apiErrorMessage(e));
                     }
                   }
                 case .hide:
