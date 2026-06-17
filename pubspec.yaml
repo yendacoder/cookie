@@ -1,7 +1,7 @@
 name: cookie
 description: Client application for Discuit social platform.
 publish_to: 'none'
-version: 2.0.7+200077
+version: 2.1.0+201000
 
 environment:
   sdk: ^3.11.4
