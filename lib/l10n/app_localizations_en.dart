@@ -896,6 +896,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imageViewerSave => 'Save image';
 
   @override
+  String get imageViewerShare => 'Share image';
+
+  @override
+  String get youtubePlayerShare => 'Share video';
+
+  @override
   String get settingsScreenTitle => 'Settings';
 
   @override

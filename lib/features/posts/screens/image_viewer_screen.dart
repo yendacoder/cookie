@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
+import 'package:cookie/core/providers/platform_style_provider.dart';
 import 'package:cookie/core/utils/image_downloader.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
@@ -40,6 +41,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
   // gestures don't conflict.
   bool _isAnyPageZoomed = false;
   bool _isSaving = false;
+  bool _isSharing = false;
 
   @override
   void initState() {
@@ -59,6 +61,18 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
     if (mounted) {
       setState(() {
         _isSaving = false;
+      });
+    }
+  }
+
+  void _share(String url) async {
+    setState(() {
+      _isSharing = true;
+    });
+    await ImageDownloader().share(url);
+    if (mounted) {
+      setState(() {
+        _isSharing = false;
       });
     }
   }
@@ -107,6 +121,18 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
                     );
                   }
                 : null,
+          ),
+          IconButton(
+            icon: _isSharing
+                ? SizedBox.square(
+              dimension: 16,
+              child: AdaptiveProgressIndicator(strokeWidth: 1.5),
+            )
+                : Icon(context.shareIcon),
+            tooltip: context.l10n.imageViewerShare,
+            onPressed: _isSharing
+                ? null
+                : () => _share(widget.images[_currentPage].fullUrl),
           ),
           IconButton(
             icon: _isSaving

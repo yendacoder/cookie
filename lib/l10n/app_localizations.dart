@@ -1582,6 +1582,18 @@ abstract class AppLocalizations {
   /// **'Save image'**
   String get imageViewerSave;
 
+  /// No description provided for @imageViewerShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share image'**
+  String get imageViewerShare;
+
+  /// No description provided for @youtubePlayerShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share video'**
+  String get youtubePlayerShare;
+
   /// No description provided for @settingsScreenTitle.
   ///
   /// In en, this message translates to:
