@@ -19,6 +19,7 @@ import 'package:cookie/core/widgets/markdown_text.dart';
 import 'package:cookie/features/communities/providers/community_provider.dart';
 import 'package:cookie/models/community.dart';
 import 'package:cookie/models/discuit_image.dart';
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/models/post.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -195,7 +196,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
     if (_titleCtrl.text.trim().isEmpty) return false;
     if (_isEditing) return true;
     if (_community == null) return false;
-    if (_type == _PostType.image && _images.isEmpty) return false;
+    if (_type == .image && _images.isEmpty) return false;
     return true;
   }
 
@@ -223,7 +224,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
       final communityName = _community!.name;
       Post newPost;
 
-      if (_type == _PostType.image) {
+      if (_type == .image) {
         final uploaded = <Map<String, String>>[];
         for (final entry in _images) {
           final formData = FormData.fromMap({
@@ -272,7 +273,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
         context.pop();
         context.push(
           '/c/${newPost.communityName}/post/${newPost.publicId}',
-          extra: newPost,
+          extra: (post: newPost, heroTagScope: HeroTagScope(.unknown)),
         );
       }
     } catch (e) {
@@ -458,7 +459,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
               ),
               _MarkdownGuide(),
             ],
-          ] else if (_type == _PostType.text) ...[
+          ] else if (_type == .text) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TextField(
