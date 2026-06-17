@@ -223,7 +223,7 @@ class _DetailLink extends StatelessWidget {
           ),
         ),
         if (youtubeId != null)
-          YoutubeContent(videoId: youtubeId)
+          YoutubeContent(fullUrl: link.url, videoId: youtubeId)
         else if (link.image != null)
           Padding(
             padding: const EdgeInsets.only(top: 8),

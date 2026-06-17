@@ -121,8 +121,8 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/youtube-player',
         builder: (context, state) {
-          final videoId = state.extra as String;
-          return YoutubePlayerScreen(videoId: videoId);
+          final (fullUrl, videoId) = state.extra as (String, String);
+          return YoutubePlayerScreen(fullUrl: fullUrl, videoId: videoId);
         },
       ),
       GoRoute(

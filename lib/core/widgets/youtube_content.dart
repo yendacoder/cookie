@@ -3,8 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class YoutubeContent extends StatelessWidget {
-  const YoutubeContent({super.key, required this.videoId});
+  const YoutubeContent({
+    super.key,
+    required this.fullUrl,
+    required this.videoId,
+  });
 
+  final String fullUrl;
   final String videoId;
 
   @override
@@ -14,7 +19,8 @@ class YoutubeContent extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
-          onTap: () => context.push('/youtube-player', extra: videoId),
+          onTap: () =>
+              context.push('/youtube-player', extra: (fullUrl, videoId)),
           child: AspectRatio(
             aspectRatio: 16 / 9,
             child: Stack(

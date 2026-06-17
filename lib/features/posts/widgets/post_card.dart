@@ -367,7 +367,8 @@ class _LinkContent extends StatelessWidget {
               ],
             ),
           ),
-          if (youtubeId != null) YoutubeContent(videoId: youtubeId),
+          if (youtubeId != null)
+            YoutubeContent(fullUrl: link.url, videoId: youtubeId),
         ],
       ),
     );
