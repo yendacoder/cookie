@@ -37,9 +37,16 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
   late final PageController _pageController;
   late int _currentPage;
 
-  // When any page is zoomed in, disable PageView swiping so pan and swipe
-  // gestures don't conflict.
   bool _isAnyPageZoomed = false;
+
+  // Actual zoom state reported by the active _ZoomablePage (independent of
+  // multi-touch detection below).
+  bool _isActuallyZoomed = false;
+
+  // Raw pointer count tracked above the PageView so we catch fingers even
+  // while the PageView is mid-scroll.
+  int _pointerCount = 0;
+
   bool _isSaving = false;
   bool _isSharing = false;
 
@@ -54,33 +61,32 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
   }
 
   void _save(String url) async {
-    setState(() {
-      _isSaving = true;
-    });
+    setState(() => _isSaving = true);
     await ImageDownloader().downloadWithSaveDialog(url);
-    if (mounted) {
-      setState(() {
-        _isSaving = false;
-      });
-    }
+    if (mounted) setState(() => _isSaving = false);
   }
 
   void _share(String url) async {
-    setState(() {
-      _isSharing = true;
-    });
+    setState(() => _isSharing = true);
     await ImageDownloader().share(url);
-    if (mounted) {
-      setState(() {
-        _isSharing = false;
-      });
-    }
+    if (mounted) setState(() => _isSharing = false);
   }
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _onZoomChanged(bool zoomed) {
+    _isActuallyZoomed = zoomed;
+    _updateLock();
+  }
+
+  void _updateLock() {
+    final shouldLock = _isActuallyZoomed || _pointerCount >= 2;
+    if (shouldLock == _isAnyPageZoomed) return;
+    setState(() => _isAnyPageZoomed = shouldLock);
   }
 
   @override
@@ -125,9 +131,9 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
           IconButton(
             icon: _isSharing
                 ? SizedBox.square(
-              dimension: 16,
-              child: AdaptiveProgressIndicator(strokeWidth: 1.5),
-            )
+                    dimension: 16,
+                    child: AdaptiveProgressIndicator(strokeWidth: 1.5),
+                  )
                 : Icon(context.shareIcon),
             tooltip: context.l10n.imageViewerShare,
             onPressed: _isSharing
@@ -148,41 +154,54 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            physics: _isAnyPageZoomed
-                ? const NeverScrollableScrollPhysics()
-                : const BouncingScrollPhysics(),
-            itemCount: count > 1 ? count * 200 : 1,
-            onPageChanged: (i) => setState(() {
-              _currentPage = i % count;
-              // Reset zoom flag when the user swipes to a new page.
-              _isAnyPageZoomed = false;
-            }),
-            itemBuilder: (_, i) => _ZoomablePage(
-              image: widget.images[i % count],
-              onZoomChanged: (zoomed) {
-                if (zoomed != _isAnyPageZoomed) {
-                  setState(() => _isAnyPageZoomed = zoomed);
-                }
+      body: Listener(
+        // Sits above PageView so pointer events arrive here even while
+        // PageView is mid-scroll and would otherwise swallow them.
+        behavior: HitTestBehavior.translucent,
+        onPointerDown: (_) {
+          _pointerCount++;
+          _updateLock();
+        },
+        onPointerUp: (_) {
+          _pointerCount = (_pointerCount - 1).clamp(0, 10);
+          _updateLock();
+        },
+        onPointerCancel: (_) {
+          _pointerCount = (_pointerCount - 1).clamp(0, 10);
+          _updateLock();
+        },
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: _pageController,
+              physics: _isAnyPageZoomed
+                  ? const NeverScrollableScrollPhysics()
+                  : const BouncingScrollPhysics(),
+              itemCount: count > 1 ? count * 200 : 1,
+              onPageChanged: (i) => setState(() {
+                _currentPage = i % count;
+                _isAnyPageZoomed = false;
+                _isActuallyZoomed = false;
+              }),
+              itemBuilder: (_, i) => _ZoomablePage(
+                image: widget.images[i % count],
+                onZoomChanged: _onZoomChanged,
+              ),
+            ),
+            // Caption and/or page indicator at the bottom.
+            Builder(
+              builder: (context) {
+                if (count < 2) return const SizedBox.shrink();
+                return Positioned(
+                  bottom: MediaQuery.paddingOf(context).bottom + 16,
+                  left: 24,
+                  right: 24,
+                  child: _PageIndicator(current: _currentPage, count: count),
+                );
               },
             ),
-          ),
-          // Caption and/or page indicator at the bottom.
-          Builder(
-            builder: (context) {
-              if (count < 2) return const SizedBox.shrink();
-              return Positioned(
-                bottom: MediaQuery.paddingOf(context).bottom + 16,
-                left: 24,
-                right: 24,
-                child: _PageIndicator(current: _currentPage, count: count),
-              );
-            },
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
