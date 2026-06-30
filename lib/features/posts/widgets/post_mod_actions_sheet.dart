@@ -38,9 +38,9 @@ class _PostModActionsSheetState extends ConsumerState<PostModActionsSheet> {
       await ref
           .read(postDetailProvider(widget.post.publicId).notifier)
           .setLocked(locked);
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        showPlatformSnackBar(context, context.l10n.postModActionsError);
+        showPlatformSnackBar(context, apiErrorMessage(e));
       }
     } finally {
       if (mounted) setState(() => _updatingLock = false);
@@ -53,9 +53,9 @@ class _PostModActionsSheetState extends ConsumerState<PostModActionsSheet> {
       await ref
           .read(postDetailProvider(widget.post.publicId).notifier)
           .setPinned(pinned);
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        showPlatformSnackBar(context, context.l10n.postModActionsError);
+        showPlatformSnackBar(context, apiErrorMessage(e));
       }
     } finally {
       if (mounted) setState(() => _updatingPin = false);
@@ -94,10 +94,10 @@ class _PostModActionsSheetState extends ConsumerState<PostModActionsSheet> {
         Navigator.of(context).pop();
         showPlatformSnackBar(context, l10n.postModActionsDeleted);
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         setState(() => _deleting = false);
-        showPlatformSnackBar(context, l10n.postModActionsError);
+        showPlatformSnackBar(context, apiErrorMessage(e));
       }
     }
   }

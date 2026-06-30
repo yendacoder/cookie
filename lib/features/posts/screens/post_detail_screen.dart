@@ -239,11 +239,12 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 value: _PostMenuAction.openInBrowser,
                 label: l10n.postMenuOpenInBrowser,
               ),
-              AdaptiveMenuItem(
-                value: _PostMenuAction.saveToList,
-                label: l10n.postMenuSaveToList,
-              ),
-              if (isAuthor) ...[
+              if (!post.deleted)
+                AdaptiveMenuItem(
+                  value: _PostMenuAction.saveToList,
+                  label: l10n.postMenuSaveToList,
+                ),
+              if (isAuthor && !post.deleted) ...[
                 AdaptiveMenuItem(
                   value: _PostMenuAction.editPost,
                   label: l10n.postMenuEdit,

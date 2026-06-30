@@ -111,7 +111,7 @@ class PostDetailNotifier extends _$PostDetailNotifier {
     } else {
       await ref
           .read(apiClientProvider)
-          .put('posts/${post.publicId}?action=unlock');
+          .put('posts/${post.publicId}?action=unlock&lockAs=mods');
     }
     state = AsyncData(post.copyWith(locked: locked));
   }

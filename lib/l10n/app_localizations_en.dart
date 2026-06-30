@@ -710,6 +710,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get modToolsTabModerators => 'Moderators';
 
   @override
+  String get modToolsTabRemoved => 'Removed';
+
+  @override
+  String get modToolsTabLocked => 'Locked';
+
+  @override
+  String get modToolsRemovedEmpty => 'No removed posts';
+
+  @override
+  String get modToolsLockedEmpty => 'No locked posts';
+
+  @override
   String get modToolsModeratorsEmpty => 'No moderators';
 
   @override
@@ -831,9 +843,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get postModActionsDeleted => 'Post deleted';
-
-  @override
-  String get postModActionsError => 'Action failed, please try again later.';
 
   @override
   String get modActionsBanUser => 'Ban user';

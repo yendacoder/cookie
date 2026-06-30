@@ -17,6 +17,7 @@ import 'package:cookie/core/widgets/error_view.dart';
 import 'package:cookie/features/communities/providers/community_provider.dart';
 import 'package:cookie/features/communities/widgets/mod_banned_tab.dart';
 import 'package:cookie/features/communities/widgets/mod_moderators_tab.dart';
+import 'package:cookie/features/communities/widgets/mod_posts_tab.dart';
 import 'package:cookie/features/communities/widgets/mod_reports_tab.dart';
 import 'package:cookie/models/community.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +54,7 @@ class ModToolsScreen extends ConsumerWidget {
     final community = communityAsync.value!;
 
     return DefaultTabController(
-      length: 5,
+      length: 7,
       child: AdaptiveScaffold(
         appBar: AdaptiveAppBar(title: Text(l10n.modToolsScreenTitle)),
         body: Column(
@@ -65,6 +66,8 @@ class ModToolsScreen extends ConsumerWidget {
                 AdaptiveTab(label: l10n.modToolsTabReports),
                 AdaptiveTab(label: l10n.modToolsTabBanned),
                 AdaptiveTab(label: l10n.modToolsTabModerators),
+                AdaptiveTab(label: l10n.modToolsTabRemoved),
+                AdaptiveTab(label: l10n.modToolsTabLocked),
               ],
             ),
             Expanded(
@@ -80,6 +83,14 @@ class ModToolsScreen extends ConsumerWidget {
                   ModModeratorsTab(
                     community: community,
                     communityName: communityName,
+                  ),
+                  ModPostsTab(
+                    communityId: community.id,
+                    filter: .removed,
+                  ),
+                  ModPostsTab(
+                    communityId: community.id,
+                    filter: .locked,
                   ),
                 ],
               ),

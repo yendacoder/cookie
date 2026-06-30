@@ -1234,6 +1234,30 @@ abstract class AppLocalizations {
   /// **'Moderators'**
   String get modToolsTabModerators;
 
+  /// No description provided for @modToolsTabRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get modToolsTabRemoved;
+
+  /// No description provided for @modToolsTabLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get modToolsTabLocked;
+
+  /// No description provided for @modToolsRemovedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No removed posts'**
+  String get modToolsRemovedEmpty;
+
+  /// No description provided for @modToolsLockedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No locked posts'**
+  String get modToolsLockedEmpty;
+
   /// No description provided for @modToolsModeratorsEmpty.
   ///
   /// In en, this message translates to:
@@ -1467,12 +1491,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Post deleted'**
   String get postModActionsDeleted;
-
-  /// No description provided for @postModActionsError.
-  ///
-  /// In en, this message translates to:
-  /// **'Action failed, please try again later.'**
-  String get postModActionsError;
 
   /// No description provided for @modActionsBanUser.
   ///

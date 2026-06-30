@@ -643,12 +643,12 @@ class _PostMenuButton extends ConsumerWidget {
             value: _PostMenuAction.removeFromList,
             label: l10n.postMenuRemoveFromList,
           )
-        else
+        else if (!post.deleted)
           AdaptiveMenuItem(
             value: _PostMenuAction.saveToList,
             label: l10n.postMenuSaveToList,
           ),
-        if (isAuthor) ...[
+        if (isAuthor && !post.deleted) ...[
           AdaptiveMenuItem(
             value: _PostMenuAction.editPost,
             label: l10n.postMenuEdit,
@@ -659,7 +659,11 @@ class _PostMenuButton extends ConsumerWidget {
             isDestructive: true,
           ),
         ],
-        AdaptiveMenuItem(value: _PostMenuAction.hide, label: l10n.postMenuHide),
+        if (!post.deleted)
+          AdaptiveMenuItem(
+            value: _PostMenuAction.hide,
+            label: l10n.postMenuHide,
+          ),
         if (muteUser)
           AdaptiveMenuItem(
             value: _PostMenuAction.muteUser,
