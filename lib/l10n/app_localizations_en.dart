@@ -366,6 +366,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get userAdmin => 'Admin';
 
   @override
+  String get userSuspended => 'This account has been suspended';
+
+  @override
   String postsLabel(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

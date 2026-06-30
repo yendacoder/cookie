@@ -122,14 +122,28 @@ class _UserLoadedState extends ConsumerState<_UserLoaded> {
           slivers: [
             AdaptiveSliverAppBar(title: Text('@${widget.user.username}')),
             SliverToBoxAdapter(child: _UserHeader(user: widget.user)),
-            SliverToBoxAdapter(
-              child: _FilterChips(
-                filter: _filter,
-                onFilterChanged: (f) => setState(() => _filter = f),
+            if (widget.user.isBanned)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Text(
+                    context.l10n.userSuspended,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              )
+            else ...[
+              SliverToBoxAdapter(
+                child: _FilterChips(
+                  filter: _filter,
+                  onFilterChanged: (f) => setState(() => _filter = f),
+                ),
               ),
-            ),
-            _ActivitySliver(user: widget.user, filter: _filter),
-            const SliverToBoxAdapter(child: SizedBox(height: 32)),
+              _ActivitySliver(user: widget.user, filter: _filter),
+              const SliverToBoxAdapter(child: SizedBox(height: 32)),
+            ],
           ],
         ),
       ),

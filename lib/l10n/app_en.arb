@@ -278,6 +278,8 @@
   },
   "userAdmin": "Admin",
   "@userAdmin": {},
+  "userSuspended": "This account has been suspended",
+  "@userSuspended": {},
   "postsLabel": "{count, plural, =1{1 post} other{{count} posts}}",
   "@postsLabel": {
     "placeholders": {

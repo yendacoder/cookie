@@ -634,6 +634,12 @@ abstract class AppLocalizations {
   /// **'Admin'**
   String get userAdmin;
 
+  /// No description provided for @userSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has been suspended'**
+  String get userSuspended;
+
   /// No description provided for @postsLabel.
   ///
   /// In en, this message translates to:
