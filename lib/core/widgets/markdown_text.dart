@@ -1,3 +1,4 @@
+import 'package:cookie/features/posts/screens/post_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:go_router/go_router.dart';
@@ -116,6 +117,14 @@ class MarkdownText extends StatelessWidget {
                 // post
                 context.push(
                   '/c/${uri.pathSegments.first}/post/${uri.pathSegments.last}',
+                );
+              } else if (uri.pathSegments.length == 4) {
+                // comment
+                context.push(
+                  '/c/${uri.pathSegments.first}/post/${uri.pathSegments[2]}',
+                  extra: PostDetailArgs(
+                    highlightCommentId: uri.pathSegments.last,
+                  ),
                 );
               } else {
                 // God knows what
