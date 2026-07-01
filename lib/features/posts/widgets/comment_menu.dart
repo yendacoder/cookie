@@ -14,13 +14,14 @@ import 'package:cookie/models/comment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'comment_mod_actions_sheet.dart';
 import 'report_reason_dialog.dart';
 
 // ── Comment menu button ───────────────────────────────────────────────────────
 
-enum _CommentMenuAction { edit, delete, report, block, modActions }
+enum _CommentMenuAction { share, edit, delete, report, block, modActions }
 
 class CommentMenuButton extends ConsumerWidget {
   const CommentMenuButton({
@@ -88,11 +89,7 @@ class CommentMenuButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = ref.watch(authProvider).value;
-    if (currentUser == null) {
-      return const SizedBox.shrink();
-    }
-
-    final isOwn = currentUser.username == comment.username;
+    final isOwn = currentUser?.username == comment.username;
     final l10n = context.l10n;
 
     return AdaptiveMenuButton<_CommentMenuAction>(
@@ -107,35 +104,37 @@ class CommentMenuButton extends ConsumerWidget {
         tapTargetSize: .shrinkWrap,
       ),
       items: [
-        if (isOwn) ...[
+        if (!comment.deleted)
+          AdaptiveMenuItem(value: .share, label: l10n.share),
+        if (currentUser != null && isOwn) ...[
+          AdaptiveMenuItem(value: .edit, label: l10n.commentMenuEdit),
           AdaptiveMenuItem(
-            value: _CommentMenuAction.edit,
-            label: l10n.commentMenuEdit,
-          ),
-          AdaptiveMenuItem(
-            value: _CommentMenuAction.delete,
+            value: .delete,
             label: l10n.commentMenuDelete,
             isDestructive: true,
           ),
         ],
-        AdaptiveMenuItem(
-          value: _CommentMenuAction.report,
-          label: l10n.postMenuReport,
-        ),
-        if (!isOwn && comment.userId != null)
+        if (currentUser != null)
+          AdaptiveMenuItem(value: .report, label: l10n.postMenuReport),
+        if (currentUser != null && !isOwn && comment.userId != null)
           AdaptiveMenuItem(
-            value: _CommentMenuAction.block,
+            value: .block,
             label: l10n.postMenuBlock,
             isDestructive: true,
           ),
         if (isMod)
           AdaptiveMenuItem(
-            value: _CommentMenuAction.modActions,
+            value: .modActions,
             label: l10n.commentMenuModActions,
           ),
       ],
       onSelected: (action) async {
         switch (action) {
+          case .share:
+            final uri = Uri.parse(
+              'https://discuit.org/${comment.communityName}/post/${comment.postPublicId}/${comment.id}',
+            );
+            await SharePlus.instance.share(ShareParams(uri: uri));
           case .edit:
             showPlatformSheet<void>(
               context: context,
