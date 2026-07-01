@@ -30,12 +30,26 @@ class CommentsSectionSliver extends StatelessWidget {
     required this.detailState,
     required this.onRetry,
     this.onReplyTap,
+    this.highlightCommentId,
   });
 
   final Post post;
   final AsyncValue<Post> detailState;
   final VoidCallback onRetry;
   final ValueChanged<Comment>? onReplyTap;
+
+  /// When set, this comment is scrolled into view and highlighted on first load.
+  final String? highlightCommentId;
+
+  Widget _loadMoreButton(BuildContext context) => Padding(
+    padding: const EdgeInsets.all(16),
+    child: Center(
+      child: AdaptiveOutlinedButton(
+        onPressed: onRetry,
+        child: Text(context.l10n.postDetailLoadMoreComments),
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +58,7 @@ class CommentsSectionSliver extends StatelessWidget {
     final isLoading = detailState.isLoading;
     final hasError = detailState.hasError;
     final isMod = post.community?.userMod == true;
+    final hasMore = detailState.value?.commentsNext != null;
 
     return SliverMainAxisGroup(
       slivers: [
@@ -67,24 +82,38 @@ class CommentsSectionSliver extends StatelessWidget {
               ),
             ),
           )
+        else if (highlightCommentId != null)
+          // Column inside SliverToBoxAdapter lays out ALL items eagerly so that
+          // Scrollable.ensureVisible can find the target's position even when it
+          // is below the initial viewport. SliverList (even non-lazy) defers
+          // layout to items outside the viewport, which breaks ensureVisible.
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                for (var i = 0; i < comments.length; i++) ...[
+                  if (i > 0) const AdaptiveDivider(height: 1),
+                  _CommentCard(
+                    comment: comments[i],
+                    isOp: comments[i].author?.id == post.author?.id,
+                    isMod: isMod,
+                    postPublicId: post.publicId,
+                    lastPostVisit: post.lastVisitAt,
+                    onReply: onReplyTap != null
+                        ? () => onReplyTap!(comments[i])
+                        : null,
+                    isHighlightTarget: comments[i].id == highlightCommentId,
+                  ),
+                ],
+                if (hasMore) _loadMoreButton(context),
+              ],
+            ),
+          )
         else
           SliverList.separated(
-            itemCount:
-                comments.length +
-                (detailState.value?.commentsNext != null ? 1 : 0),
+            itemCount: comments.length + (hasMore ? 1 : 0),
             separatorBuilder: (_, _) => const AdaptiveDivider(height: 1),
             itemBuilder: (context, index) {
-              if (index == comments.length) {
-                return Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Center(
-                    child: AdaptiveOutlinedButton(
-                      onPressed: onRetry,
-                      child: Text(context.l10n.postDetailLoadMoreComments),
-                    ),
-                  ),
-                );
-              }
+              if (index == comments.length) return _loadMoreButton(context);
               final comment = comments[index];
               return _CommentCard(
                 comment: comment,
@@ -119,6 +148,7 @@ class _CommentCard extends ConsumerStatefulWidget {
     required this.postPublicId,
     required this.lastPostVisit,
     this.onReply,
+    this.isHighlightTarget = false,
   });
 
   final Comment comment;
@@ -127,13 +157,31 @@ class _CommentCard extends ConsumerStatefulWidget {
   final String postPublicId;
   final DateTime? lastPostVisit;
   final VoidCallback? onReply;
+  final bool isHighlightTarget;
 
   @override
   ConsumerState<_CommentCard> createState() => _CommentCardState();
 }
 
-class _CommentCardState extends ConsumerState<_CommentCard> {
+class _CommentCardState extends ConsumerState<_CommentCard>
+    with SingleTickerProviderStateMixin {
   late bool _revealed = widget.comment.isAuthorMuted != true;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isHighlightTarget) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Scrollable.ensureVisible(
+          context,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOut,
+          alignment: 0.1,
+        );
+      });
+    }
+  }
 
   Widget _buildCommentContent(BuildContext context) {
     final mutedColor = Theme.of(context).colorScheme.onSurfaceVariant;
@@ -279,7 +327,7 @@ class _CommentCardState extends ConsumerState<_CommentCard> {
     ).textTheme.labelSmall?.copyWith(color: muted);
     final isMutedHidden = comment.isAuthorMuted == true && !_revealed;
 
-    return Padding(
+    final body = Padding(
       padding: EdgeInsets.only(left: indent + 6, right: 6),
       child: IntrinsicHeight(
         child: Row(
@@ -387,6 +435,14 @@ class _CommentCardState extends ConsumerState<_CommentCard> {
         ),
       ),
     );
+
+    if (widget.isHighlightTarget) {
+      return ColoredBox(
+        color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+        child: body,
+      );
+    }
+    return body;
   }
 }
 

@@ -13,6 +13,7 @@ import 'package:cookie/core/widgets/error_view.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
 import 'package:cookie/features/auth/widgets/auth_gate.dart';
 import 'package:cookie/features/notifications/providers/notifications_provider.dart';
+import 'package:cookie/features/posts/screens/post_detail_screen.dart';
 import 'package:cookie/l10n/app_localizations.dart';
 import 'package:cookie/models/notification.dart';
 import 'package:flutter/material.dart';
@@ -282,6 +283,11 @@ class _NotificationTile extends StatelessWidget {
     switch (notification.type) {
       case 'new_comment':
       case 'comment_reply':
+        _pushPost(
+          context,
+          notif['post'] as Map<String, dynamic>?,
+          highlightCommentId: notif['commentId'] as String?,
+        );
       case 'deleted_post':
         _pushPost(context, notif['post'] as Map<String, dynamic>?);
       case 'new_votes':
@@ -302,11 +308,20 @@ class _NotificationTile extends StatelessWidget {
     }
   }
 
-  void _pushPost(BuildContext context, Map<String, dynamic>? post) {
+  void _pushPost(
+    BuildContext context,
+    Map<String, dynamic>? post, {
+    String? highlightCommentId,
+  }) {
     final communityName = post?['communityName'] as String?;
     final publicId = post?['publicId'] as String?;
     if (communityName != null && publicId != null) {
-      context.push('/c/$communityName/post/$publicId');
+      context.push(
+        '/c/$communityName/post/$publicId',
+        extra: highlightCommentId != null
+            ? PostDetailArgs(highlightCommentId: highlightCommentId)
+            : null,
+      );
     }
   }
 

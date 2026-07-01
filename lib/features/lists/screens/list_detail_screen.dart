@@ -15,6 +15,7 @@ import 'package:cookie/core/widgets/markdown_text.dart';
 import 'package:cookie/features/lists/providers/list_items_provider.dart';
 import 'package:cookie/features/lists/providers/user_lists_provider.dart';
 import 'package:cookie/features/lists/widgets/list_form_sheet.dart';
+import 'package:cookie/features/posts/screens/post_detail_screen.dart';
 import 'package:cookie/features/posts/widgets/post_card.dart';
 import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
 import 'package:cookie/models/comment.dart';
@@ -249,7 +250,7 @@ class _ItemTile extends ConsumerWidget {
         checkMutedUser: false,
         onTap: () => context.push(
           '/c/${post.communityName}/post/${post.publicId}',
-          extra: (post: post, heroTagScope: scope),
+          extra: PostDetailArgs(post: post, heroTagScope: scope),
         ),
         onRemoveFromList: () =>
             ref.read(listItemsProvider(listId).notifier).removeItem(item.id),

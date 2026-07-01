@@ -31,6 +31,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// Navigation argument bag for the post-detail route.
+class PostDetailArgs {
+  const PostDetailArgs({this.post, this.heroTagScope, this.highlightCommentId});
+
+  /// Pre-loaded post for the hero transition.
+  final Post? post;
+
+  /// Must match the heroTagScope of the PostCard that triggered navigation.
+  final HeroTagScope? heroTagScope;
+
+  /// When set, the comment with this ID is scrolled into view and highlighted.
+  final String? highlightCommentId;
+}
+
 class PostDetailScreen extends ConsumerStatefulWidget {
   const PostDetailScreen({
     super.key,
@@ -38,6 +52,7 @@ class PostDetailScreen extends ConsumerStatefulWidget {
     required this.postId,
     this.initialPost,
     this.heroTagScope = const HeroTagScope(.unknown),
+    this.highlightCommentId,
   });
 
   final String communityName;
@@ -49,6 +64,9 @@ class PostDetailScreen extends ConsumerStatefulWidget {
 
   /// Must match the heroTagScope of the PostCard that triggered navigation.
   final HeroTagScope heroTagScope;
+
+  /// When set, scrolls to and highlights this comment ID after comments load.
+  final String? highlightCommentId;
 
   @override
   ConsumerState<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -155,6 +173,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                             _focusNode.requestFocus();
                           }
                         : null,
+                    highlightCommentId: widget.highlightCommentId,
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 32)),
                 ],

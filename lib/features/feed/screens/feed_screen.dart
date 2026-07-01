@@ -12,6 +12,7 @@ import 'package:cookie/features/auth/widgets/auth_gate.dart';
 import 'package:cookie/features/feed/models/feed_type.dart';
 import 'package:cookie/features/feed/models/post_feed_state.dart';
 import 'package:cookie/features/feed/providers/feed_provider.dart';
+import 'package:cookie/features/posts/screens/post_detail_screen.dart';
 import 'package:cookie/features/posts/widgets/post_card.dart';
 import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
 import 'package:cookie/features/shell/providers/nav_bar_visibility_provider.dart';
@@ -169,7 +170,7 @@ class _FeedView extends ConsumerWidget {
                       heroTagScope: scope,
                       onTap: () => context.push(
                         '/c/${post.communityName}/post/${post.publicId}',
-                        extra: (post: post, heroTagScope: scope),
+                        extra: PostDetailArgs(post: post, heroTagScope: scope),
                       ),
                     );
                   },

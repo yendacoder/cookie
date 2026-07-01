@@ -18,6 +18,7 @@ import 'package:cookie/features/communities/providers/community_mutes_provider.d
 import 'package:cookie/features/communities/providers/community_provider.dart';
 import 'package:cookie/features/feed/models/post_feed_state.dart'
     show PostFeedState, PostSort;
+import 'package:cookie/features/posts/screens/post_detail_screen.dart';
 import 'package:cookie/features/posts/widgets/post_card.dart';
 import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
 import 'package:cookie/models/community.dart';
@@ -485,7 +486,7 @@ class _FeedSliver extends ConsumerWidget {
                 checkMutedCommunity: false,
                 onTap: () => context.push(
                   '/c/${post.communityName}/post/${post.publicId}',
-                  extra: (post: post, heroTagScope: scope),
+                  extra: PostDetailArgs(post: post, heroTagScope: scope),
                 ),
               );
             },

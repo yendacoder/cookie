@@ -18,6 +18,7 @@ import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'package:cookie/core/widgets/avatar.dart';
 import 'package:cookie/core/widgets/markdown_text.dart';
 import 'package:cookie/features/communities/providers/community_provider.dart';
+import 'package:cookie/features/posts/screens/post_detail_screen.dart';
 import 'package:cookie/models/community.dart';
 import 'package:cookie/models/discuit_image.dart';
 import 'package:cookie/models/post.dart';
@@ -273,7 +274,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
         context.pop();
         context.push(
           '/c/${newPost.communityName}/post/${newPost.publicId}',
-          extra: (post: newPost, heroTagScope: HeroTagScope(.unknown)),
+          extra: PostDetailArgs(post: newPost, heroTagScope: HeroTagScope(.unknown)),
         );
       }
     } catch (e) {

@@ -4,6 +4,7 @@ import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
 import 'package:cookie/core/widgets/error_view.dart';
 import 'package:cookie/features/communities/providers/community_mod_posts_provider.dart';
+import 'package:cookie/features/posts/screens/post_detail_screen.dart';
 import 'package:cookie/features/posts/widgets/post_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -94,7 +95,7 @@ class _ModPostsTabState extends ConsumerState<ModPostsTab> {
             showCommunity: false,
             onTap: () => context.push(
               '/c/${post.communityName}/post/${post.publicId}',
-              extra: (post: post, heroTagScope: scope),
+              extra: PostDetailArgs(post: post, heroTagScope: scope),
             ),
           );
         },

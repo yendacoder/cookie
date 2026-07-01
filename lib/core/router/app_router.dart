@@ -140,13 +140,13 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/c/:communityName/post/:postId',
         builder: (context, state) {
-          final extra =
-              state.extra as ({Post post, HeroTagScope heroTagScope})?;
+          final args = state.extra as PostDetailArgs?;
           return PostDetailScreen(
             communityName: state.pathParameters['communityName']!,
             postId: state.pathParameters['postId']!,
-            initialPost: extra?.post,
-            heroTagScope: extra?.heroTagScope ?? HeroTagScope(.unknown),
+            initialPost: args?.post,
+            heroTagScope: args?.heroTagScope ?? HeroTagScope(.unknown),
+            highlightCommentId: args?.highlightCommentId,
           );
         },
       ),

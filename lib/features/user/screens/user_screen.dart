@@ -15,6 +15,7 @@ import 'package:cookie/core/widgets/adaptive/adaptive_segmented_button.dart';
 import 'package:cookie/core/widgets/error_view.dart';
 import 'package:cookie/core/widgets/markdown_text.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/posts/screens/post_detail_screen.dart';
 import 'package:cookie/features/posts/widgets/post_card.dart';
 import 'package:cookie/features/posts/widgets/post_card_skeleton.dart';
 import 'package:cookie/features/shell/providers/nav_bar_visibility_provider.dart';
@@ -437,7 +438,7 @@ class _ActivitySliver extends ConsumerWidget {
                     checkMutedUser: false,
                     onTap: () => context.push(
                       '/c/${post.communityName}/post/${post.publicId}',
-                      extra: (post: post, heroTagScope: scope),
+                      extra: PostDetailArgs(post: post, heroTagScope: scope),
                     ),
                   ),
                   UserFeedComment(:final comment) => _UserCommentCard(
