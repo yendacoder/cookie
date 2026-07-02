@@ -289,9 +289,12 @@ class _ContentTextSizeRow extends StatelessWidget {
     final l10n = context.l10n;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
+      child: Column(
+        mainAxisSize: .min,
+        crossAxisAlignment: .stretch,
         children: [
-          Expanded(child: Text(label)),
+          Text(label),
+          SizedBox(height: 8),
           AdaptiveSegmentedButton<ContentTextSize>(
             showSelectedIcon: false,
             emptySelectionAllowed: false,
