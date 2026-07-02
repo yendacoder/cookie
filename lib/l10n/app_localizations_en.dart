@@ -920,6 +920,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get textScaleSetting => 'Text size';
 
   @override
+  String get contentTextSizeSectionTitle => 'Content text size';
+
+  @override
+  String get postListTextSizeLabel => 'Post list';
+
+  @override
+  String get postBodyTextSizeLabel => 'Post body';
+
+  @override
+  String get commentTextSizeLabel => 'Comments';
+
+  @override
+  String get textSizeSmall => 'Small';
+
+  @override
+  String get textSizeMedium => 'Medium';
+
+  @override
+  String get textSizeLarge => 'Large';
+
+  @override
   String get navigationTabsSetting => 'Navigation tabs';
 
   @override

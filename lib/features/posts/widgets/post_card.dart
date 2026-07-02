@@ -22,6 +22,7 @@ import 'package:cookie/features/communities/providers/muted_communities_list_pro
 import 'package:cookie/features/posts/providers/hidden_posts_provider.dart';
 import 'package:cookie/features/posts/providers/read_new_comments_notifier.dart';
 import 'package:cookie/features/posts/screens/image_viewer_screen.dart';
+import 'package:cookie/features/shell/providers/content_text_sizes_provider.dart';
 import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
 import 'package:cookie/features/user/providers/user_mutes_provider.dart';
 import 'package:cookie/features/user/widgets/block_user_dialog.dart';
@@ -375,20 +376,21 @@ class _LinkContent extends StatelessWidget {
   }
 }
 
-class _TextContent extends StatelessWidget {
+class _TextContent extends ConsumerWidget {
   const _TextContent({required this.body});
 
   final String body;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final size = ref.watch(contentTextSizesProvider.select((s) => s.postCard));
     return Padding(
       padding: const EdgeInsets.only(top: 6),
       child: Text(
         markdownToPlainText(body),
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
+        style: context
+            .contentBodyStyle(size)
+            ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
         maxLines: 6,
         overflow: TextOverflow.ellipsis,
       ),
@@ -425,7 +427,8 @@ class _PostFooter extends ConsumerWidget {
 
     final colorScheme = Theme.of(context).colorScheme;
     final muted = colorScheme.onSurfaceVariant;
-    final base = Theme.of(context).textTheme.labelSmall?.copyWith(color: muted);
+    final size = ref.watch(contentTextSizesProvider.select((s) => s.postCard));
+    final base = context.contentLabelStyle(size)?.copyWith(color: muted);
 
     final votedUp = userVoted == true && userVotedUp == true;
     final votedDown = userVoted == true && userVotedUp == false;

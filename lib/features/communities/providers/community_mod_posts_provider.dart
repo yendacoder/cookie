@@ -87,8 +87,9 @@ class CommunityModPosts extends _$CommunityModPosts {
 
     try {
       final next = await _loadPage(loadedPage + 1);
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.page == loadedPage) {
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.page == loadedPage) {
         state = AsyncData(
           CommunityModPostsState(
             posts: [...value.posts, ...next.posts],
@@ -98,8 +99,9 @@ class CommunityModPosts extends _$CommunityModPosts {
         );
       }
     } catch (e) {
-      if (state case AsyncData(:final value)
-          when value.isLoadingMore && value.page == loadedPage) {
+      if (state case AsyncData(
+        :final value,
+      ) when value.isLoadingMore && value.page == loadedPage) {
         state = AsyncData(
           CommunityModPostsState(
             posts: value.posts,

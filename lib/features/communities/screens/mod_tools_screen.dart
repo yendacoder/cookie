@@ -84,14 +84,8 @@ class ModToolsScreen extends ConsumerWidget {
                     community: community,
                     communityName: communityName,
                   ),
-                  ModPostsTab(
-                    communityId: community.id,
-                    filter: .removed,
-                  ),
-                  ModPostsTab(
-                    communityId: community.id,
-                    filter: .locked,
-                  ),
+                  ModPostsTab(communityId: community.id, filter: .removed),
+                  ModPostsTab(communityId: community.id, filter: .locked),
                 ],
               ),
             ),

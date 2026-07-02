@@ -71,11 +71,17 @@ void main() {
   });
 
   group('CommunityModPosts — initial load', () {
-    final provider = communityModPostsProvider('comm-1', ModPostsFilter.removed);
+    final provider = communityModPostsProvider(
+      'comm-1',
+      ModPostsFilter.removed,
+    );
 
     test('returns posts and total from first page', () async {
       when(
-        () => mockDio.get('posts', queryParameters: any(named: 'queryParameters')),
+        () => mockDio.get(
+          'posts',
+          queryParameters: any(named: 'queryParameters'),
+        ),
       ).thenAnswer((_) async => _page(['p1', 'p2'], noPosts: 5));
 
       final container = _container(mockDio);
@@ -89,7 +95,10 @@ void main() {
 
     test('hasMore is false when posts cover the total', () async {
       when(
-        () => mockDio.get('posts', queryParameters: any(named: 'queryParameters')),
+        () => mockDio.get(
+          'posts',
+          queryParameters: any(named: 'queryParameters'),
+        ),
       ).thenAnswer((_) async => _page(['p1', 'p2'], noPosts: 2));
 
       final container = _container(mockDio);
@@ -112,12 +121,14 @@ void main() {
 
       await container.read(provider.future);
 
-      final captured = verify(
-        () => mockDio.get(
-          'posts',
-          queryParameters: captureAny(named: 'queryParameters'),
-        ),
-      ).captured.single as Map<String, dynamic>;
+      final captured =
+          verify(
+                () => mockDio.get(
+                  'posts',
+                  queryParameters: captureAny(named: 'queryParameters'),
+                ),
+              ).captured.single
+              as Map<String, dynamic>;
       expect(captured['filter'], 'deleted');
       expect(captured['communityId'], 'comm-1');
     });
@@ -129,7 +140,10 @@ void main() {
     test('appends second page posts', () async {
       var callCount = 0;
       when(
-        () => mockDio.get('posts', queryParameters: any(named: 'queryParameters')),
+        () => mockDio.get(
+          'posts',
+          queryParameters: any(named: 'queryParameters'),
+        ),
       ).thenAnswer((_) async {
         callCount++;
         return callCount == 1
@@ -151,7 +165,10 @@ void main() {
 
     test('loadMore is a no-op when hasMore is false', () async {
       when(
-        () => mockDio.get('posts', queryParameters: any(named: 'queryParameters')),
+        () => mockDio.get(
+          'posts',
+          queryParameters: any(named: 'queryParameters'),
+        ),
       ).thenAnswer((_) async => _page(['p1'], noPosts: 1));
 
       final container = _container(mockDio);
@@ -161,14 +178,20 @@ void main() {
       await container.read(provider.notifier).loadMore();
 
       verify(
-        () => mockDio.get('posts', queryParameters: any(named: 'queryParameters')),
+        () => mockDio.get(
+          'posts',
+          queryParameters: any(named: 'queryParameters'),
+        ),
       ).called(1);
     });
 
     test('sets loadMoreError on failure and keeps existing posts', () async {
       var callCount = 0;
       when(
-        () => mockDio.get('posts', queryParameters: any(named: 'queryParameters')),
+        () => mockDio.get(
+          'posts',
+          queryParameters: any(named: 'queryParameters'),
+        ),
       ).thenAnswer((_) async {
         callCount++;
         if (callCount == 1) return _page(['p1'], noPosts: 5);

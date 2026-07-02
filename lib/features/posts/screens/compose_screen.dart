@@ -274,7 +274,10 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
         context.pop();
         context.push(
           '/c/${newPost.communityName}/post/${newPost.publicId}',
-          extra: PostDetailArgs(post: newPost, heroTagScope: HeroTagScope(.unknown)),
+          extra: PostDetailArgs(
+            post: newPost,
+            heroTagScope: HeroTagScope(.unknown),
+          ),
         );
       }
     } catch (e) {

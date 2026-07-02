@@ -10,6 +10,7 @@ import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
 import 'package:cookie/core/widgets/avatar.dart';
 import 'package:cookie/core/widgets/markdown_text.dart';
 import 'package:cookie/core/widgets/youtube_content.dart';
+import 'package:cookie/features/shell/providers/content_text_sizes_provider.dart';
 import 'package:cookie/features/voting/providers/voting_provider.dart';
 import 'package:cookie/models/discuit_image.dart';
 import 'package:cookie/models/post.dart';
@@ -254,14 +255,21 @@ class _DetailLink extends StatelessWidget {
   }
 }
 
-class _DetailText extends StatelessWidget {
+class _DetailText extends ConsumerWidget {
   const _DetailText({required this.body});
 
   final String body;
 
   @override
-  Widget build(BuildContext context) {
-    return MarkdownText(body, selectable: true);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final size = ref.watch(
+      contentTextSizesProvider.select((s) => s.postDetail),
+    );
+    return MarkdownText(
+      body,
+      selectable: true,
+      baseStyle: context.contentBodyStyle(size),
+    );
   }
 }
 
@@ -282,9 +290,10 @@ class _PostDetailFooter extends ConsumerWidget {
 
     final colorScheme = Theme.of(context).colorScheme;
     final muted = colorScheme.onSurfaceVariant;
-    final style = Theme.of(
-      context,
-    ).textTheme.labelMedium?.copyWith(color: muted);
+    final size = ref.watch(
+      contentTextSizesProvider.select((s) => s.postDetail),
+    );
+    final style = context.contentLabelStyle(size)?.copyWith(color: muted);
 
     final votedUp = userVoted == true && userVotedUp == true;
     final votedDown = userVoted == true && userVotedUp == false;

@@ -10,6 +10,7 @@ import 'package:cookie/core/widgets/comment_gif.dart';
 import 'package:cookie/core/widgets/error_view.dart';
 import 'package:cookie/core/widgets/markdown_text.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
+import 'package:cookie/features/shell/providers/content_text_sizes_provider.dart';
 import 'package:cookie/features/voting/providers/voting_provider.dart';
 import 'package:cookie/models/comment.dart';
 import 'package:cookie/models/discuit_image.dart';
@@ -183,7 +184,7 @@ class _CommentCardState extends ConsumerState<_CommentCard>
     }
   }
 
-  Widget _buildCommentContent(BuildContext context) {
+  Widget _buildCommentContent(BuildContext context, TextStyle? bodyStyle) {
     final mutedColor = Theme.of(context).colorScheme.onSurfaceVariant;
     final padding = const EdgeInsets.fromLTRB(8, 12, 8, 6);
     if (widget.comment.isAuthorMuted == true && !_revealed) {
@@ -194,7 +195,7 @@ class _CommentCardState extends ConsumerState<_CommentCard>
           padding: padding,
           child: Text(
             context.l10n.commentMutedHiddenText,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: bodyStyle?.copyWith(
               color: mutedColor,
               fontStyle: FontStyle.italic,
             ),
@@ -208,7 +209,7 @@ class _CommentCardState extends ConsumerState<_CommentCard>
         padding: padding,
         child: Text(
           context.l10n.postDetailCommentDeleted,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          style: bodyStyle?.copyWith(
             color: mutedColor,
             fontStyle: FontStyle.italic,
           ),
@@ -222,10 +223,7 @@ class _CommentCardState extends ConsumerState<_CommentCard>
       child: Column(
         crossAxisAlignment: .stretch,
         children: [
-          MarkdownText(
-            widget.comment.body,
-            baseStyle: Theme.of(context).textTheme.bodySmall,
-          ),
+          MarkdownText(widget.comment.body, baseStyle: bodyStyle),
           if (gifUri != null) CommentGif(gifUri: gifUri),
         ],
       ),
@@ -322,9 +320,13 @@ class _CommentCardState extends ConsumerState<_CommentCard>
     final lineColor = _depthLineColors[comment.depth % _depthLineColors.length];
     final colorScheme = Theme.of(context).colorScheme;
     final muted = colorScheme.onSurfaceVariant;
-    final labelStyle = Theme.of(
-      context,
-    ).textTheme.labelSmall?.copyWith(color: muted);
+    final commentTextSize = ref.watch(
+      contentTextSizesProvider.select((s) => s.comment),
+    );
+    final labelStyle = context
+        .contentLabelStyle(commentTextSize)
+        ?.copyWith(color: muted);
+    final bodyStyle = context.contentBodyStyle(commentTextSize);
     final isMutedHidden = comment.isAuthorMuted == true && !_revealed;
 
     final body = Padding(
@@ -425,7 +427,7 @@ class _CommentCardState extends ConsumerState<_CommentCard>
                       ],
                     ),
                   ),
-                  _buildCommentContent(context),
+                  _buildCommentContent(context, bodyStyle),
                   if (!isMutedHidden) _buildCommentFooter(context, labelStyle),
                   SizedBox(height: 4),
                 ],

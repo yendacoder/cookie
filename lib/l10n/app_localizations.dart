@@ -1630,6 +1630,48 @@ abstract class AppLocalizations {
   /// **'Text size'**
   String get textScaleSetting;
 
+  /// No description provided for @contentTextSizeSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Content text size'**
+  String get contentTextSizeSectionTitle;
+
+  /// No description provided for @postListTextSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Post list'**
+  String get postListTextSizeLabel;
+
+  /// No description provided for @postBodyTextSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Post body'**
+  String get postBodyTextSizeLabel;
+
+  /// No description provided for @commentTextSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get commentTextSizeLabel;
+
+  /// No description provided for @textSizeSmall.
+  ///
+  /// In en, this message translates to:
+  /// **'Small'**
+  String get textSizeSmall;
+
+  /// No description provided for @textSizeMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get textSizeMedium;
+
+  /// No description provided for @textSizeLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Large'**
+  String get textSizeLarge;
+
   /// No description provided for @navigationTabsSetting.
   ///
   /// In en, this message translates to:

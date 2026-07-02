@@ -9,6 +9,8 @@ import 'package:cookie/core/widgets/adaptive/adaptive_segmented_button.dart';
 import 'package:cookie/features/auth/providers/auth_provider.dart';
 import 'package:cookie/features/feed/models/feed_type.dart';
 import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart';
+import 'package:cookie/features/shell/models/content_text_size.dart';
+import 'package:cookie/features/shell/providers/content_text_sizes_provider.dart';
 import 'package:cookie/features/shell/providers/text_scale_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textScale = ref.watch(textScaleProvider);
+    final contentTextSizes = ref.watch(contentTextSizesProvider);
     final visibleFeedTypes = ref.watch(visibleFeedTypesProvider);
     final textTheme = Theme.of(context).textTheme;
 
@@ -73,6 +76,32 @@ class SettingsScreen extends ConsumerWidget {
                 ref.read(textScaleProvider.notifier).set(selected.first),
           ),
           const SizedBox(height: 32),
+          const AdaptiveDivider(height: 1),
+          const SizedBox(height: 24),
+          Text(
+            context.l10n.contentTextSizeSectionTitle,
+            style: textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8),
+          _ContentTextSizeRow(
+            label: context.l10n.postListTextSizeLabel,
+            value: contentTextSizes.postCard,
+            onChanged: (size) =>
+                ref.read(contentTextSizesProvider.notifier).setPostCard(size),
+          ),
+          _ContentTextSizeRow(
+            label: context.l10n.postBodyTextSizeLabel,
+            value: contentTextSizes.postDetail,
+            onChanged: (size) =>
+                ref.read(contentTextSizesProvider.notifier).setPostDetail(size),
+          ),
+          _ContentTextSizeRow(
+            label: context.l10n.commentTextSizeLabel,
+            value: contentTextSizes.comment,
+            onChanged: (size) =>
+                ref.read(contentTextSizesProvider.notifier).setComment(size),
+          ),
+          const SizedBox(height: 24),
           const AdaptiveDivider(height: 1),
           const SizedBox(height: 24),
           Text(
@@ -240,6 +269,42 @@ class _DeleteAccountDialogState extends ConsumerState<_DeleteAccountDialog> {
               : Text(l10n.deleteButton),
         ),
       ],
+    );
+  }
+}
+
+class _ContentTextSizeRow extends StatelessWidget {
+  const _ContentTextSizeRow({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String label;
+  final ContentTextSize value;
+  final ValueChanged<ContentTextSize> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Expanded(child: Text(label)),
+          AdaptiveSegmentedButton<ContentTextSize>(
+            showSelectedIcon: false,
+            emptySelectionAllowed: false,
+            segments: [
+              AdaptiveButtonSegment(value: .small, label: l10n.textSizeSmall),
+              AdaptiveButtonSegment(value: .medium, label: l10n.textSizeMedium),
+              AdaptiveButtonSegment(value: .large, label: l10n.textSizeLarge),
+            ],
+            selected: {value},
+            onSelectionChanged: (selected) => onChanged(selected.first),
+          ),
+        ],
+      ),
     );
   }
 }

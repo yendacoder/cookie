@@ -1,5 +1,7 @@
 import 'package:cookie/features/feed/models/feed_type.dart';
 import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart';
+import 'package:cookie/features/shell/models/content_text_size.dart';
+import 'package:cookie/features/shell/providers/content_text_sizes_provider.dart';
 import 'package:cookie/features/shell/providers/text_scale_provider.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +44,31 @@ Future<void> bootstrap({List<Override> additionalOverrides = const []}) async {
         };
   if (visibleFeedTypes.isEmpty) visibleFeedTypes.addAll(FeedType.values);
 
+  ContentTextSize readContentTextSize(String? name, ContentTextSize fallback) =>
+      ContentTextSize.values.where((s) => s.name == name).firstOrNull ??
+      fallback;
+
+  final contentTextSizes = (
+    postCard: readContentTextSize(
+      await SharedPreferencesAsync().getString(
+        ContentTextSizesNotifier.kPostCardPrefsName,
+      ),
+      ContentTextSize.small,
+    ),
+    postDetail: readContentTextSize(
+      await SharedPreferencesAsync().getString(
+        ContentTextSizesNotifier.kPostDetailPrefsName,
+      ),
+      ContentTextSize.medium,
+    ),
+    comment: readContentTextSize(
+      await SharedPreferencesAsync().getString(
+        ContentTextSizesNotifier.kCommentPrefsName,
+      ),
+      ContentTextSize.small,
+    ),
+  );
+
   final packageInfo = await PackageInfo.fromPlatform();
 
   runApp(
@@ -55,6 +82,9 @@ Future<void> bootstrap({List<Override> additionalOverrides = const []}) async {
         ),
         visibleFeedTypesProvider.overrideWith(
           () => _SavedVisibleFeedTypes(visibleFeedTypes),
+        ),
+        contentTextSizesProvider.overrideWith(
+          () => _SavedContentTextSizes(contentTextSizes),
         ),
         ...additionalOverrides,
       ],
@@ -96,4 +126,13 @@ class _SavedVisibleFeedTypes extends VisibleFeedTypes {
 
   @override
   Set<FeedType> build() => _saved;
+}
+
+class _SavedContentTextSizes extends ContentTextSizesNotifier {
+  _SavedContentTextSizes(this._saved);
+
+  final ContentTextSizes _saved;
+
+  @override
+  ContentTextSizes build() => _saved;
 }

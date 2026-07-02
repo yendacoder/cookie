@@ -50,7 +50,7 @@ final class CommunityModPostsProvider
   }
 }
 
-String _$communityModPostsHash() => r'8ee5c64b1cdf062d2a698875e543e7bb0e9d57de';
+String _$communityModPostsHash() => r'8d52ba9d3a6ed7c7040d30d16f70f8520ba26b37';
 
 final class CommunityModPostsFamily extends $Family
     with

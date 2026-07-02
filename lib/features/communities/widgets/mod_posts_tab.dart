@@ -44,8 +44,10 @@ class _ModPostsTabState extends ConsumerState<ModPostsTab> {
     if (_scrollController.position.extentAfter < 400) {
       ref
           .read(
-            communityModPostsProvider(widget.communityId, widget.filter)
-                .notifier,
+            communityModPostsProvider(
+              widget.communityId,
+              widget.filter,
+            ).notifier,
           )
           .loadMore();
     }
@@ -148,9 +150,7 @@ class _ModPostsFooter extends ConsumerWidget {
             ),
             AdaptiveTextButton(
               onPressed: () => ref
-                  .read(
-                    communityModPostsProvider(communityId, filter).notifier,
-                  )
+                  .read(communityModPostsProvider(communityId, filter).notifier)
                   .loadMore(),
               child: Text(context.l10n.retryButton),
             ),
