@@ -41,6 +41,20 @@ class MarkdownText extends StatelessWidget {
   /// Defaults to [TextTheme.bodyMedium] when null.
   final TextStyle? baseStyle;
 
+  /// Returns true if the uri should be assumed to be relative to the
+  /// Discuit domain so we try to open it in the app if the number
+  /// of path segments match to a post, a community, or a comment reference.
+  bool _isRelativeUri(Uri uri) {
+    // has an explicit scheme (https://) -> absolute
+    if (uri.hasScheme) return false;
+
+    // no scheme, but looks like "domain.tld" or "www.domain.tld[/path]"
+    final domainLike = RegExp(
+      r'^(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+(:\d+)?(/[^\s]*)?$',
+    );
+    return !domainLike.hasMatch(uri.toString());
+  }
+  
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -102,7 +116,7 @@ class MarkdownText extends StatelessWidget {
         } else {
           Uri? uri = Uri.tryParse(href);
           if (uri != null) {
-            if (!uri.isAbsolute ||
+            if (_isRelativeUri(uri) ||
                 uri.host.endsWith('discuit.org') ||
                 uri.host.endsWith('discuit.net')) {
               if (uri.pathSegments.length == 1) {
@@ -128,7 +142,7 @@ class MarkdownText extends StatelessWidget {
                 );
               } else {
                 // God knows what
-                if (!uri.isAbsolute) {
+                if (_isRelativeUri(uri)) {
                   uri = Uri.tryParse('https://discuit.org/$href');
                 }
                 if (uri != null) {
