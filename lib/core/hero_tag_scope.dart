@@ -16,7 +16,7 @@ class HeroTagScope {
 
   @override
   String toString() {
-    if (id == null) return type.name;
+    if (id == null) return type.toString();
     return '${type.name}-$id';
   }
 }

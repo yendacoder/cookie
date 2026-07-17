@@ -7,18 +7,18 @@ enum FeedType {
   home(
     apiFeedParam: null,
     sortPrefsKey: 'home_feed_sort',
-    heroTagScope: .home,
+    heroTagScope: HeroTagScope(.home),
     requiresAuth: false,
   ),
   subscriptions(
     apiFeedParam: 'home',
     sortPrefsKey: 'subscriptions_feed_sort',
-    heroTagScope: .subscriptions,
+    heroTagScope: HeroTagScope(.subscriptions),
   ),
   moderating(
     apiFeedParam: 'moderating',
     sortPrefsKey: 'moderating_feed_sort',
-    heroTagScope: .moderating,
+    heroTagScope: HeroTagScope(.moderating),
   );
 
   const FeedType({
@@ -34,7 +34,7 @@ enum FeedType {
   /// SharedPreferences key used to persist the selected [PostSort].
   final String sortPrefsKey;
 
-  final HeroTagScopeType heroTagScope;
+  final HeroTagScope heroTagScope;
 
   /// Whether the user must be signed in to view this feed.
   final bool requiresAuth;

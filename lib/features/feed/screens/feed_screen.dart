@@ -1,6 +1,5 @@
 import 'package:cookie/core/consts.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
-import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_filter_chip.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_progress_indicator.dart';
@@ -164,13 +163,15 @@ class _FeedView extends ConsumerWidget {
                       return _FeedFooter(type: type, feed: feed, ref: ref);
                     }
                     final post = feed.posts[index];
-                    final scope = HeroTagScope(type.heroTagScope);
                     return PostCard(
                       post: post,
-                      heroTagScope: scope,
+                      heroTagScope: type.heroTagScope,
                       onTap: () => context.push(
                         '/c/${post.communityName}/post/${post.publicId}',
-                        extra: PostDetailArgs(post: post, heroTagScope: scope),
+                        extra: PostDetailArgs(
+                          post: post,
+                          heroTagScope: type.heroTagScope,
+                        ),
                       ),
                     );
                   },
