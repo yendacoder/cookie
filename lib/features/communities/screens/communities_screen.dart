@@ -109,7 +109,6 @@ class _CommunitiesScreenState extends ConsumerState<CommunitiesScreen> {
                 selected: {_tab},
                 onSelectionChanged: (selected) => setState(() {
                   _tab = selected.first;
-                  _searchController.clear();
                 }),
               ),
             ),
