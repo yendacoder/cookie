@@ -561,9 +561,7 @@ class _FeedFooter extends ConsumerWidget {
         child: Center(
           child: Text(
             context.l10n.feedEndOfContent,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
       );

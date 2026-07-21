@@ -63,11 +63,11 @@ class FeedNotifier extends _$FeedNotifier {
           },
         );
     final data = response.data as Map<String, dynamic>;
-    final posts = (data['posts'] as List)
-        .cast<Map<String, dynamic>>()
+    final posts = (data['posts'] as List?)
+        ?.cast<Map<String, dynamic>>()
         .map(Post.fromJson)
         .where((p) => _seenIds.add(p.id))
-        .toList();
+        .toList() ?? [];
 
     if (cursor == null) {
       ref
