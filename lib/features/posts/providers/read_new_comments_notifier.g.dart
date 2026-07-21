@@ -22,7 +22,7 @@ final class ReadNewCommentsNotifierProvider
   /// update all lists that all new comments have been loaded
   ReadNewCommentsNotifierProvider._({
     required ReadNewCommentsNotifierFamily super.from,
-    required String super.argument,
+    required HeroTagScope super.argument,
   }) : super(
          retry: null,
          name: r'readNewCommentsProvider',
@@ -66,7 +66,7 @@ final class ReadNewCommentsNotifierProvider
 }
 
 String _$readNewCommentsNotifierHash() =>
-    r'c3f1fa32ca454baecf698695f075bcc8631fdec3';
+    r'fb8b49e8487f986401d62d9fc9d40fa757303365';
 
 /// When a post detail screen loads successfully, it might want to
 /// update all lists that all new comments have been loaded
@@ -78,7 +78,7 @@ final class ReadNewCommentsNotifierFamily extends $Family
           Set<String>,
           Set<String>,
           Set<String>,
-          String
+          HeroTagScope
         > {
   ReadNewCommentsNotifierFamily._()
     : super(
@@ -92,8 +92,8 @@ final class ReadNewCommentsNotifierFamily extends $Family
   /// When a post detail screen loads successfully, it might want to
   /// update all lists that all new comments have been loaded
 
-  ReadNewCommentsNotifierProvider call(String listType) =>
-      ReadNewCommentsNotifierProvider._(argument: listType, from: this);
+  ReadNewCommentsNotifierProvider call(HeroTagScope heroTagScope) =>
+      ReadNewCommentsNotifierProvider._(argument: heroTagScope, from: this);
 
   @override
   String toString() => r'readNewCommentsProvider';
@@ -103,10 +103,10 @@ final class ReadNewCommentsNotifierFamily extends $Family
 /// update all lists that all new comments have been loaded
 
 abstract class _$ReadNewCommentsNotifier extends $Notifier<Set<String>> {
-  late final _$args = ref.$arg as String;
-  String get listType => _$args;
+  late final _$args = ref.$arg as HeroTagScope;
+  HeroTagScope get heroTagScope => _$args;
 
-  Set<String> build(String listType);
+  Set<String> build(HeroTagScope heroTagScope);
   @$mustCallSuper
   @override
   void runBuild() {

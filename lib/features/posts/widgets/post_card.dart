@@ -478,9 +478,7 @@ class _PostFooter extends ConsumerWidget {
                     const SizedBox(width: 6),
                     Text('${post.noComments}', style: base),
                     if (!ref
-                            .watch(
-                              readNewCommentsProvider(heroTagScope.toString()),
-                            )
+                            .watch(readNewCommentsProvider(heroTagScope))
                             .contains(post.publicId) &&
                         (post.newComments ?? 0) > 0)
                       Tooltip(

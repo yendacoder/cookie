@@ -114,7 +114,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref
             .read(
-              readNewCommentsProvider(widget.heroTagScope.toString()).notifier,
+              readNewCommentsProvider(widget.heroTagScope).notifier,
             )
             .setRead(widget.postId);
       });

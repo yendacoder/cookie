@@ -129,7 +129,7 @@ class CommunityFeedNotifier extends _$CommunityFeedNotifier {
       ref
           .read(
             readNewCommentsProvider(
-              HeroTagScope(.community, id: _communityName).toString(),
+              HeroTagScope(.community, id: _communityName),
             ).notifier,
           )
           .clear();

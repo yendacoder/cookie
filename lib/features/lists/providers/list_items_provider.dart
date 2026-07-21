@@ -36,7 +36,7 @@ class ListItemsNotifier extends _$ListItemsNotifier {
       ref
           .read(
             readNewCommentsProvider(
-              HeroTagScope(.list, id: listId.toString()).toString(),
+              HeroTagScope(.list, id: listId.toString()),
             ).notifier,
           )
           .clear();

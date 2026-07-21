@@ -1,3 +1,4 @@
+import 'package:cookie/core/hero_tag_scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'read_new_comments_notifier.g.dart';
 
@@ -6,7 +7,7 @@ part 'read_new_comments_notifier.g.dart';
 @Riverpod(keepAlive: true)
 class ReadNewCommentsNotifier extends _$ReadNewCommentsNotifier {
   @override
-  Set<String> build(String listType) => {};
+  Set<String> build(HeroTagScope heroTagScope) => {};
 
   void clear() {
     state = {};

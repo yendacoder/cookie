@@ -71,7 +71,7 @@ class FeedNotifier extends _$FeedNotifier {
 
     if (cursor == null) {
       ref
-          .read(readNewCommentsProvider(_type.heroTagScope.toString()).notifier)
+          .read(readNewCommentsProvider(_type.heroTagScope).notifier)
           .clear();
     }
     return PostFeedState(posts: posts, nextCursor: data['next']?.toString());
