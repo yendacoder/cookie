@@ -256,9 +256,9 @@ class _CommunityHeader extends ConsumerWidget {
             for (int i = 0; i < rules.length; i++) ...[
               if (i > 0) const AdaptiveDivider(height: 16),
               ...[
-                Text(
+                MarkdownText(
                   '${i + 1}. ${rules[i].rule}',
-                  style: Theme.of(context).textTheme.titleSmall,
+                  baseStyle: Theme.of(context).textTheme.titleSmall,
                 ),
                 if (rules[i].description case final String desc
                     when desc.isNotEmpty) ...[

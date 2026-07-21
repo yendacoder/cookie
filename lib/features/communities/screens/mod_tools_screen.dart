@@ -2,6 +2,7 @@ import 'package:cookie/core/api/api_client.dart';
 import 'package:cookie/core/errors/app_exception.dart';
 import 'package:cookie/core/extensions/build_context_ext.dart';
 import 'package:cookie/core/providers/platform_style_provider.dart';
+import 'package:cookie/core/utils/markdown_utils.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_app_bar.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_button.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_dialog.dart';
@@ -14,6 +15,7 @@ import 'package:cookie/core/widgets/adaptive/adaptive_sheet_header.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_snackbar.dart';
 import 'package:cookie/core/widgets/adaptive/adaptive_tab_bar.dart';
 import 'package:cookie/core/widgets/error_view.dart';
+import 'package:cookie/core/widgets/markdown_text.dart';
 import 'package:cookie/features/communities/providers/community_provider.dart';
 import 'package:cookie/features/communities/widgets/mod_banned_tab.dart';
 import 'package:cookie/features/communities/widgets/mod_moderators_tab.dart';
@@ -376,9 +378,13 @@ class _RulesTabState extends ConsumerState<_RulesTab> {
             final rule = _rules[i];
             return AdaptiveListTile(
               key: ValueKey(rule.id),
-              title: Text('${i + 1}. ${rule.rule}'),
+              title: MarkdownText('${i + 1}. ${rule.rule}'),
               subtitle: (rule.description?.isNotEmpty ?? false)
-                  ? Text(rule.description!, maxLines: 2, overflow: .ellipsis)
+                  ? Text(
+                      markdownToPlainText(rule.description!),
+                      maxLines: 2,
+                      overflow: .ellipsis,
+                    )
                   : null,
               trailing: Row(
                 mainAxisSize: .min,
