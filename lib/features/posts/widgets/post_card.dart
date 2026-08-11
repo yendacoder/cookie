@@ -93,8 +93,19 @@ class PostCard extends ConsumerWidget {
         ref
             .watch(mutedUsersListProvider)
             .any((it) => it.mutedUserId == post.author?.id);
+    String? message;
+    if (isMutedUser) {
+      message = context.l10n.postHiddenUser(post.author?.username ?? '');
+    }
+    if (isMutedCommunity) {
+      message = context.l10n.postHiddenCommunity(post.communityName);
+    }
     if (isHidden || isMutedUser || isMutedCommunity) {
-      return _HiddenPlaceholder(post: post, withUndo: isHidden);
+      return _HiddenPlaceholder(
+        post: post,
+        message: message,
+        withUndo: isHidden,
+      );
     }
 
     return Column(
@@ -579,22 +590,38 @@ class _ImagePlaceholder extends StatelessWidget {
 // ── Hidden placeholder ────────────────────────────────────────────────────────
 
 class _HiddenPlaceholder extends ConsumerWidget {
-  const _HiddenPlaceholder({required this.post, required this.withUndo});
+  const _HiddenPlaceholder({
+    required this.post,
+    this.message,
+    required this.withUndo,
+  });
 
   final Post post;
+  final String? message;
   final bool withUndo;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
-          Text(
-            context.l10n.postHiddenLabel,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+          Column(
+            crossAxisAlignment: .start,
+            children: [
+              Text(
+                context.l10n.postHiddenLabel,
+                style: theme.textTheme.titleMedium
+              ),
+              if (message != null)
+                Text(
+                  message!,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+            ],
           ),
           const Spacer(),
           if (withUndo)

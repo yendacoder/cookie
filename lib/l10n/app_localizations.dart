@@ -988,6 +988,18 @@ abstract class AppLocalizations {
   /// **'Post hidden'**
   String get postHiddenLabel;
 
+  /// No description provided for @postHiddenUser.
+  ///
+  /// In en, this message translates to:
+  /// **'User @{username} is muted'**
+  String postHiddenUser(String username);
+
+  /// No description provided for @postHiddenCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Community +{community} is muted'**
+  String postHiddenCommunity(String community);
+
   /// No description provided for @undoButton.
   ///
   /// In en, this message translates to:

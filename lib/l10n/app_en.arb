@@ -477,6 +477,22 @@
   "@blockUserFail": {},
   "postHiddenLabel": "Post hidden",
   "@postHiddenLabel": {},
+  "postHiddenUser": "User @{username} is muted",
+  "@postHiddenUser": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "postHiddenCommunity": "Community +{community} is muted",
+  "@postHiddenCommunity": {
+    "placeholders": {
+      "community": {
+        "type": "String"
+      }
+    }
+  },
   "undoButton": "Undo",
   "@undoButton": {},
   "postSavedToList": "Saved to \"{name}\"",

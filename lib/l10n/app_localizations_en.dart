@@ -583,6 +583,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get postHiddenLabel => 'Post hidden';
 
   @override
+  String postHiddenUser(String username) {
+    return 'User @$username is muted';
+  }
+
+  @override
+  String postHiddenCommunity(String community) {
+    return 'Community +$community is muted';
+  }
+
+  @override
   String get undoButton => 'Undo';
 
   @override
