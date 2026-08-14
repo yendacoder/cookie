@@ -249,28 +249,30 @@ class _CommunityHeader extends ConsumerWidget {
       context: context,
       builder: (ctx) => AdaptiveAlertDialog(
         title: Text(context.l10n.communityRulesTitle),
-        content: Column(
-          mainAxisSize: .min,
-          crossAxisAlignment: .stretch,
-          children: [
-            for (int i = 0; i < rules.length; i++) ...[
-              if (i > 0) const AdaptiveDivider(height: 16),
-              ...[
-                MarkdownText(
-                  '${i + 1}. ${rules[i].rule}',
-                  baseStyle: Theme.of(context).textTheme.titleSmall,
-                ),
-                if (rules[i].description case final String desc
-                    when desc.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: .min,
+            crossAxisAlignment: .stretch,
+            children: [
+              for (int i = 0; i < rules.length; i++) ...[
+                if (i > 0) const AdaptiveDivider(height: 16),
+                ...[
                   MarkdownText(
-                    desc,
-                    baseStyle: Theme.of(context).textTheme.bodySmall,
+                    '${i + 1}. ${rules[i].rule}',
+                    baseStyle: Theme.of(context).textTheme.titleSmall,
                   ),
+                  if (rules[i].description case final String desc
+                      when desc.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    MarkdownText(
+                      desc,
+                      baseStyle: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
                 ],
               ],
             ],
-          ],
+          ),
         ),
         actions: [
           AdaptiveDialogAction(
