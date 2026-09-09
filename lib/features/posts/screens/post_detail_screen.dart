@@ -113,9 +113,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     if (detailState.hasValue) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref
-            .read(
-              readNewCommentsProvider(widget.heroTagScope).notifier,
-            )
+            .read(readNewCommentsProvider(widget.heroTagScope).notifier)
             .setRead(widget.postId);
       });
     }
@@ -203,7 +201,7 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final Post post;
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const .fromHeight(kToolbarHeight);
 
   void _reportPost(BuildContext context, WidgetRef ref) async {
     final l10n = context.l10n;
@@ -231,66 +229,70 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
     return AdaptiveAppBar(
       titleSpacing: 0,
-      title: Row(
-        children: [
-          if (post.communityProPic != null)
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: CircleAvatar(
-                radius: 14,
-                backgroundImage: NetworkImage(post.communityProPic!.fullUrl),
+      title: GestureDetector(
+        behavior: .opaque,
+        onTap: () => context.push('/c/${post.communityName}'),
+        child: Row(
+          children: [
+            if (post.communityProPic != null)
+              Padding(
+                padding: const .only(right: 8),
+                child: CircleAvatar(
+                  radius: 14,
+                  backgroundImage: NetworkImage(post.communityProPic!.fullUrl),
+                ),
+              ),
+            Flexible(
+              child: Text(
+                post.communityName,
+                style: Theme.of(context).textTheme.titleMedium,
+                overflow: .ellipsis,
               ),
             ),
-          Flexible(
-            child: Text(
-              post.communityName,
-              style: Theme.of(context).textTheme.titleMedium,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
       actions: [
         if (isAuthenticated)
           AdaptiveMenuButton<_PostMenuAction>(
             items: [
               AdaptiveMenuItem(
-                value: _PostMenuAction.openInBrowser,
+                value: .openInBrowser,
                 label: l10n.postMenuOpenInBrowser,
               ),
               if (!post.deleted)
                 AdaptiveMenuItem(
-                  value: _PostMenuAction.saveToList,
+                  value: .saveToList,
                   label: l10n.postMenuSaveToList,
                 ),
               if (isAuthor && !post.deleted) ...[
                 AdaptiveMenuItem(
-                  value: _PostMenuAction.editPost,
+                  value: .editPost,
                   label: l10n.postMenuEdit,
                 ),
                 AdaptiveMenuItem(
-                  value: _PostMenuAction.deletePost,
+                  value: .deletePost,
                   label: l10n.postMenuDelete,
                   isDestructive: true,
                 ),
               ],
               AdaptiveMenuItem(
-                value: _PostMenuAction.hide,
+                value: .hide,
                 label: l10n.postMenuHide,
               ),
               AdaptiveMenuItem(
-                value: _PostMenuAction.report,
+                value: .report,
                 label: l10n.postMenuReport,
               ),
               if (!isAuthor && post.author != null)
                 AdaptiveMenuItem(
-                  value: _PostMenuAction.block,
+                  value: .block,
                   label: l10n.postMenuBlock,
                   isDestructive: true,
                 ),
               if (isMod)
                 AdaptiveMenuItem(
-                  value: _PostMenuAction.modActions,
+                  value: .modActions,
                   label: l10n.postMenuModActions,
                 ),
             ],
@@ -299,7 +301,7 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 case .openInBrowser:
                   launchUrl(
                     post.postWebUrl,
-                    mode: LaunchMode.externalApplication,
+                    mode: .externalApplication,
                   );
                 case .saveToList:
                   showPlatformSheet(
