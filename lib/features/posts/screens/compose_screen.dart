@@ -271,8 +271,7 @@ class _ComposeScreenState extends ConsumerState<ComposeScreen> {
       }
 
       if (mounted) {
-        context.pop();
-        context.push(
+        context.pushReplacement(
           '/c/${newPost.communityName}/post/${newPost.publicId}',
           extra: PostDetailArgs(
             post: newPost,
