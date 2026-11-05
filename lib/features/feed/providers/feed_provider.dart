@@ -63,16 +63,16 @@ class FeedNotifier extends _$FeedNotifier {
           },
         );
     final data = response.data as Map<String, dynamic>;
-    final posts = (data['posts'] as List?)
-        ?.cast<Map<String, dynamic>>()
-        .map(Post.fromJson)
-        .where((p) => _seenIds.add(p.id))
-        .toList() ?? [];
+    final posts =
+        (data['posts'] as List?)
+            ?.cast<Map<String, dynamic>>()
+            .map(Post.fromJson)
+            .where((p) => _seenIds.add(p.id))
+            .toList() ??
+        [];
 
     if (cursor == null) {
-      ref
-          .read(readNewCommentsProvider(_type.heroTagScope).notifier)
-          .clear();
+      ref.read(readNewCommentsProvider(_type.heroTagScope).notifier).clear();
     }
     return PostFeedState(posts: posts, nextCursor: data['next']?.toString());
   }

@@ -54,7 +54,7 @@ class MarkdownText extends StatelessWidget {
     );
     return !domainLike.hasMatch(uri.toString());
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

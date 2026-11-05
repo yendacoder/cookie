@@ -234,7 +234,7 @@ class _ZoomablePageState extends State<_ZoomablePage>
     _animCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 220),
-    );
+    )..addListener(_onAnimationTick);
   }
 
   @override
@@ -248,23 +248,28 @@ class _ZoomablePageState extends State<_ZoomablePage>
 
   void _notifyZoom() => widget.onZoomChanged(_isZoomed);
 
-  void _handleDoubleTap() {
-    _animCtrl.reset();
+  void _onAnimationTick() {
+    final animation = _animation;
+    if (animation == null) return;
+    _transformCtrl.value = animation.value;
+    _notifyZoom();
+    setState(() {}); // keep panEnabled in sync
+  }
 
+  void _handleDoubleTap() {
+    // Decide the target before touching the controller: restarting it
+    // notifies listeners, which would otherwise apply the previous
+    // animation's begin value (identity) and flip the zoom decision.
     final target = _isZoomed
         ? Matrix4.identity()
         : _zoomedAt(_doubleTapPosition!);
 
-    _animation =
-        Matrix4Tween(begin: _transformCtrl.value, end: target).animate(
-          CurvedAnimation(parent: _animCtrl, curve: Curves.easeInOut),
-        )..addListener(() {
-          _transformCtrl.value = _animation!.value;
-          _notifyZoom();
-          setState(() {}); // keep panEnabled in sync
-        });
+    _animation = Matrix4Tween(
+      begin: _transformCtrl.value,
+      end: target,
+    ).animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeInOut));
 
-    _animCtrl.forward();
+    _animCtrl.forward(from: 0);
   }
 
   /// Returns a matrix that zooms _zoomScale× centred on [pos].

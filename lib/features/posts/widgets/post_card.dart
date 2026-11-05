@@ -612,7 +612,7 @@ class _HiddenPlaceholder extends ConsumerWidget {
             children: [
               Text(
                 context.l10n.postHiddenLabel,
-                style: theme.textTheme.titleMedium
+                style: theme.textTheme.titleMedium,
               ),
               if (message != null)
                 Text(

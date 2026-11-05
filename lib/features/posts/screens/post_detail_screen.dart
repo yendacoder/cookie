@@ -266,24 +266,15 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   label: l10n.postMenuSaveToList,
                 ),
               if (isAuthor && !post.deleted) ...[
-                AdaptiveMenuItem(
-                  value: .editPost,
-                  label: l10n.postMenuEdit,
-                ),
+                AdaptiveMenuItem(value: .editPost, label: l10n.postMenuEdit),
                 AdaptiveMenuItem(
                   value: .deletePost,
                   label: l10n.postMenuDelete,
                   isDestructive: true,
                 ),
               ],
-              AdaptiveMenuItem(
-                value: .hide,
-                label: l10n.postMenuHide,
-              ),
-              AdaptiveMenuItem(
-                value: .report,
-                label: l10n.postMenuReport,
-              ),
+              AdaptiveMenuItem(value: .hide, label: l10n.postMenuHide),
+              AdaptiveMenuItem(value: .report, label: l10n.postMenuReport),
               if (!isAuthor && post.author != null)
                 AdaptiveMenuItem(
                   value: .block,
@@ -299,10 +290,7 @@ class _PostAppBar extends ConsumerWidget implements PreferredSizeWidget {
             onSelected: (action) async {
               switch (action) {
                 case .openInBrowser:
-                  launchUrl(
-                    post.postWebUrl,
-                    mode: .externalApplication,
-                  );
+                  launchUrl(post.postWebUrl, mode: .externalApplication);
                 case .saveToList:
                   showPlatformSheet(
                     context: context,
