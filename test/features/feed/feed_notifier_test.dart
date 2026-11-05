@@ -49,7 +49,7 @@ Map<String, dynamic> _postJson(String id) => {
   'isCommunityMuted': false,
 };
 
-Response<dynamic> _page(List<String> ids, {String? next}) => Response(
+Response<dynamic> _page(List<String> ids, {Object? next}) => Response(
   data: {'posts': ids.map(_postJson).toList(), 'next': next},
   statusCode: 200,
   requestOptions: RequestOptions(path: ''),
@@ -134,6 +134,46 @@ void main() {
       final ids = state.posts.map((p) => p.id).toList();
       expect(ids, ['a', 'b', 'c']); // 'b' not repeated
     });
+  });
+
+  group('FeedNotifier — cursor formats', () {
+    // The server is migrating `next` from an integer to a string such as
+    // "1793697240000000000.18e49d89d21c1da75f146e09"; both must round-trip.
+    for (final (label, raw, expected) in [
+      ('integer', 1793697240000000000, '1793697240000000000'),
+      (
+        'string',
+        '1793697240000000000.18e49d89d21c1da75f146e09',
+        '1793697240000000000.18e49d89d21c1da75f146e09',
+      ),
+    ]) {
+      test('$label cursor is sent back verbatim on loadMore', () async {
+        final sentCursors = <Object?>[];
+        when(
+          () => mockDio.get(
+            'posts',
+            queryParameters: any(named: 'queryParameters'),
+          ),
+        ).thenAnswer((invocation) async {
+          final params =
+              invocation.namedArguments[#queryParameters]
+                  as Map<String, dynamic>;
+          sentCursors.add(params['next']);
+          return sentCursors.length == 1
+              ? _page(['a'], next: raw)
+              : _page(['b']);
+        });
+
+        final container = _container(mockDio);
+        addTearDown(container.dispose);
+
+        final state = await container.read(provider.future);
+        expect(state.nextCursor, expected);
+
+        await container.read(provider.notifier).loadMore();
+        expect(sentCursors, [null, expected]);
+      });
+    }
   });
 
   group('FeedNotifier — loadMore', () {
