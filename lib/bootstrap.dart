@@ -5,7 +5,6 @@ import 'package:cookie/features/shell/providers/content_text_sizes_provider.dart
 import 'package:cookie/features/shell/providers/text_scale_provider.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
@@ -20,7 +19,6 @@ import 'features/shell/providers/package_info_provider.dart';
 Future<void> bootstrap({List<Override> additionalOverrides = const []}) async {
   WidgetsFlutterBinding.ensureInitialized();
   await LiquidGlassWidgets.initialize();
-  SystemChrome.setPreferredOrientations([.portraitUp, .portraitDown]);
 
   final appDocDir = await getApplicationDocumentsDirectory();
   final jar = PersistCookieJar(

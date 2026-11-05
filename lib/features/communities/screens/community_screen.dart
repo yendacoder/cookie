@@ -292,53 +292,55 @@ class _CommunityHeader extends ConsumerWidget {
         title: Text(context.l10n.communityModeratorsTitle),
         content: Material(
           color: Colors.transparent,
-          child: Column(
-            mainAxisSize: .min,
-            crossAxisAlignment: .stretch,
-            children: [
-              for (int i = 0; i < mods.length; i++)
-                AdaptiveListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leadingSize: 36,
-                  onTap: () {
-                    context.pop();
-                    context.push('/u/${mods[i].username}');
-                  },
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer,
-                    child: mods[i].proPic != null
-                        ? ClipOval(
-                            child: CachedNetworkImage(
-                              width: 200,
-                              height: 200,
-                              imageUrl:
-                                  (mods[i].proPic as DiscuitImage).fullUrl,
-                              fit: .cover,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: .min,
+              crossAxisAlignment: .stretch,
+              children: [
+                for (int i = 0; i < mods.length; i++)
+                  AdaptiveListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leadingSize: 36,
+                    onTap: () {
+                      context.pop();
+                      context.push('/u/${mods[i].username}');
+                    },
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer,
+                      child: mods[i].proPic != null
+                          ? ClipOval(
+                              child: CachedNetworkImage(
+                                width: 200,
+                                height: 200,
+                                imageUrl:
+                                    (mods[i].proPic as DiscuitImage).fullUrl,
+                                fit: .cover,
+                              ),
+                            )
+                          : Text(
+                              (mods[i].username as String)[0].toUpperCase(),
+                              style: Theme.of(context).textTheme.labelMedium
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimaryContainer,
+                                  ),
                             ),
-                          )
-                        : Text(
-                            (mods[i].username as String)[0].toUpperCase(),
-                            style: Theme.of(context).textTheme.labelMedium
-                                ?.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimaryContainer,
-                                ),
-                          ),
+                    ),
+                    title: Text(
+                      mods[i].username as String,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    isLast: i == mods.length - 1,
+                    trailing: Icon(
+                      context.chevronRightIcon,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                  title: Text(
-                    mods[i].username as String,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  isLast: i == mods.length - 1,
-                  trailing: Icon(
-                    context.chevronRightIcon,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
         actions: [
