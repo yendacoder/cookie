@@ -1,0 +1,5 @@
+{
+  "FEEDBACK_ENDPOINT": "https://feedback.example.com/v1/feedback",
+  "FEEDBACK_APP_ID": "cookie",
+  "SUPPORT_EMAIL": "support@example.com"
+}

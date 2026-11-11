@@ -776,5 +776,61 @@
     }
   },
   "updateDownloadButton": "Download",
-  "@updateDownloadButton": {}
+  "@updateDownloadButton": {},
+  "feedbackScreenTitle": "Send feedback",
+  "@feedbackScreenTitle": {},
+  "feedbackIntro": "Found a bug, have an idea, or want to raise a concern about content you saw in the app? Let us know — every message is read.",
+  "@feedbackIntro": {},
+  "feedbackSendButton": "Send",
+  "@feedbackSendButton": {},
+  "feedbackCategoryLabel": "What is it about?",
+  "@feedbackCategoryLabel": {},
+  "feedbackCategoryBug": "Bug",
+  "@feedbackCategoryBug": {},
+  "feedbackCategorySuggestion": "Suggestion",
+  "@feedbackCategorySuggestion": {},
+  "feedbackCategoryContent": "Content concern",
+  "@feedbackCategoryContent": {},
+  "feedbackCategoryOther": "Other",
+  "@feedbackCategoryOther": {},
+  "feedbackHintBug": "What happened, and what did you expect to happen?",
+  "@feedbackHintBug": {},
+  "feedbackHintSuggestion": "What would make Cookie better for you?",
+  "@feedbackHintSuggestion": {},
+  "feedbackHintContent": "Describe the content and where you saw it (community, post or user).",
+  "@feedbackHintContent": {},
+  "feedbackHintOther": "Your message",
+  "@feedbackHintOther": {},
+  "feedbackMessageLabel": "Message",
+  "@feedbackMessageLabel": {},
+  "feedbackEmailLabel": "Your email (optional)",
+  "@feedbackEmailLabel": {},
+  "feedbackEmailHelper": "Only needed if you'd like a reply",
+  "@feedbackEmailHelper": {},
+  "feedbackEmailInvalid": "Enter a valid email address",
+  "@feedbackEmailInvalid": {},
+  "feedbackIncludeDiagnostics": "Include app version and device info",
+  "@feedbackIncludeDiagnostics": {},
+  "feedbackEmailFallback": "Prefer email? Write to {email}",
+  "@feedbackEmailFallback": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "feedbackSent": "Thanks! Your feedback has been sent.",
+  "@feedbackSent": {},
+  "feedbackRateLimited": "Too many messages sent. Please try again in a minute.",
+  "@feedbackRateLimited": {},
+  "feedbackFailed": "Couldn't send feedback. Please try again or email {email}.",
+  "@feedbackFailed": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "feedbackFailedNoEmail": "Couldn't send feedback. Please try again later.",
+  "@feedbackFailedNoEmail": {}
 }

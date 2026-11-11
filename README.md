@@ -33,3 +33,21 @@ What is coming later™:
 What is out of scope:
 - Registration and password recovery.
 - GIF/animation posts, images in comments, image+text post types, and search — unless Discuit adds native support for these features.
+
+## Build configuration
+
+Maintainer-specific settings are passed at build time, so forks don't inherit them:
+
+| Define | Purpose |
+| --- | --- |
+| `FEEDBACK_ENDPOINT` | URL of the in-app feedback API. If it isn't set, the "Send feedback" screen is hidden. |
+| `FEEDBACK_APP_ID` | App id sent to the feedback API (default `cookie`). |
+| `SUPPORT_EMAIL` | Optional email fallback shown on the feedback screen. |
+
+For local builds, copy `dart_defines.example.json` to `dart_defines.json` (gitignored) and pass it in:
+
+```sh
+flutter build appbundle --dart-define-from-file=dart_defines.json
+```
+
+The GitHub release workflow reads them from the repository variables `FEEDBACK_ENDPOINT` and `SUPPORT_EMAIL`.

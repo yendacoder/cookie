@@ -983,4 +983,80 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateDownloadButton => 'Download';
+
+  @override
+  String get feedbackScreenTitle => 'Send feedback';
+
+  @override
+  String get feedbackIntro =>
+      'Found a bug, have an idea, or want to raise a concern about content you saw in the app? Let us know — every message is read.';
+
+  @override
+  String get feedbackSendButton => 'Send';
+
+  @override
+  String get feedbackCategoryLabel => 'What is it about?';
+
+  @override
+  String get feedbackCategoryBug => 'Bug';
+
+  @override
+  String get feedbackCategorySuggestion => 'Suggestion';
+
+  @override
+  String get feedbackCategoryContent => 'Content concern';
+
+  @override
+  String get feedbackCategoryOther => 'Other';
+
+  @override
+  String get feedbackHintBug =>
+      'What happened, and what did you expect to happen?';
+
+  @override
+  String get feedbackHintSuggestion => 'What would make Cookie better for you?';
+
+  @override
+  String get feedbackHintContent =>
+      'Describe the content and where you saw it (community, post or user).';
+
+  @override
+  String get feedbackHintOther => 'Your message';
+
+  @override
+  String get feedbackMessageLabel => 'Message';
+
+  @override
+  String get feedbackEmailLabel => 'Your email (optional)';
+
+  @override
+  String get feedbackEmailHelper => 'Only needed if you\'d like a reply';
+
+  @override
+  String get feedbackEmailInvalid => 'Enter a valid email address';
+
+  @override
+  String get feedbackIncludeDiagnostics =>
+      'Include app version and device info';
+
+  @override
+  String feedbackEmailFallback(String email) {
+    return 'Prefer email? Write to $email';
+  }
+
+  @override
+  String get feedbackSent => 'Thanks! Your feedback has been sent.';
+
+  @override
+  String get feedbackRateLimited =>
+      'Too many messages sent. Please try again in a minute.';
+
+  @override
+  String feedbackFailed(String email) {
+    return 'Couldn\'t send feedback. Please try again or email $email.';
+  }
+
+  @override
+  String get feedbackFailedNoEmail =>
+      'Couldn\'t send feedback. Please try again later.';
 }

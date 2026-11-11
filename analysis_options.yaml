@@ -16,5 +16,6 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
-  plugins:
-    - custom_lint
+
+plugins:
+  -custom_lint: ^0.8.1

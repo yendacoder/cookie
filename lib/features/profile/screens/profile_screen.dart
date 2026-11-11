@@ -13,6 +13,7 @@ import 'package:cookie/features/auth/providers/auth_provider.dart';
 import 'package:cookie/features/communities/providers/muted_communities_list_provider.dart';
 import 'package:cookie/features/feed/models/feed_type.dart';
 import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart';
+import 'package:cookie/features/feedback/providers/feedback_provider.dart';
 import 'package:cookie/features/shell/providers/package_info_provider.dart';
 import 'package:cookie/features/update/providers/update_check_provider.dart';
 import 'package:cookie/features/user/providers/muted_users_list_provider.dart';
@@ -133,6 +134,13 @@ class ProfileScreen extends ConsumerWidget {
               onTap: () => context.push('/settings'),
             ),
           ],
+          if (ref.watch(feedbackConfigProvider) != null)
+            AdaptiveListTile(
+              leading: Icon(context.feedbackIcon),
+              title: Text(context.l10n.feedbackScreenTitle),
+              trailing: chevronIcon,
+              onTap: () => context.push('/feedback'),
+            ),
           if (update != null) ...[
             AdaptiveListTile(
               leading: Badge(

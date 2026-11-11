@@ -1743,6 +1743,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download'**
   String get updateDownloadButton;
+
+  /// No description provided for @feedbackScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send feedback'**
+  String get feedbackScreenTitle;
+
+  /// No description provided for @feedbackIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Found a bug, have an idea, or want to raise a concern about content you saw in the app? Let us know — every message is read.'**
+  String get feedbackIntro;
+
+  /// No description provided for @feedbackSendButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get feedbackSendButton;
+
+  /// No description provided for @feedbackCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What is it about?'**
+  String get feedbackCategoryLabel;
+
+  /// No description provided for @feedbackCategoryBug.
+  ///
+  /// In en, this message translates to:
+  /// **'Bug'**
+  String get feedbackCategoryBug;
+
+  /// No description provided for @feedbackCategorySuggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestion'**
+  String get feedbackCategorySuggestion;
+
+  /// No description provided for @feedbackCategoryContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Content concern'**
+  String get feedbackCategoryContent;
+
+  /// No description provided for @feedbackCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get feedbackCategoryOther;
+
+  /// No description provided for @feedbackHintBug.
+  ///
+  /// In en, this message translates to:
+  /// **'What happened, and what did you expect to happen?'**
+  String get feedbackHintBug;
+
+  /// No description provided for @feedbackHintSuggestion.
+  ///
+  /// In en, this message translates to:
+  /// **'What would make Cookie better for you?'**
+  String get feedbackHintSuggestion;
+
+  /// No description provided for @feedbackHintContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the content and where you saw it (community, post or user).'**
+  String get feedbackHintContent;
+
+  /// No description provided for @feedbackHintOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Your message'**
+  String get feedbackHintOther;
+
+  /// No description provided for @feedbackMessageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get feedbackMessageLabel;
+
+  /// No description provided for @feedbackEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email (optional)'**
+  String get feedbackEmailLabel;
+
+  /// No description provided for @feedbackEmailHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Only needed if you\'d like a reply'**
+  String get feedbackEmailHelper;
+
+  /// No description provided for @feedbackEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address'**
+  String get feedbackEmailInvalid;
+
+  /// No description provided for @feedbackIncludeDiagnostics.
+  ///
+  /// In en, this message translates to:
+  /// **'Include app version and device info'**
+  String get feedbackIncludeDiagnostics;
+
+  /// No description provided for @feedbackEmailFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer email? Write to {email}'**
+  String feedbackEmailFallback(String email);
+
+  /// No description provided for @feedbackSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks! Your feedback has been sent.'**
+  String get feedbackSent;
+
+  /// No description provided for @feedbackRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many messages sent. Please try again in a minute.'**
+  String get feedbackRateLimited;
+
+  /// No description provided for @feedbackFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t send feedback. Please try again or email {email}.'**
+  String feedbackFailed(String email);
+
+  /// No description provided for @feedbackFailedNoEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t send feedback. Please try again later.'**
+  String get feedbackFailedNoEmail;
 }
 
 class _AppLocalizationsDelegate

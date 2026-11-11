@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Build-time config (feedback endpoint, support email). See dart_defines.example.json.
+dart_defines.json

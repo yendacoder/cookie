@@ -46,8 +46,15 @@ jobs:
       - name: Build application
         run: |
           flutter pub get
-          flutter build apk --flavor github -t lib/main_github.dart
+          # Feedback is enabled only when the repository variables are set, so
+          # forks don't send feedback to the upstream maintainer.
+          flutter build apk --flavor github -t lib/main_github.dart \
+            --dart-define=FEEDBACK_ENDPOINT="$FEEDBACK_ENDPOINT" \
+            --dart-define=SUPPORT_EMAIL="$SUPPORT_EMAIL"
           mv build/app/outputs/flutter-apk/app-github-release.apk build/app/outputs/flutter-apk/cookie.apk
+        env:
+          FEEDBACK_ENDPOINT: ${{ vars.FEEDBACK_ENDPOINT }}
+          SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL }}
 
       - name: Upload apk
         uses: actions/upload-artifact@v4

@@ -7,6 +7,7 @@ import 'package:cookie/features/communities/screens/muted_communities_screen.dar
 import 'package:cookie/features/feed/models/feed_type.dart';
 import 'package:cookie/features/feed/providers/visible_feed_types_provider.dart';
 import 'package:cookie/features/feed/screens/feed_screen.dart';
+import 'package:cookie/features/feedback/screens/feedback_screen.dart';
 import 'package:cookie/features/lists/screens/list_detail_screen.dart';
 import 'package:cookie/features/lists/screens/lists_screen.dart';
 import 'package:cookie/features/notifications/screens/notifications_screen.dart';
@@ -174,6 +175,10 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: '/settings',
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: '/feedback',
+        builder: (context, state) => const FeedbackScreen(),
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(

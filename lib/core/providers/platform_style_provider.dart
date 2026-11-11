@@ -46,6 +46,9 @@ extension PlatformIcons on BuildContext {
 
   IconData get settingsIcon => useIos ? CupertinoIcons.gear : Icons.settings;
 
+  IconData get feedbackIcon =>
+      useIos ? CupertinoIcons.chat_bubble_text : Icons.feedback_outlined;
+
   IconData get bookmarkIcon =>
       useIos ? CupertinoIcons.bookmark : Icons.bookmark_outline;
 
